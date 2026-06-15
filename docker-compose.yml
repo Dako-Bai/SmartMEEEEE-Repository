@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  api:
+    build: ./server
+    image: navarro-admin-api
+    container_name: navarro-admin-api
+    working_dir: /app
+    volumes:
+      - ./server:/app
+      - ./server/data.db:/app/data.db
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - JWT_SECRET=${JWT_SECRET}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - FROM_EMAIL=${FROM_EMAIL}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+    command: npm start
+
