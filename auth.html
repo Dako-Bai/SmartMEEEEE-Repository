@@ -3,155 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Авторизация - Smart Mercury Energy</title>
+    <title>Авторизация | Smart Mercury Energy</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primaryBlue: '#0ea5e9',
-                        accentYellow: '#f59e0b',
-                        lightBg: '#f8fafc',
-                        textDark: '#0f172a',
+                        brandBlue: '#0ea5e9',
+                        brandYellow: '#f59e0b',
+                        surface: '#fcfdfe',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            background-color: #f8fafc;
-            color: #0f172a;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        body { background-color: #fcfdfe; }
+        .auth-glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
-        .auth-card {
-            background: white;
+        .input-style {
+            background: #f8fafc;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
         }
-        .input-field {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-        }
-        .input-field:focus {
+        .input-style:focus {
             background: white;
             border-color: #0ea5e9;
             box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
             outline: none;
         }
-        .hidden-form { display: none; opacity: 0; }
-        .visible-form { display: block; opacity: 1; animation: fadeIn 0.4s forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .form-container { transition: opacity 0.4s ease, transform 0.4s ease; }
+        .hidden-form { opacity: 0; pointer-events: none; position: absolute; transform: translateY(10px); }
+        .visible-form { opacity: 1; pointer-events: auto; position: relative; transform: translateY(0); }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+<body class="min-h-screen flex items-center justify-center p-6 font-sans">
 
-    <div class="w-full max-w-[1000px] grid grid-cols-1 lg:grid-cols-2 auth-card rounded-[40px] overflow-hidden">
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-sky-100 rounded-full blur-[120px] opacity-60"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-50 rounded-full blur-[120px] opacity-60"></div>
+    </div>
 
-        <!-- Left: Branding -->
-        <div class="hidden lg:flex flex-col justify-between p-12 bg-sky-600 text-white relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-full opacity-10">
-                <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 C 20 0 50 0 100 100 Z" fill="white"/></svg>
+    <div class="w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-2 auth-glass rounded-[50px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] overflow-hidden relative z-10">
+
+        <!-- Side Branding -->
+        <div class="hidden lg:flex flex-col justify-between p-16 bg-brandBlue text-white relative">
+            <div class="absolute inset-0 opacity-10">
+                <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="100" cy="0" r="80" fill="white"/></svg>
             </div>
 
             <div class="relative z-10">
-                <div class="flex items-center gap-3 mb-12">
-                    <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-lg">
-                        <svg class="w-7 h-7 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
+                <a href="index.html" class="flex items-center gap-3 mb-20 group">
+                    <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-brandBlue shadow-xl group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
                     </div>
-                    <span class="font-black text-xl tracking-tight">Smart Mercury</span>
-                </div>
-                <h1 class="text-5xl font-black leading-tight mb-6">Энергияның <br>жаңа сапасы</h1>
-                <p class="text-sky-100 text-lg leading-relaxed">Корпоративтік клиенттерге арналған кешенді шешімдер мен бақылау жүйесі.</p>
+                    <span class="font-display font-bold text-2xl tracking-tight">Smart Mercury</span>
+                </a>
+                <h2 class="font-display text-5xl font-extrabold leading-[1.1] mb-8">Интеллектуалды <br>энергияны басқару</h2>
+                <p class="text-sky-100 text-lg leading-relaxed">Біздің экожүйеге қосылып, бизнесіңізді жаңа деңгейге көтеріңіз.</p>
             </div>
 
-            <div class="relative z-10 space-y-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
-                    <span class="text-sm font-bold">Argus Live интеграциясы</span>
+            <div class="relative z-10 flex items-center gap-6">
+                <div class="flex -space-x-2">
+                    <div class="w-10 h-10 rounded-full border-2 border-brandBlue bg-white/20"></div>
+                    <div class="w-10 h-10 rounded-full border-2 border-brandBlue bg-white/20"></div>
+                    <div class="w-10 h-10 rounded-full border-2 border-brandBlue bg-white/20"></div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
-                    <span class="text-sm font-bold">24/7 техникалық қолдау</span>
-                </div>
+                <span class="text-xs font-bold uppercase tracking-widest text-sky-100">850+ активті компания</span>
             </div>
         </div>
 
-        <!-- Right: Forms -->
-        <div class="p-8 lg:p-16 flex flex-col justify-center bg-white">
-            <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 mb-10 w-fit mx-auto lg:mx-0">
-                <button id="toggle-login" onclick="showForm('login')" class="px-8 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-sky-600 shadow-sm">Кіру</button>
-                <button id="toggle-register" onclick="showForm('register')" class="px-8 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-sky-600">Тіркелу</button>
+        <!-- Form Area -->
+        <div class="p-10 lg:p-20 bg-white relative">
+
+            <!-- Tab Switcher -->
+            <div class="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 mb-12 w-fit">
+                <button onclick="toggleForm('login')" id="btn-login" class="px-10 py-3 rounded-xl text-sm font-bold transition-all bg-white text-brandBlue shadow-sm">Кіру</button>
+                <button onclick="toggleForm('register')" id="btn-register" class="px-10 py-3 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-brandBlue">Тіркелу</button>
             </div>
 
-            <!-- Login -->
-            <div id="login-form" class="visible-form">
-                <h2 class="text-3xl font-black mb-2 text-slate-900">Қош келдіңіз</h2>
-                <p class="text-slate-500 mb-8 text-sm">Жүйеге кіру үшін деректеріңізді енгізіңіз</p>
-                <form class="space-y-5" onsubmit="handleAuth(event, 'login')">
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 tracking-widest mb-2">Email</label>
-                        <input type="email" placeholder="admin@sme.kz" required class="w-full input-field rounded-2xl px-5 py-4 text-sm text-slate-900">
+            <!-- Login Form -->
+            <div id="form-login" class="visible-form form-container">
+                <h3 class="font-display text-3xl font-extrabold text-slate-900 mb-2">Қош келдіңіз</h3>
+                <p class="text-slate-400 text-sm mb-10">Жүйеге кіру үшін деректерді енгізіңіз</p>
+
+                <form class="space-y-6" onsubmit="handleAuth(event, 'login')">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Email мекенжайы</label>
+                        <input type="email" required placeholder="admin@sme.kz" class="w-full input-style rounded-2xl px-6 py-4.5 text-sm font-semibold">
                     </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 tracking-widest mb-2">Құпиясөз</label>
-                        <input type="password" placeholder="••••••••" required class="w-full input-field rounded-2xl px-5 py-4 text-sm text-slate-900">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Құпиясөз</label>
+                            <button type="button" class="text-[10px] font-black uppercase tracking-widest text-brandBlue">Ұмыттыңыз ба?</button>
+                        </div>
+                        <input type="password" required placeholder="••••••••" class="w-full input-style rounded-2xl px-6 py-4.5 text-sm font-semibold">
                     </div>
-                    <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-black py-4 rounded-2xl transition-all shadow-xl shadow-sky-100">Кіру</button>
+                    <button type="submit" class="w-full bg-brandBlue hover:bg-brandDarkBlue text-white py-5 rounded-[24px] font-bold shadow-xl shadow-sky-100 transition-all hover:scale-[1.02] active:scale-100">
+                        Кіру
+                    </button>
                 </form>
             </div>
 
-            <!-- Register -->
-            <div id="register-form" class="hidden-form">
-                <h2 class="text-3xl font-black mb-2 text-slate-900">Серіктес болу</h2>
-                <p class="text-slate-500 mb-8 text-sm">Тіркелуге өтінім қалдырыңыз</p>
+            <!-- Register Form -->
+            <div id="form-register" class="hidden-form form-container">
+                <h3 class="font-display text-3xl font-extrabold text-slate-900 mb-2">Корпоративтік тіркелу</h3>
+                <p class="text-slate-400 text-sm mb-8">Бизнес-серіктес ретінде тіркелуге өтінім</p>
+
                 <form class="space-y-4" onsubmit="handleAuth(event, 'register')">
-                    <input type="text" placeholder='ЖШС "Компания"' required class="w-full input-field rounded-xl px-4 py-3 text-sm">
-                    <input type="text" placeholder="БИН" required class="w-full input-field rounded-xl px-4 py-3 text-sm">
-                    <input type="email" placeholder="Email" required class="w-full input-field rounded-xl px-4 py-3 text-sm">
-                    <button type="submit" class="w-full bg-accentYellow hover:bg-amber-600 text-white font-black py-4 rounded-2xl transition-all shadow-xl shadow-amber-100 mt-4">Өтінім беру</button>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Компания аты</label>
+                            <input type="text" required placeholder='ЖШС "Mercury"' class="w-full input-style rounded-xl px-5 py-3.5 text-sm font-semibold">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">БИН</label>
+                            <input type="text" required placeholder="123456789012" class="w-full input-style rounded-xl px-5 py-3.5 text-sm font-semibold">
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Байланыс телефоны</label>
+                        <input type="tel" required placeholder="+7 (777) 000-00-00" class="w-full input-style rounded-xl px-5 py-3.5 text-sm font-semibold">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Корпоративтік Email</label>
+                        <input type="email" required placeholder="info@company.kz" class="w-full input-style rounded-xl px-5 py-3.5 text-sm font-semibold">
+                    </div>
+                    <button type="submit" class="w-full bg-brandYellow hover:bg-amber-600 text-white py-5 rounded-[24px] font-bold shadow-xl shadow-amber-100 transition-all mt-4">
+                        Өтінімді жіберу
+                    </button>
                 </form>
             </div>
 
-            <!-- Success -->
-            <div id="success-state" class="hidden-form text-center py-10">
-                <div class="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-green-600 mx-auto mb-6">
-                    <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <!-- Loading State (JS handled) -->
+            <div id="state-loading" class="hidden-form absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+                <div class="text-center">
+                    <div class="w-12 h-12 border-4 border-slate-100 border-t-brandBlue rounded-full animate-spin mx-auto mb-4"></div>
+                    <span class="text-xs font-black uppercase tracking-widest text-slate-400">Өңделуде...</span>
                 </div>
-                <h2 id="success-title" class="text-2xl font-black mb-2">Сәтті!</h2>
-                <p id="success-msg" class="text-slate-500 text-sm">Күте тұрыңыз...</p>
             </div>
         </div>
     </div>
 
     <script>
-        function showForm(formId) {
-            ['login', 'register', 'success'].forEach(f => {
-                const el = document.getElementById(`${f}-form`) || document.getElementById(`${f}-state`);
-                el.classList.add('hidden-form'); el.classList.remove('visible-form');
-            });
-            const active = document.getElementById(`${formId}-form`) || document.getElementById(`${formId}-state`);
-            active.classList.remove('hidden-form'); active.classList.add('visible-form');
+        function toggleForm(type) {
+            const isLogin = type === 'login';
 
-            if (formId !== 'success') {
-                document.getElementById('toggle-login').className = formId === 'login' ? 'px-8 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-sky-600 shadow-sm' : 'px-8 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-sky-600';
-                document.getElementById('toggle-register').className = formId === 'register' ? 'px-8 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-sky-600 shadow-sm' : 'px-8 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-sky-600';
-            }
+            document.getElementById('form-login').className = isLogin ? 'visible-form form-container' : 'hidden-form form-container';
+            document.getElementById('form-register').className = !isLogin ? 'visible-form form-container' : 'hidden-form form-container';
+
+            document.getElementById('btn-login').className = isLogin
+                ? 'px-10 py-3 rounded-xl text-sm font-bold transition-all bg-white text-brandBlue shadow-sm'
+                : 'px-10 py-3 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-brandBlue';
+
+            document.getElementById('btn-register').className = !isLogin
+                ? 'px-10 py-3 rounded-xl text-sm font-bold transition-all bg-white text-brandBlue shadow-sm'
+                : 'px-10 py-3 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-brandBlue';
         }
 
         function handleAuth(e, type) {
             e.preventDefault();
-            const title = document.getElementById('success-title');
-            const msg = document.getElementById('success-msg');
-            if (type === 'login') {
-                title.textContent = 'Қош келдіңіз!'; msg.textContent = 'Басқару панеліне өтіп жатырсыз...';
-                showForm('success'); setTimeout(() => window.location.href = 'admin.html', 1500);
-            } else {
-                title.textContent = 'Өтінім қабылданды'; msg.textContent = 'Менеджер сізбен хабарласады.';
-                showForm('success'); setTimeout(() => showForm('login'), 3000);
-            }
+            document.getElementById('state-loading').classList.remove('hidden-form');
+            document.getElementById('state-loading').classList.add('flex');
+
+            setTimeout(() => {
+                if(type === 'login') {
+                    window.location.href = 'admin.html';
+                } else {
+                    alert('Сіздің тіркелу туралы өтініміңіз қабылданды. Жақын арада менеджер хабарласады.');
+                    location.reload();
+                }
+            }, 1500);
         }
     </script>
 </body>
