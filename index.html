@@ -11,11 +11,12 @@
             theme: {
                 extend: {
                     colors: {
-                        brandBlue: '#0ea5e9',    /* Sky 500 */
-                        brandDarkBlue: '#0369a1',/* Sky 700 */
-                        brandYellow: '#f59e0b',  /* Amber 500 */
-                        neutralBg: '#fcfdfe',
-                        surface: '#ffffff',
+                        brandPrimary: '#f59e0b',  /* Amber 500 (Gold) */
+                        brandSecondary: '#38bdf8',/* Sky 400 */
+                        bgDeep: '#0f172a',        /* Slate 950 */
+                        bgSurface: '#1e293b',     /* Slate 800 */
+                        textMain: '#f8fafc',      /* Slate 50 */
+                        textMuted: '#94a3b8',     /* Slate 400 */
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
@@ -27,314 +28,280 @@
     </script>
     <style>
         .glass-nav {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         .hero-gradient {
-            background: radial-gradient(circle at 70% 30%, rgba(14, 165, 233, 0.08) 0%, rgba(252, 253, 254, 0) 60%);
+            background: radial-gradient(circle at 20% 30%, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0) 50%),
+                        radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.1) 0%, rgba(15, 23, 42, 0) 50%);
         }
-        .card-hover {
+        .card-glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .card-hover:hover {
+        .card-glass:hover {
+            background: rgba(30, 41, 59, 0.9);
             transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+        .text-gradient-gold {
+            background: linear-gradient(to right, #f59e0b, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .custom-carousel {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .custom-carousel::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
-<body class="bg-neutralBg text-slate-900 font-sans antialiased">
+<body class="bg-bgDeep text-textMain font-sans antialiased">
 
     <!-- NAVIGATION -->
-    <nav class="fixed top-0 w-full z-[100] glass-nav border-b border-slate-100">
+    <nav class="fixed top-0 w-full z-[100] glass-nav">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-2xl bg-brandBlue flex items-center justify-center shadow-lg shadow-sky-200">
-                    <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <div class="w-11 h-11 rounded-2xl bg-brandPrimary flex items-center justify-center shadow-lg shadow-amber-900/20">
+                    <svg class="w-7 h-7 text-bgDeep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <circle cx="12" cy="12" r="10" />
                         <path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6" />
                     </svg>
                 </div>
                 <div class="leading-tight">
                     <span class="font-display font-bold text-xl block tracking-tight">Smart Mercury</span>
-                    <span class="text-[10px] font-bold text-brandBlue uppercase tracking-[0.2em]">Energy Solutions</span>
+                    <span class="text-[10px] font-bold text-brandPrimary uppercase tracking-[0.2em]">Energy Solutions</span>
                 </div>
             </div>
 
-            <div class="hidden lg:flex items-center gap-1 bg-slate-100/50 p-1.5 rounded-full border border-slate-200/60">
-                <button onclick="scrollToSection('hero')" class="px-6 py-2 rounded-full text-sm font-bold text-slate-600 hover:text-brandBlue transition-all">Басты бет</button>
-                <button onclick="scrollToSection('services')" class="px-6 py-2 rounded-full text-sm font-bold text-slate-600 hover:text-brandBlue transition-all">Қызметтер</button>
-                <button onclick="scrollToSection('market')" class="px-6 py-2 rounded-full text-sm font-bold text-slate-600 hover:text-brandBlue transition-all">Нарық</button>
-                <button onclick="scrollToSection('about')" class="px-6 py-2 rounded-full text-sm font-bold text-slate-600 hover:text-brandBlue transition-all">Компания</button>
+            <div class="hidden lg:flex items-center gap-1 bg-white/5 p-1.5 rounded-full border border-white/10">
+                <button onclick="scrollToSection('hero')" class="px-6 py-2 rounded-full text-sm font-bold text-textMuted hover:text-brandPrimary transition-all">Басты бет</button>
+                <button onclick="scrollToSection('services')" class="px-6 py-2 rounded-full text-sm font-bold text-textMuted hover:text-brandPrimary transition-all">Қызметтер</button>
+                <button onclick="scrollToSection('news')" class="px-6 py-2 rounded-full text-sm font-bold text-textMuted hover:text-brandPrimary transition-all">Жаңалықтар</button>
+                <button onclick="scrollToSection('about')" class="px-6 py-2 rounded-full text-sm font-bold text-textMuted hover:text-brandPrimary transition-all">Компания</button>
             </div>
 
             <div class="flex items-center gap-4">
-                <a href="auth.html" class="hidden sm:flex items-center gap-2 font-bold text-sm text-brandBlue hover:text-brandDarkBlue transition-all">Кіру</a>
-                <a href="auth.html" class="bg-brandYellow hover:bg-amber-600 text-white px-7 py-3 rounded-2xl font-bold text-sm transition-all shadow-xl shadow-amber-200/50">Тіркелу</a>
+                <a href="auth.html" class="hidden sm:flex items-center gap-2 font-bold text-sm text-brandPrimary hover:text-amber-400 transition-all">Кіру</a>
+                <a href="auth.html" class="bg-brandPrimary hover:bg-amber-600 text-bgDeep px-7 py-3 rounded-2xl font-bold text-sm transition-all shadow-xl shadow-amber-900/40">Тіркелу</a>
             </div>
         </div>
     </nav>
 
     <!-- HERO SECTION -->
-    <section id="hero" class="relative pt-40 pb-24 overflow-hidden hero-gradient">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+    <section id="hero" class="relative min-h-screen flex items-center pt-20 overflow-hidden hero-gradient">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80&w=2000" class="w-full h-full object-cover opacity-20" alt="Energy Background">
+            <div class="absolute inset-0 bg-gradient-to-r from-bgDeep via-bgDeep/80 to-transparent"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10 w-full">
             <div class="lg:col-span-7">
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-sky-50 rounded-full mb-8 border border-sky-100">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brandBlue opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-brandBlue"></span>
-                    </span>
-                    <span class="text-[11px] font-black text-brandBlue uppercase tracking-widest">Қазақстанның энергетикалық драйвері</span>
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 rounded-full mb-8 border border-amber-500/20">
+                    <span class="text-[11px] font-black text-brandPrimary uppercase tracking-widest">Smart Mercury Energy</span>
                 </div>
-                <h1 class="font-display text-6xl lg:text-8xl font-extrabold text-slate-900 leading-[1.05] mb-8 tracking-tighter">
-                    Энергия <br><span class="text-brandBlue">инновациясы</span>
+                <h1 class="font-display text-6xl lg:text-8xl font-extrabold text-white leading-[1.05] mb-8 tracking-tighter">
+                    Болашақ <br><span class="text-gradient-gold">Энергиясы</span>
                 </h1>
-                <p class="text-lg lg:text-xl text-slate-500 leading-relaxed max-w-xl mb-12">
-                    Жоғары сапалы мұнай өнімдері мен цифрлық мониторинг жүйесі. Біз нарық стандарттарын қайта қарап, тиімділіктің жаңа деңгейін ұсынамыз.
+                <p class="text-lg lg:text-xl text-textMuted leading-relaxed max-w-xl mb-12">
+                    Біз Қазақстанның энергетикалық нарығына жаңа деңгейдегі сенімділік пен цифрлық мөлдірлікті әкелеміз.
                 </p>
                 <div class="flex flex-wrap gap-6">
-                    <a href="auth.html" class="bg-brandBlue hover:bg-brandDarkBlue text-white px-10 py-5 rounded-[24px] font-bold transition-all shadow-2xl shadow-sky-300/50 flex items-center gap-4 group">
+                    <a href="auth.html" class="bg-brandPrimary hover:bg-amber-600 text-bgDeep px-10 py-5 rounded-[24px] font-bold transition-all shadow-2xl shadow-amber-900/40 flex items-center gap-4 group">
                         Жұмысты бастау
                         <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                     </a>
-                    <div class="flex -space-x-3 items-center">
-                        <img class="w-12 h-12 rounded-full border-4 border-white" src="https://i.pravatar.cc/100?u=1" alt="">
-                        <img class="w-12 h-12 rounded-full border-4 border-white" src="https://i.pravatar.cc/100?u=2" alt="">
-                        <img class="w-12 h-12 rounded-full border-4 border-white" src="https://i.pravatar.cc/100?u=3" alt="">
-                        <div class="pl-6">
-                            <span class="block font-bold text-sm">500+ компания</span>
-                            <span class="block text-xs text-slate-400">бізге сенеді</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Market Widget -->
-            <div class="lg:col-span-5 relative">
-                <div class="absolute -top-10 -left-10 w-40 h-40 bg-brandYellow/10 rounded-full blur-3xl"></div>
-                <div class="bg-white rounded-[48px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-100 p-10 relative z-10">
-                    <div class="flex items-center justify-between mb-10">
-                        <h3 class="font-display font-bold text-2xl">Нарық Бағасы</h3>
-                        <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-[10px] font-black uppercase">ARGUS LIVE</span>
+            <!-- Compact Price Widget -->
+            <div class="lg:col-span-5">
+                <div class="card-glass rounded-[40px] p-8 lg:p-10">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="font-display font-bold text-2xl">Ағымдағы Бағалар</h3>
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                     </div>
 
-                    <div class="space-y-6" id="market-prices">
-                        <!-- JS injected -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                            <span class="font-bold text-textMuted">АИ-92</span>
+                            <span class="font-black text-xl text-brandPrimary">245.00 ₸</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                            <span class="font-bold text-textMuted">АИ-95</span>
+                            <span class="font-black text-xl text-brandPrimary">275.00 ₸</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                            <span class="font-bold text-textMuted">ДТ (Жазғы)</span>
+                            <span class="font-black text-xl text-brandPrimary">320.00 ₸</span>
+                        </div>
                     </div>
 
-                    <div class="mt-10 pt-10 border-t border-slate-50">
-                        <div class="flex items-center justify-between text-sm mb-4">
-                            <span class="text-slate-400 font-bold">Орташа өсім</span>
-                            <span class="text-green-500 font-black">+1.4%</span>
-                        </div>
-                        <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-brandBlue w-3/4 rounded-full"></div>
-                        </div>
+                    <div class="mt-8 text-right">
+                        <a href="prices.html" class="text-sm font-bold text-brandSecondary hover:underline flex items-center justify-end gap-2">
+                            Толығырақ
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" /></svg>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- TRUST BAR -->
-    <div class="max-w-7xl mx-auto px-6 py-12 border-y border-slate-100">
-        <p class="text-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-8">Біздің серіктестеріміз</p>
-        <div class="flex flex-wrap justify-center items-center gap-12 lg:gap-24 opacity-40 grayscale">
-            <span class="font-display text-2xl font-black italic">ENERGY CORP</span>
-            <span class="font-display text-2xl font-black">LOGIS-TIKA</span>
-            <span class="font-display text-2xl font-black">OIL KAZAKH</span>
-            <span class="font-display text-2xl font-black">AIR JET</span>
+    <!-- NEWS CAROUSEL SECTION -->
+    <section id="news" class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-end justify-between mb-12">
+                <div>
+                    <h2 class="font-display text-4xl font-extrabold mb-4">Жаңалықтар</h2>
+                    <p class="text-textMuted">Компания мен саланың соңғы жаңалықтары</p>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="scrollNews('left')" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <button onclick="scrollNews('right')" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="news-container" class="flex gap-8 overflow-x-auto custom-carousel pb-8">
+                <!-- News Card 1 -->
+                <div class="min-w-[350px] lg:min-w-[400px] card-glass rounded-[32px] overflow-hidden group">
+                    <div class="h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="News 1">
+                    </div>
+                    <div class="p-8">
+                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest mb-4 block">15 Наурыз, 2026</span>
+                        <h4 class="font-bold text-xl mb-4 leading-snug">Жаңа цифрлық бақылау жүйесі іске қосылды</h4>
+                        <p class="text-sm text-textMuted mb-6">Логистиканы бақылаудың жаңа деңгейі клиенттерге тапсырыстың әр кезеңін көруге мүмкіндік береді.</p>
+                        <a href="#" class="text-sm font-bold text-brandPrimary hover:underline">Оқу →</a>
+                    </div>
+                </div>
+                <!-- News Card 2 -->
+                <div class="min-w-[350px] lg:min-w-[400px] card-glass rounded-[32px] overflow-hidden group">
+                    <div class="h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="News 2">
+                    </div>
+                    <div class="p-8">
+                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest mb-4 block">10 Наурыз, 2026</span>
+                        <h4 class="font-bold text-xl mb-4 leading-snug">Атырау облысында жаңа мұнай базасы ашылды</h4>
+                        <p class="text-sm text-textMuted mb-6">Жаңа нысан өңірдегі жанармай тапшылығын жоюға және бағаны тұрақтандыруға бағытталған.</p>
+                        <a href="#" class="text-sm font-bold text-brandPrimary hover:underline">Оқу →</a>
+                    </div>
+                </div>
+                <!-- News Card 3 -->
+                <div class="min-w-[350px] lg:min-w-[400px] card-glass rounded-[32px] overflow-hidden group">
+                    <div class="h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1535732759880-bbd5c7265e3f?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="News 3">
+                    </div>
+                    <div class="p-8">
+                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest mb-4 block">05 Наурыз, 2026</span>
+                        <h4 class="font-bold text-xl mb-4 leading-snug">ESG стратегиясы: Жасыл энергияға қадам</h4>
+                        <p class="text-sm text-textMuted mb-6">Компания қоршаған ортаны қорғау бойынша жаңа міндеттемелер қабылдады.</p>
+                        <a href="#" class="text-sm font-bold text-brandPrimary hover:underline">Оқу →</a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
     <!-- SERVICES SECTION -->
-    <section id="services" class="py-32">
+    <section id="services" class="py-24 bg-bgSurface/30">
         <div class="max-w-7xl mx-auto px-6">
             <div class="max-w-2xl mb-20">
-                <h2 class="font-display text-4xl lg:text-5xl font-extrabold mb-6">Кешенді шешімдер</h2>
-                <p class="text-slate-500 text-lg">Біз жай ғана отын жеткізуші емеспіз, біз сіздің бизнесіңіздің тұрақтылығын қамтамасыз ететін стратегиялық серіктеспіз.</p>
+                <h2 class="font-display text-4xl lg:text-5xl font-extrabold mb-6">Кешенді қызметтер</h2>
+                <p class="text-textMuted text-lg">Біз энергия ресурстарын тиімді басқару үшін инновациялық құралдарды ұсынамыз.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <!-- S1 -->
-                <div class="bg-white p-12 rounded-[40px] border border-slate-100 card-hover">
-                    <div class="w-16 h-16 rounded-[20px] bg-sky-50 text-brandBlue flex items-center justify-center mb-8">
+                <div class="card-glass p-12 rounded-[40px]">
+                    <div class="w-16 h-16 rounded-[20px] bg-amber-500/10 text-brandPrimary flex items-center justify-center mb-8">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                     </div>
-                    <h4 class="font-display font-bold text-2xl mb-4">Smart Логистика</h4>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Нақты уақыттағы GPS бақылауы және оңтайландырылған маршруттар арқылы жеткізуді жеделдету.</p>
-                    <ul class="space-y-3 text-xs font-bold text-slate-400">
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-brandBlue"></div> Тікелей мониторинг</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-brandBlue"></div> Теміржол тасымалы</li>
-                    </ul>
+                    <h4 class="font-display font-bold text-2xl mb-4 text-white">Smart Логистика</h4>
+                    <p class="text-textMuted text-sm leading-relaxed">Нақты уақыттағы GPS бақылауы және оңтайландырылған маршруттар.</p>
                 </div>
-                <!-- S2 -->
-                <div class="bg-white p-12 rounded-[40px] border border-slate-100 card-hover">
-                    <div class="w-16 h-16 rounded-[20px] bg-amber-50 text-brandYellow flex items-center justify-center mb-8">
+                <div class="card-glass p-12 rounded-[40px]">
+                    <div class="w-16 h-16 rounded-[20px] bg-sky-500/10 text-brandSecondary flex items-center justify-center mb-8">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                     </div>
-                    <h4 class="font-display font-bold text-2xl mb-4">Сапа Лабораториясы</h4>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Әрбір партия халықаралық ASTM және JIG стандарттарына сай қатаң тексеруден өтеді.</p>
-                    <ul class="space-y-3 text-xs font-bold text-slate-400">
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-brandYellow"></div> Сертификатталған өнім</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-brandYellow"></div> Тәуелсіз аудит</li>
-                    </ul>
+                    <h4 class="font-display font-bold text-2xl mb-4 text-white">Сапа Бақылауы</h4>
+                    <p class="text-textMuted text-sm leading-relaxed">Халықаралық стандарттар бойынша қатаң сертификаттау.</p>
                 </div>
-                <!-- S3 -->
-                <div class="bg-white p-12 rounded-[40px] border border-slate-100 card-hover">
-                    <div class="w-16 h-16 rounded-[20px] bg-purple-50 text-purple-600 flex items-center justify-center mb-8">
+                <div class="card-glass p-12 rounded-[40px]">
+                    <div class="w-16 h-16 rounded-[20px] bg-purple-500/10 text-purple-400 flex items-center justify-center mb-8">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" /></svg>
                     </div>
-                    <h4 class="font-display font-bold text-2xl mb-4">Цифрлық Экожүйе</h4>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Тапсырыс беруден бастап, электронды құжат айналымына дейінгі барлық процессті онлайн басқарыңыз.</p>
-                    <ul class="space-y-3 text-xs font-bold text-slate-400">
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-purple-600"></div> Жеке кабинет</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-purple-600"></div> API интеграция</li>
-                    </ul>
+                    <h4 class="font-display font-bold text-2xl mb-4 text-white">Цифрлық Кабинет</h4>
+                    <p class="text-textMuted text-sm leading-relaxed">Барлық операцияларды онлайн басқару және аналитика.</p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- STATS -->
-    <section class="py-24 bg-slate-900 text-white rounded-[60px] mx-6 mb-32">
-        <div class="max-w-7xl mx-auto px-10 grid grid-cols-1 md:grid-cols-4 gap-16 text-center">
-            <div>
-                <span class="font-display text-5xl font-black block mb-2">12+</span>
-                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Жыл тәжірибе</span>
-            </div>
-            <div>
-                <span class="font-display text-5xl font-black block mb-2">₸ 50B+</span>
-                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Жылдық айналым</span>
-            </div>
-            <div>
-                <span class="font-display text-5xl font-black block mb-2">850</span>
-                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Тұрақты клиенттер</span>
-            </div>
-            <div>
-                <span class="font-display text-5xl font-black block mb-2">99%</span>
-                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Кепілді сапа</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- ABOUT SECTION -->
-    <section id="about" class="py-24 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-        <div>
-            <h2 class="font-display text-4xl lg:text-6xl font-extrabold mb-10 leading-tight">Біздің миссия — <br><span class="text-brandBlue">мөлдірлік</span> пен сапа</h2>
-            <p class="text-slate-500 leading-relaxed mb-8">
-                Smart Mercury Energy — Қазақстанның әрбір өңіріне сапалы энергия жеткізуді мақсат етеді. Біз тек отын сатпаймыз, біз бизнестің үздіксіз жұмысына кепілдік беретін технологиялық шешімдерді ұсынамыз.
-            </p>
-            <div class="grid grid-cols-2 gap-6">
-                <div class="p-6 bg-white rounded-3xl border border-slate-100">
-                    <span class="block font-black text-brandBlue mb-2">ISO 9001</span>
-                    <span class="text-[10px] text-slate-400 font-bold uppercase">Сапа стандарты</span>
-                </div>
-                <div class="p-6 bg-white rounded-3xl border border-slate-100">
-                    <span class="block font-black text-brandYellow mb-2">ESG</span>
-                    <span class="text-[10px] text-slate-400 font-bold uppercase">Экологиялық жауапкершілік</span>
-                </div>
-            </div>
-        </div>
-        <div class="relative">
-            <img src="https://images.unsplash.com/photo-1542060748-10c28b629f6f?auto=format&fit=crop&q=80&w=800" class="rounded-[60px] shadow-2xl" alt="Oil refinery">
-            <div class="absolute -bottom-10 -right-10 bg-brandBlue p-10 rounded-[40px] text-white shadow-2xl">
-                <span class="text-4xl font-black block mb-1">100k+</span>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Тонна / Айлық сыйымдылық</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="py-32 px-6">
-        <div class="max-w-5xl mx-auto bg-brandBlue rounded-[60px] p-16 lg:p-24 text-center text-white relative overflow-hidden shadow-2xl shadow-sky-200">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-            <h2 class="font-display text-4xl lg:text-6xl font-black mb-8 relative z-10 tracking-tight">Энергетикалық серіктесіңізді <br>бүгін таңдаңыз</h2>
-            <p class="text-sky-100 text-lg mb-12 relative z-10 max-w-xl mx-auto">Жүйеге тіркеліп, нақты уақыттағы бағалар мен жеке ұсыныстарға қол жеткізіңіз.</p>
-            <div class="flex flex-wrap justify-center gap-6 relative z-10">
-                <a href="auth.html" class="bg-white text-brandBlue px-12 py-5 rounded-2xl font-black transition-all hover:scale-105 shadow-xl">Тіркелу</a>
-                <button class="bg-brandDarkBlue text-white border border-white/20 px-12 py-5 rounded-2xl font-black transition-all hover:bg-brandDarkBlue/80">Кеңес алу</button>
             </div>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-slate-50 pt-24 pb-12 px-6">
+    <footer class="bg-bgDeep pt-24 pb-12 px-6 border-t border-white/5">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
             <div class="col-span-1 md:col-span-1">
                 <div class="flex items-center gap-3 mb-8">
-                    <div class="w-10 h-10 rounded-xl bg-brandBlue flex items-center justify-center text-white">
+                    <div class="w-10 h-10 rounded-xl bg-brandPrimary flex items-center justify-center text-bgDeep">
                         <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
                     </div>
-                    <span class="font-display font-bold text-xl">Smart Mercury</span>
+                    <span class="font-display font-bold text-xl text-white">Smart Mercury</span>
                 </div>
-                <p class="text-sm text-slate-400 leading-relaxed">Инновациялық энергия шешімдері. Сапа мен сенімділіктің жаңа стандарты.</p>
+                <p class="text-sm text-textMuted leading-relaxed">Сапа мен инновацияның түйіскен жері. Энергетикалық тәуелсіздік жолында.</p>
             </div>
             <div>
-                <h5 class="font-bold mb-8 text-sm uppercase tracking-widest text-slate-400">Компания</h5>
-                <ul class="space-y-4 text-sm font-bold text-slate-600">
-                    <li><a href="#" class="hover:text-brandBlue">Біз туралы</a></li>
-                    <li><a href="#" class="hover:text-brandBlue">Мұнай базалары</a></li>
-                    <li><a href="#" class="hover:text-brandBlue">Логистика</a></li>
+                <h5 class="font-bold mb-8 text-sm uppercase tracking-widest text-white/50">Компания</h5>
+                <ul class="space-y-4 text-sm font-bold text-textMuted">
+                    <li><a href="#" class="hover:text-brandPrimary">Біз туралы</a></li>
+                    <li><a href="#" class="hover:text-brandPrimary">Мұнай базалары</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="font-bold mb-8 text-sm uppercase tracking-widest text-slate-400">Қызметтер</h5>
-                <ul class="space-y-4 text-sm font-bold text-slate-600">
-                    <li><a href="#" class="hover:text-brandBlue">Көтерме сату</a></li>
-                    <li><a href="#" class="hover:text-brandBlue">Авиаотын</a></li>
-                    <li><a href="#" class="hover:text-brandBlue">Сапа бақылауы</a></li>
+                <h5 class="font-bold mb-8 text-sm uppercase tracking-widest text-white/50">Қолдау</h5>
+                <ul class="space-y-4 text-sm font-bold text-textMuted">
+                    <li><a href="#" class="hover:text-brandPrimary">Көмек орталығы</a></li>
+                    <li><a href="#" class="hover:text-brandPrimary">Жиі қойылатын сұрақтар</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="font-bold mb-8 text-sm uppercase tracking-widest text-slate-400">Контактілер</h5>
-                <ul class="space-y-4 text-sm font-bold text-slate-600">
-                    <li><a href="mailto:info@smart-mercury.kz" class="hover:text-brandBlue">info@smart-mercury.kz</a></li>
-                    <li><a href="tel:+77714929537" class="hover:text-brandBlue">+7 (771) 492-95-37</a></li>
-                    <li class="text-slate-400">Алматы, Байзақова 280</li>
+                <h5 class="font-bold mb-8 text-sm uppercase tracking-widest text-white/50">Байланыс</h5>
+                <ul class="space-y-4 text-sm font-bold text-textMuted">
+                    <li class="text-white">info@smart-mercury.kz</li>
+                    <li class="text-white">+7 (771) 492-95-37</li>
                 </ul>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto pt-12 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6">
-            <span class="text-xs text-slate-400">© 2026 Smart Mercury Energy KZ. Барлық құқықтар қорғалған.</span>
-            <div class="flex gap-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                <a href="#" class="hover:text-slate-900">Құпиялылық</a>
-                <a href="#" class="hover:text-slate-900">Шарттар</a>
-            </div>
+        <div class="max-w-7xl mx-auto pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <span class="text-xs text-textMuted">© 2026 Smart Mercury Energy. Барлық құқықтар қорғалған.</span>
         </div>
     </footer>
 
     <script>
-        const pricing = [
-            { name: 'АИ-92', price: '245.00', trend: 'up' },
-            { name: 'АИ-95', price: '275.00', trend: 'up' },
-            { name: 'Дизель (ДТ)', price: '320.00', trend: 'up' },
-            { name: 'JET A-1', price: '410.00', trend: 'down' }
-        ];
-
-        function renderPrices() {
-            const container = document.getElementById('market-prices');
-            container.innerHTML = pricing.map(p => `
-                <div class="flex items-center justify-between p-5 bg-slate-50 rounded-3xl border border-transparent hover:border-sky-100 transition-all group">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-lg shadow-sm">${p.name.includes('JET') ? '✈️' : '⛽'}</div>
-                        <span class="font-display font-bold text-slate-700">${p.name}</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="block font-black text-xl text-slate-900">${p.price} ₸</span>
-                        <span class="text-[10px] font-black ${p.trend === 'up' ? 'text-green-500' : 'text-red-500'} uppercase tracking-widest">
-                            ${p.trend === 'up' ? '↑ өсім' : '↓ төмен'}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
         function scrollToSection(id) {
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
         }
 
-        document.addEventListener('DOMContentLoaded', renderPrices);
+        function scrollNews(direction) {
+            const container = document.getElementById('news-container');
+            const scrollAmount = 400;
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
     </script>
 </body>
 </html>

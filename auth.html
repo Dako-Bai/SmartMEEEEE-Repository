@@ -11,9 +11,12 @@
             theme: {
                 extend: {
                     colors: {
-                        brandBlue: '#0ea5e9',
-                        brandYellow: '#f59e0b',
-                        surface: '#fcfdfe',
+                        brandPrimary: '#f59e0b',  /* Amber 500 */
+                        brandSecondary: '#38bdf8',/* Sky 400 */
+                        bgDeep: '#0f172a',        /* Slate 950 */
+                        bgSurface: '#1e293b',     /* Slate 800 */
+                        textMain: '#f8fafc',
+                        textMuted: '#94a3b8',
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
@@ -24,21 +27,22 @@
         }
     </script>
     <style>
-        body { background-color: #fcfdfe; }
+        body { background-color: #0f172a; color: #f8fafc; }
         .auth-glass {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .input-style {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
             transition: all 0.3s ease;
         }
         .input-style:focus {
-            background: white;
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+            background: rgba(15, 23, 42, 0.8);
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
             outline: none;
         }
         .form-container { transition: opacity 0.4s ease, transform 0.4s ease; }
@@ -49,66 +53,62 @@
 <body class="min-h-screen flex items-center justify-center p-6 font-sans">
 
     <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-sky-100 rounded-full blur-[120px] opacity-60"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-50 rounded-full blur-[120px] opacity-60"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-amber-500/10 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-sky-500/10 rounded-full blur-[120px]"></div>
     </div>
 
-    <div class="w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-2 auth-glass rounded-[50px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] overflow-hidden relative z-10">
+    <div class="w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-2 auth-glass rounded-[50px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] overflow-hidden relative z-10">
 
         <!-- Side Branding -->
-        <div class="hidden lg:flex flex-col justify-between p-16 bg-brandBlue text-white relative">
-            <div class="absolute inset-0 opacity-10">
-                <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="100" cy="0" r="80" fill="white"/></svg>
-            </div>
-
+        <div class="hidden lg:flex flex-col justify-between p-16 bg-gradient-to-br from-bgSurface to-bgDeep text-white relative border-r border-white/5">
             <div class="relative z-10">
                 <a href="index.html" class="flex items-center gap-3 mb-20 group">
-                    <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-brandBlue shadow-xl group-hover:scale-110 transition-transform">
+                    <div class="w-12 h-12 rounded-2xl bg-brandPrimary flex items-center justify-center text-bgDeep shadow-xl group-hover:scale-110 transition-transform">
                         <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
                     </div>
                     <span class="font-display font-bold text-2xl tracking-tight">Smart Mercury</span>
                 </a>
-                <h2 class="font-display text-5xl font-extrabold leading-[1.1] mb-8">Интеллектуалды <br>энергияны басқару</h2>
-                <p class="text-sky-100 text-lg leading-relaxed">Біздің экожүйеге қосылып, бизнесіңізді жаңа деңгейге көтеріңіз.</p>
+                <h2 class="font-display text-5xl font-extrabold leading-[1.1] mb-8">Интеллектуалды <br><span class="text-brandPrimary">энергия</span></h2>
+                <p class="text-textMuted text-lg leading-relaxed">Біздің экожүйеге қосылып, бизнесіңізді жаңа деңгейге көтеріңіз.</p>
             </div>
 
             <div class="relative z-10 flex items-center gap-6">
                 <div class="flex -space-x-2">
-                    <div class="w-10 h-10 rounded-full border-2 border-brandBlue bg-white/20"></div>
-                    <div class="w-10 h-10 rounded-full border-2 border-brandBlue bg-white/20"></div>
-                    <div class="w-10 h-10 rounded-full border-2 border-brandBlue bg-white/20"></div>
+                    <div class="w-10 h-10 rounded-full border-2 border-bgSurface bg-amber-500/20"></div>
+                    <div class="w-10 h-10 rounded-full border-2 border-bgSurface bg-amber-500/20"></div>
+                    <div class="w-10 h-10 rounded-full border-2 border-bgSurface bg-amber-500/20"></div>
                 </div>
-                <span class="text-xs font-bold uppercase tracking-widest text-sky-100">850+ активті компания</span>
+                <span class="text-xs font-bold uppercase tracking-widest text-textMuted">850+ активті компания</span>
             </div>
         </div>
 
         <!-- Form Area -->
-        <div class="p-10 lg:p-20 bg-white relative">
+        <div class="p-10 lg:p-20 bg-bgSurface/40 relative">
 
             <!-- Tab Switcher -->
-            <div class="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 mb-12 w-fit">
-                <button onclick="toggleForm('login')" id="btn-login" class="px-10 py-3 rounded-xl text-sm font-bold transition-all bg-white text-brandBlue shadow-sm">Кіру</button>
-                <button onclick="toggleForm('register')" id="btn-register" class="px-10 py-3 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-brandBlue">Тіркелу</button>
+            <div class="flex bg-black/20 p-1.5 rounded-2xl border border-white/5 mb-12 w-fit">
+                <button onclick="toggleForm('login')" id="btn-login" class="px-10 py-3 rounded-xl text-sm font-bold transition-all bg-brandPrimary text-bgDeep shadow-sm">Кіру</button>
+                <button onclick="toggleForm('register')" id="btn-register" class="px-10 py-3 rounded-xl text-sm font-bold transition-all text-textMuted hover:text-brandPrimary">Тіркелу</button>
             </div>
 
             <!-- Login Form -->
             <div id="form-login" class="visible-form form-container">
-                <h3 class="font-display text-3xl font-extrabold text-slate-900 mb-2">Қош келдіңіз</h3>
-                <p class="text-slate-400 text-sm mb-10">Жүйеге кіру үшін деректерді енгізіңіз</p>
+                <h3 class="font-display text-3xl font-extrabold text-white mb-2">Қош келдіңіз</h3>
+                <p class="text-textMuted text-sm mb-10">Жүйеге кіру үшін деректерді енгізіңіз</p>
 
                 <form class="space-y-6" onsubmit="handleAuth(event, 'login')">
                     <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Email мекенжайы</label>
+                        <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Email мекенжайы</label>
                         <input type="email" required placeholder="admin@sme.kz" class="w-full input-style rounded-2xl px-6 py-4.5 text-sm font-semibold">
                     </div>
                     <div class="space-y-2">
                         <div class="flex justify-between items-center">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Құпиясөз</label>
-                            <button type="button" class="text-[10px] font-black uppercase tracking-widest text-brandBlue">Ұмыттыңыз ба?</button>
+                            <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Құпиясөз</label>
+                            <button type="button" class="text-[10px] font-black uppercase tracking-widest text-brandPrimary">Ұмыттыңыз ба?</button>
                         </div>
                         <input type="password" required placeholder="••••••••" class="w-full input-style rounded-2xl px-6 py-4.5 text-sm font-semibold">
                     </div>
-                    <button type="submit" class="w-full bg-brandBlue hover:bg-brandDarkBlue text-white py-5 rounded-[24px] font-bold shadow-xl shadow-sky-100 transition-all hover:scale-[1.02] active:scale-100">
+                    <button type="submit" class="w-full bg-brandPrimary hover:bg-amber-600 text-bgDeep py-5 rounded-[24px] font-bold shadow-xl shadow-amber-900/20 transition-all hover:scale-[1.02] active:scale-100">
                         Кіру
                     </button>
                 </form>
@@ -116,39 +116,39 @@
 
             <!-- Register Form -->
             <div id="form-register" class="hidden-form form-container">
-                <h3 class="font-display text-3xl font-extrabold text-slate-900 mb-2">Корпоративтік тіркелу</h3>
-                <p class="text-slate-400 text-sm mb-8">Бизнес-серіктес ретінде тіркелуге өтінім</p>
+                <h3 class="font-display text-3xl font-extrabold text-white mb-2">Тіркелу</h3>
+                <p class="text-textMuted text-sm mb-8">Бизнес-серіктес ретінде тіркелуге өтінім</p>
 
                 <form class="space-y-4" onsubmit="handleAuth(event, 'register')">
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-1.5">
-                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Компания аты</label>
+                            <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">Компания аты</label>
                             <input type="text" required placeholder='ЖШС "Mercury"' class="w-full input-style rounded-xl px-5 py-3.5 text-sm font-semibold">
                         </div>
                         <div class="space-y-1.5">
-                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">БИН</label>
+                            <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">БИН</label>
                             <input type="text" required placeholder="123456789012" class="w-full input-style rounded-xl px-5 py-3.5 text-sm font-semibold">
                         </div>
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Байланыс телефоны</label>
+                        <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">Байланыс телефоны</label>
                         <input type="tel" required placeholder="+7 (777) 000-00-00" class="w-full input-style rounded-xl px-5 py-3.5 text-sm font-semibold">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Корпоративтік Email</label>
+                        <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">Корпоративтік Email</label>
                         <input type="email" required placeholder="info@company.kz" class="w-full input-style rounded-xl px-5 py-3.5 text-sm font-semibold">
                     </div>
-                    <button type="submit" class="w-full bg-brandYellow hover:bg-amber-600 text-white py-5 rounded-[24px] font-bold shadow-xl shadow-amber-100 transition-all mt-4">
+                    <button type="submit" class="w-full bg-brandPrimary hover:bg-amber-600 text-bgDeep py-5 rounded-[24px] font-bold shadow-xl shadow-amber-900/20 transition-all mt-4">
                         Өтінімді жіберу
                     </button>
                 </form>
             </div>
 
-            <!-- Loading State (JS handled) -->
-            <div id="state-loading" class="hidden-form absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+            <!-- Loading State -->
+            <div id="state-loading" class="hidden-form absolute inset-0 bg-bgDeep/80 backdrop-blur-sm z-50 flex items-center justify-center">
                 <div class="text-center">
-                    <div class="w-12 h-12 border-4 border-slate-100 border-t-brandBlue rounded-full animate-spin mx-auto mb-4"></div>
-                    <span class="text-xs font-black uppercase tracking-widest text-slate-400">Өңделуде...</span>
+                    <div class="w-12 h-12 border-4 border-white/10 border-t-brandPrimary rounded-full animate-spin mx-auto mb-4"></div>
+                    <span class="text-xs font-black uppercase tracking-widest text-textMuted">Өңделуде...</span>
                 </div>
             </div>
         </div>
@@ -162,12 +162,12 @@
             document.getElementById('form-register').className = !isLogin ? 'visible-form form-container' : 'hidden-form form-container';
 
             document.getElementById('btn-login').className = isLogin
-                ? 'px-10 py-3 rounded-xl text-sm font-bold transition-all bg-white text-brandBlue shadow-sm'
-                : 'px-10 py-3 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-brandBlue';
+                ? 'px-10 py-3 rounded-xl text-sm font-bold transition-all bg-brandPrimary text-bgDeep shadow-sm'
+                : 'px-10 py-3 rounded-xl text-sm font-bold transition-all text-textMuted hover:text-brandPrimary';
 
             document.getElementById('btn-register').className = !isLogin
-                ? 'px-10 py-3 rounded-xl text-sm font-bold transition-all bg-white text-brandBlue shadow-sm'
-                : 'px-10 py-3 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-brandBlue';
+                ? 'px-10 py-3 rounded-xl text-sm font-bold transition-all bg-brandPrimary text-bgDeep shadow-sm'
+                : 'px-10 py-3 rounded-xl text-sm font-bold transition-all text-textMuted hover:text-brandPrimary';
         }
 
         function handleAuth(e, type) {
@@ -177,7 +177,7 @@
 
             setTimeout(() => {
                 if(type === 'login') {
-                    window.location.href = 'admin.html';
+                    window.location.href = 'cabinet.html';
                 } else {
                     alert('Сіздің тіркелу туралы өтініміңіз қабылданды. Жақын арада менеджер хабарласады.');
                     location.reload();

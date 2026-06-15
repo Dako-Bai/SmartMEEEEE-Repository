@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="kk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бағалар | Smart Mercury Energy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandPrimary: '#f59e0b',
+                        brandSecondary: '#38bdf8',
+                        bgDeep: '#0f172a',
+                        bgSurface: '#1e293b',
+                        textMain: '#f8fafc',
+                        textMuted: '#94a3b8',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .price-card {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .price-card:hover {
+            border-color: rgba(245, 158, 11, 0.3);
+            transform: translateY(-4px);
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased pb-20">
+
+    <!-- NAVIGATION -->
+    <nav class="fixed top-0 w-full z-[100] glass-nav">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-brandPrimary flex items-center justify-center text-bgDeep">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
+                </div>
+                <span class="font-display font-bold text-xl text-white">Smart Mercury</span>
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="auth.html" class="bg-brandPrimary hover:bg-amber-600 text-bgDeep px-6 py-2.5 rounded-xl font-bold text-sm transition-all">Кіру</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 max-w-7xl mx-auto px-6">
+        <div class="mb-12">
+            <h1 class="font-display text-4xl lg:text-5xl font-extrabold mb-4">Жанармай бағалары</h1>
+            <p class="text-textMuted">Аймақтар мен отын түрлері бойынша өзекті ақпарат</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Қаланы таңдаңыз</label>
+                <select class="w-full bg-bgSurface border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-brandPrimary transition-all appearance-none text-sm font-bold">
+                    <option>Барлық қалалар</option>
+                    <option>Алматы</option>
+                    <option>Астана</option>
+                    <option>Шымкент</option>
+                    <option>Атырау</option>
+                </select>
+            </div>
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Отын түрі</label>
+                <select class="w-full bg-bgSurface border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-brandPrimary transition-all appearance-none text-sm font-bold">
+                    <option>Барлық түрлері</option>
+                    <option>АИ-92</option>
+                    <option>АИ-95</option>
+                    <option>Дизель</option>
+                    <option>Авиаотын</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Prices Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Price Item -->
+            <div class="price-card p-8 rounded-[32px]">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest block mb-1">Алматы</span>
+                        <h4 class="font-display font-bold text-2xl text-white">АИ-92</h4>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl">⛽</div>
+                </div>
+                <div class="pt-6 border-t border-white/5">
+                    <span class="text-3xl font-black text-white">245.00 ₸</span>
+                    <span class="text-xs text-textMuted block mt-2">1 литр үшін</span>
+                </div>
+            </div>
+
+            <div class="price-card p-8 rounded-[32px]">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest block mb-1">Алматы</span>
+                        <h4 class="font-display font-bold text-2xl text-white">АИ-95</h4>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl">⛽</div>
+                </div>
+                <div class="pt-6 border-t border-white/5">
+                    <span class="text-3xl font-black text-white">275.00 ₸</span>
+                    <span class="text-xs text-textMuted block mt-2">1 литр үшін</span>
+                </div>
+            </div>
+
+            <div class="price-card p-8 rounded-[32px]">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest block mb-1">Алматы</span>
+                        <h4 class="font-display font-bold text-2xl text-white">Дизель (ДТ)</h4>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl">🚚</div>
+                </div>
+                <div class="pt-6 border-t border-white/5">
+                    <span class="text-3xl font-black text-white">320.00 ₸</span>
+                    <span class="text-xs text-textMuted block mt-2">1 литр үшін</span>
+                </div>
+            </div>
+
+            <div class="price-card p-8 rounded-[32px]">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest block mb-1">Астана</span>
+                        <h4 class="font-display font-bold text-2xl text-white">АИ-92</h4>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl">⛽</div>
+                </div>
+                <div class="pt-6 border-t border-white/5">
+                    <span class="text-3xl font-black text-white">248.00 ₸</span>
+                    <span class="text-xs text-textMuted block mt-2">1 литр үшін</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-32 pt-12 border-t border-white/5 text-center px-6">
+        <span class="text-xs text-textMuted">© 2026 Smart Mercury Energy. Барлық деректер компанияның ресми бағаларына негізделген.</span>
+    </footer>
+</body>
+</html>
