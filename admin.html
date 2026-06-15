@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="kk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Smart Mercury Energy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#05070B',
+                        cardBg: 'rgba(13, 17, 23, 0.7)',
+                        accentCyan: '#00e5ff',
+                        glowCyan: 'rgba(0, 229, 255, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05070B;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .glow-effect {
+            background: radial-gradient(circle at 50% 30%, rgba(0, 229, 255, 0.1) 0%, rgba(5, 7, 11, 0) 60%);
+        }
+        .sidebar-active {
+            background: rgba(0, 229, 255, 0.1);
+            border-right: 3px solid #00e5ff;
+        }
+        .stat-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 229, 255, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .modal-hidden { display: none; }
+        .modal-visible { display: flex; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 229, 255, 0.3); }
+    </style>
+</head>
+<body class="text-white min-h-screen relative overflow-x-hidden">
+    <div class="absolute inset-0 glow-effect pointer-events-none z-0"></div>
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-72 bg-slate-950/80 border-r border-white/5 overflow-y-auto hidden lg:flex flex-col relative z-20">
+            <div class="p-8 border-b border-white/5">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                        <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="font-black text-sm block tracking-tight">Smart Mercury</span>
+                        <span class="text-[10px] text-cyan-500 font-bold uppercase tracking-wider">Admin v2.0</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-4 py-8 space-y-2">
+                <button onclick="switchAdminTab('dashboard')" class="sidebar-nav-btn sidebar-active w-full text-left px-5 py-3.5 rounded-xl font-bold transition-all flex items-center gap-4 text-white bg-white/5">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 4h4" /></svg>
+                    Басты бет
+                </button>
+                <button onclick="switchAdminTab('pricing')" class="sidebar-nav-btn w-full text-left px-5 py-3.5 rounded-xl font-bold transition-all flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Бағаларды реттеу
+                </button>
+                <button onclick="switchAdminTab('inventory')" class="sidebar-nav-btn w-full text-left px-5 py-3.5 rounded-xl font-bold transition-all flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
+                    Қорларды басқару
+                </button>
+                <button onclick="switchAdminTab('orders')" class="sidebar-nav-btn w-full text-left px-5 py-3.5 rounded-xl font-bold transition-all flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                    Тапсырыстар
+                </button>
+                <button onclick="switchAdminTab('users')" class="sidebar-nav-btn w-full text-left px-5 py-3.5 rounded-xl font-bold transition-all flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM15 20H9a6 6 0 016-6v-2a6 6 0 00-6 6h6z" /></svg>
+                    Пайдаланушылар
+                </button>
+                <div class="pt-4 pb-2 px-5 text-[10px] font-black uppercase text-gray-600 tracking-widest">Жүйелік</div>
+                <button onclick="switchAdminTab('logs')" class="sidebar-nav-btn w-full text-left px-5 py-3.5 rounded-xl font-bold transition-all flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Аудит журналы
+                </button>
+                <button onclick="switchAdminTab('settings')" class="sidebar-nav-btn w-full text-left px-5 py-3.5 rounded-xl font-bold transition-all flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
+                    Баптаулар
+                </button>
+            </nav>
+
+            <div class="p-6 border-t border-white/5">
+                <button onclick="logout()" class="w-full flex items-center gap-3 text-gray-400 hover:text-red-400 px-5 py-3 rounded-xl text-sm font-bold transition-all hover:bg-red-400/5">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Шығу
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 overflow-y-auto relative z-10">
+            <!-- TOP BAR -->
+            <header class="sticky top-0 z-40 bg-darkBg/60 backdrop-blur-xl border-b border-white/5 px-8 py-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <button onclick="toggleSidebar()" class="p-2 lg:hidden border border-white/10 bg-white/5 rounded-xl hover:bg-white/10">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                        <div>
+                            <h1 id="page-title" class="text-3xl font-black tracking-tight">Басты бет</h1>
+                            <p class="text-[10px] text-gray-500 uppercase font-black tracking-[0.2em]">Smart Mercury Energy Monitoring</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="hidden md:flex flex-col text-right">
+                            <span class="text-xs font-black">Жүйе статусы</span>
+                            <span class="text-[10px] text-green-400 font-bold flex items-center justify-end gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Белсенді
+                            </span>
+                        </div>
+                        <div class="h-10 w-px bg-white/5 mx-2"></div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right hidden sm:block">
+                                <span class="text-sm font-black block">Admin User</span>
+                                <span class="text-[10px] text-gray-500 font-bold">Басқарушы</span>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-black text-white shadow-lg shadow-cyan-500/10">A</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- CONTENT AREA -->
+            <div class="p-8">
+                <!-- DASHBOARD TAB -->
+                <section id="tab-dashboard" class="space-y-8">
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="stat-card rounded-[32px] p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Айналым</span>
+                                <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 border border-cyan-500/10">
+                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-black block mb-2 tracking-tighter">₸ 24.5М</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-lg">+12.5%</span>
+                                <span class="text-[10px] text-gray-600 font-bold">Осы айда</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card rounded-[32px] p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Тапсырыстар</span>
+                                <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-400 border border-green-500/10">
+                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-black block mb-2 tracking-tighter">157</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-lg">+8.2%</span>
+                                <span class="text-[10px] text-gray-600 font-bold">Осы айда</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card rounded-[32px] p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Клиенттер</span>
+                                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/10">
+                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM15 20H9a6 6 0 016-6v-2a6 6 0 00-6 6h6z" /></svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-black block mb-2 tracking-tighter">845</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-lg">+3.1%</span>
+                                <span class="text-[10px] text-gray-600 font-bold">Жаңа пайдаланушылар</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card rounded-[32px] p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Белсенділік</span>
+                                <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 flex items-center justify-center text-yellow-400 border border-yellow-500/10">
+                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-black block mb-2 tracking-tighter">43</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold text-red-400 bg-red-400/10 px-2 py-0.5 rounded-lg">-5%</span>
+                                <span class="text-[10px] text-gray-600 font-bold">Күтудегі сұраныстар</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 stat-card rounded-[32px] p-8">
+                            <div class="flex items-center justify-between mb-8">
+                                <div>
+                                    <h3 class="text-xl font-black">Сатылым динамикасы</h3>
+                                    <p class="text-xs text-gray-500 font-bold">Ағымдағы жылдың статистикасы</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="bg-white/5 border border-white/5 px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/10 transition-all">Export CSV</button>
+                                </div>
+                            </div>
+                            <div class="h-[350px]">
+                                <canvas id="salesChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="stat-card rounded-[32px] p-8">
+                            <h3 class="text-xl font-black mb-8">Өнімдер үлесі</h3>
+                            <div class="h-[250px] mb-8">
+                                <canvas id="productChart"></canvas>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between text-xs font-bold">
+                                    <span class="flex items-center gap-2 text-gray-400"><span class="w-2 h-2 rounded-full bg-cyan-500"></span> АИ-95</span>
+                                    <span>35%</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs font-bold">
+                                    <span class="flex items-center gap-2 text-gray-400"><span class="w-2 h-2 rounded-full bg-green-500"></span> Дизель</span>
+                                    <span>28%</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs font-bold">
+                                    <span class="flex items-center gap-2 text-gray-400"><span class="w-2 h-2 rounded-full bg-purple-500"></span> АИ-92</span>
+                                    <span>22%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- LOGS TAB (NEW) -->
+                <section id="tab-logs" class="hidden space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-3xl font-black">Аудит журналы</h2>
+                            <p class="text-sm text-gray-500 font-bold mt-1">Жүйедегі барлық маңызды әрекеттердің тарихы</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <button class="stat-card px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" /></svg>
+                                Сүзгі
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="stat-card rounded-[32px] overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-white/5 bg-white/[0.02]">
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Уақыты</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Администратор</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Әрекет</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">IP Мекенжай</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 font-medium">
+                                <tr class="hover:bg-white/[0.02] transition-colors">
+                                    <td class="py-5 px-8 text-gray-400">2026-06-16 14:32:05</td>
+                                    <td class="py-5 px-8">Ersultan Akhmetov</td>
+                                    <td class="py-5 px-8">АИ-95 бағасы жаңартылды (+5.00 ₸)</td>
+                                    <td class="py-5 px-8 text-gray-500">192.168.1.45</td>
+                                    <td class="py-5 px-8"><span class="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-black uppercase">Сәтті</span></td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.02] transition-colors">
+                                    <td class="py-5 px-8 text-gray-400">2026-06-16 12:15:40</td>
+                                    <td class="py-5 px-8">Admin User</td>
+                                    <td class="py-5 px-8">Жаңа пайдаланушы расталды (ЖШС "Mercury")</td>
+                                    <td class="py-5 px-8 text-gray-500">185.12.44.90</td>
+                                    <td class="py-5 px-8"><span class="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-black uppercase">Сәтті</span></td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.02] transition-colors">
+                                    <td class="py-5 px-8 text-gray-400">2026-06-16 10:02:11</td>
+                                    <td class="py-5 px-8">Ersultan Akhmetov</td>
+                                    <td class="py-5 px-8">Жүйе баптаулары өзгертілді</td>
+                                    <td class="py-5 px-8 text-gray-500">192.168.1.45</td>
+                                    <td class="py-5 px-8"><span class="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 text-[10px] font-black uppercase">Ескерту</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- USERS TAB (ENHANCED) -->
+                <section id="tab-users" class="hidden space-y-6">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-3xl font-black">Пайдаланушыларды басқару</h2>
+                        <button class="bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-2xl font-black text-sm transition-all shadow-lg shadow-cyan-600/20">Жаңа пайдаланушы</button>
+                    </div>
+
+                    <div class="stat-card rounded-[32px] overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-white/[0.02] border-b border-white/5">
+                                <tr>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Пайдаланушы</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Компания</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Рөлі</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Тіркелген күні</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Статус</th>
+                                    <th class="text-center py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Әрекеттер</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 font-bold">
+                                <tr class="hover:bg-white/[0.01] transition-colors">
+                                    <td class="py-6 px-8">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-10 h-10 rounded-xl bg-cyan-600/20 text-cyan-400 flex items-center justify-center font-black">ЕА</div>
+                                            <div>
+                                                <span class="block">Ерсұлтан Ахметов</span>
+                                                <span class="text-[10px] text-gray-500 font-bold">ersultan@smart-mercury.kz</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-6 px-8 text-gray-400">Smart Mercury Energy</td>
+                                    <td class="py-6 px-8"><span class="text-[10px] bg-cyan-500/10 text-cyan-500 px-2.5 py-1 rounded-lg">Admin</span></td>
+                                    <td class="py-6 px-8 text-gray-500">12.01.2025</td>
+                                    <td class="py-6 px-8"><span class="w-2 h-2 rounded-full bg-green-500 inline-block mr-2"></span> Белсенді</td>
+                                    <td class="py-6 px-8 text-center">
+                                        <button class="text-gray-500 hover:text-white transition-colors"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.01] transition-colors">
+                                    <td class="py-6 px-8">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center font-black">МС</div>
+                                            <div>
+                                                <span class="block">Марат Сәдібеков</span>
+                                                <span class="text-[10px] text-gray-500 font-bold">marat.s@caspian.kz</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-6 px-8 text-gray-400">Caspian Global</td>
+                                    <td class="py-6 px-8"><span class="text-[10px] bg-purple-500/10 text-purple-500 px-2.5 py-1 rounded-lg">Клиент</span></td>
+                                    <td class="py-6 px-8 text-gray-500">22.05.2026</td>
+                                    <td class="py-6 px-8"><span class="w-2 h-2 rounded-full bg-green-500 inline-block mr-2"></span> Белсенді</td>
+                                    <td class="py-6 px-8 text-center">
+                                        <button class="text-gray-500 hover:text-white transition-colors"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- PRICING TAB -->
+                <section id="tab-pricing" class="hidden space-y-8">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-3xl font-black">Бағаларды басқару</h2>
+                            <p class="text-sm text-gray-500 font-bold mt-1">Отын түрлері бойынша ағымдағы бағаларды бекіту</p>
+                        </div>
+                        <button onclick="alert('Жаңа баға қосу')" class="bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-2xl font-black text-sm transition-all shadow-lg shadow-cyan-600/20">Баға қосу</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Almaty AI-95 -->
+                        <div class="stat-card rounded-[32px] p-8 border-l-4 border-l-cyan-500">
+                            <div class="flex justify-between items-start mb-6">
+                                <div>
+                                    <span class="text-[10px] font-black text-cyan-500 uppercase tracking-widest">АИ-95</span>
+                                    <h3 class="text-xl font-black mt-1">Алматы</h3>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-2xl font-black block">275.00</span>
+                                    <span class="text-[10px] text-gray-500 font-bold">₸ / литр</span>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-600 uppercase block mb-2">Жаңа баға</label>
+                                    <input type="number" value="275.00" class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm outline-none focus:border-cyan-500 transition-all">
+                                </div>
+                                <button class="w-full bg-white/5 hover:bg-cyan-600/20 border border-white/5 text-cyan-400 font-black py-3 rounded-xl transition-all text-xs">Жаңарту</button>
+                            </div>
+                        </div>
+                        <!-- Astana Diesel -->
+                        <div class="stat-card rounded-[32px] p-8 border-l-4 border-l-green-500">
+                            <div class="flex justify-between items-start mb-6">
+                                <div>
+                                    <span class="text-[10px] font-black text-green-500 uppercase tracking-widest">Дизель (ДТ)</span>
+                                    <h3 class="text-xl font-black mt-1">Астана</h3>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-2xl font-black block">319.00</span>
+                                    <span class="text-[10px] text-gray-500 font-bold">₸ / литр</span>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-600 uppercase block mb-2">Жаңа баға</label>
+                                    <input type="number" value="319.00" class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm outline-none focus:border-cyan-500 transition-all">
+                                </div>
+                                <button class="w-full bg-white/5 hover:bg-cyan-600/20 border border-white/5 text-cyan-400 font-black py-3 rounded-xl transition-all text-xs">Жаңарту</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INVENTORY TAB -->
+                <section id="tab-inventory" class="hidden space-y-8">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-3xl font-black">Қорлардың жай-күйі</h2>
+                        <button class="bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-2xl font-black text-sm transition-all shadow-lg shadow-cyan-600/20">Жаңа қойма</button>
+                    </div>
+                    <div class="stat-card rounded-[32px] overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-white/[0.02] border-b border-white/5">
+                                <tr>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Өнім</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Аймақ</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Қалдық</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Сыйымдылық</th>
+                                    <th class="text-left py-5 px-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Күйі</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 font-bold">
+                                <tr>
+                                    <td class="py-6 px-8">АИ-95</td>
+                                    <td class="py-6 px-8 text-gray-400">Алматы</td>
+                                    <td class="py-6 px-8">45,000 л</td>
+                                    <td class="py-6 px-8 text-gray-500">50,000 л</td>
+                                    <td class="py-6 px-8"><span class="px-2 py-1 rounded bg-green-500/10 text-green-500 text-[10px] font-black">ЖЕТКІЛІКТІ</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-6 px-8">Дизель</td>
+                                    <td class="py-6 px-8 text-gray-400">Астана</td>
+                                    <td class="py-6 px-8">3,500 л</td>
+                                    <td class="py-6 px-8 text-gray-500">40,000 л</td>
+                                    <td class="py-6 px-8"><span class="px-2 py-1 rounded bg-red-500/10 text-red-500 text-[10px] font-black">КРИТИКАЛЫҚ</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- SETTINGS TAB -->
+                <section id="tab-settings" class="hidden space-y-8">
+                    <h2 class="text-3xl font-black">Жүйелік баптаулар</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="stat-card rounded-[32px] p-8">
+                            <h4 class="font-black mb-6 uppercase text-xs tracking-widest text-gray-500">Компания деректері</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-600 uppercase block mb-2">Аты</label>
+                                    <input type="text" value="Smart Mercury Energy · LLP" class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-600 uppercase block mb-2">Email</label>
+                                    <input type="email" value="info@smart-mercury.kz" class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm outline-none">
+                                </div>
+                                <button class="bg-cyan-600 text-white font-black py-3 px-8 rounded-xl text-xs mt-4">Сақтау</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function switchAdminTab(tabName) {
+            const tabs = document.querySelectorAll('[id^="tab-"]');
+            tabs.forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            const btns = document.querySelectorAll('.sidebar-nav-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('sidebar-active', 'bg-white/5', 'text-white');
+                btn.classList.add('text-gray-400');
+            });
+
+            const activeBtn = document.querySelector(`[onclick="switchAdminTab('${tabName}')"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('sidebar-active', 'bg-white/5', 'text-white');
+                activeBtn.classList.remove('text-gray-400');
+            }
+
+            const titles = {
+                dashboard: 'Басты бет',
+                pricing: 'Бағаларды реттеу',
+                inventory: 'Қорларды басқару',
+                orders: 'Тапсырыстар',
+                users: 'Пайдаланушылар',
+                logs: 'Аудит журналы',
+                settings: 'Баптаулар'
+            };
+            document.getElementById('page-title').textContent = titles[tabName] || 'Smart Mercury';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chart.js Default Config
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = 'Segoe UI';
+
+            // Sales Chart
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            const gradient = salesCtx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(0, 229, 255, 0.2)');
+            gradient.addColorStop(1, 'rgba(0, 229, 255, 0)');
+
+            new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Қаңтар', 'Ақпан', 'Наурыз', 'Сәуір', 'Мамыр', 'Маусым'],
+                    datasets: [{
+                        label: 'Сатылым (Млн ₸)',
+                        data: [12, 19, 15, 25, 22, 30],
+                        borderColor: '#00e5ff',
+                        borderWidth: 4,
+                        fill: true,
+                        backgroundColor: gradient,
+                        tension: 0.4,
+                        pointBackgroundColor: '#00e5ff',
+                        pointBorderColor: 'rgba(255,255,255,0.1)',
+                        pointBorderWidth: 10,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, border: { display: false } },
+                        x: { grid: { display: false }, border: { display: false } }
+                    }
+                }
+            });
+
+            // Product Doughnut
+            const productCtx = document.getElementById('productChart').getContext('2d');
+            new Chart(productCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['АИ-95', 'Дизель', 'АИ-92'],
+                    datasets: [{
+                        data: [35, 28, 22],
+                        backgroundColor: ['#00e5ff', '#10b981', '#a855f7'],
+                        borderWidth: 0,
+                        hoverOffset: 20
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        });
+
+        function logout() {
+            if(confirm('Жүйеден шығуды растайсыз ба?')) {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
