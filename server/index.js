@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const { db, run, all, get, init } = require('./db');
 const nodemailer = require('nodemailer');
 const EventEmitter = require('events');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -16,8 +17,13 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@navarro.local';
 
 const notifier = new EventEmitter();
 
-app.use(cors());
 app.use(bodyParser.json());
+
+// CORS - allow credentials so cookies can be used
+app.use(cors({ origin: (process.env.FRONTEND_ORIGIN || 'http://localhost:4000'), credentials: true }));
+
+// serve admin static
+app.use('/admin', express.static(path.join(__dirname, 'public')));
 
 // initialize DB
 init().catch(err=>{ console.error('DB init error', err); });
@@ -46,12 +52,30 @@ async function sendEmail(to, subject, text, html){
 // auth helpers
 function signToken(payload){ return jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' }); }
 
-async function authMiddleware(req, res, next){
+function extractTokenFromRequest(req){
+  // 1) Authorization header
   const auth = req.headers.authorization;
-  if(!auth) return res.status(401).json({ error: 'Missing auth' });
-  const [type, token] = auth.split(' ');
-  if(type !== 'Bearer' || !token) return res.status(401).json({ error: 'Invalid auth' });
+  if(auth){
+    const [type, token] = auth.split(' ');
+    if(type === 'Bearer' && token) return token;
+  }
+  // 2) cookie header
+  const cookie = req.headers.cookie; // raw cookie string
+  if(cookie){
+    const parts = cookie.split(';').map(p=>p.trim());
+    for(const p of parts){
+      if(p.startsWith('token=')) return p.substring('token='.length);
+    }
+  }
+  // 3) fallback query
+  if(req.query && req.query.token) return req.query.token;
+  return null;
+}
+
+async function authMiddleware(req, res, next){
   try{
+    const token = extractTokenFromRequest(req);
+    if(!token) return res.status(401).json({ error: 'Missing auth' });
     const payload = jwt.verify(token, JWT_SECRET);
     req.user = payload;
     next();
@@ -87,8 +111,25 @@ app.post('/api/auth/login', async (req,res)=>{
     const ok = await bcrypt.compare(password, row.password_hash);
     if(!ok) return res.status(401).json({ error:'invalid credentials' });
     const token = signToken({ id: row.id, username: row.username, role: row.role, name: row.name });
-    res.json({ token, user: { id: row.id, username: row.username, role: row.role, name: row.name, email: row.email } });
+    // set HTTP-only cookie
+    res.cookie = (name, value, opts) => { // minimal cookie setter for environments without cookie lib
+      let str = `${name}=${value}; Path=/;`;
+      if(opts && opts.maxAge) str += ` Max-Age=${opts.maxAge/1000};`;
+      if(opts && opts.httpOnly) str += ' HttpOnly;';
+      if(opts && opts.secure) str += ' Secure;';
+      if(opts && opts.sameSite) str += ` SameSite=${opts.sameSite};`;
+      res.setHeader('Set-Cookie', str);
+    };
+    const cookieSecure = process.env.COOKIE_SECURE === 'true';
+    res.cookie('token', token, { httpOnly: true, secure: cookieSecure, sameSite: 'Lax', maxAge: 8*3600*1000 });
+    res.json({ user: { id: row.id, username: row.username, role: row.role, name: row.name, email: row.email } });
   } catch(e){ console.error(e); res.status(500).json({ error:'server error' }); }
+});
+
+app.post('/api/auth/logout', (req,res)=>{
+  // clear cookie
+  res.setHeader('Set-Cookie', 'token=; Path=/; Max-Age=0; HttpOnly;');
+  res.json({ ok: true });
 });
 
 app.get('/api/users/me', authMiddleware, async (req,res)=>{
@@ -133,7 +174,6 @@ app.delete('/api/inventory/:id', authMiddleware, roleCheck(['Admin','Manager']),
 
 // orders
 app.get('/api/orders', authMiddleware, async (req,res)=>{
-  // clients only see their orders? For demo, return all for admin/manager
   if(['Admin','Manager'].includes(req.user.role)){
     const rows = await all('SELECT * FROM orders ORDER BY created_at DESC'); res.json(rows);
   } else {
