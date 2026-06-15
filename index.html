@@ -11,10 +11,11 @@
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#05070B',
-                        cardBg: 'rgba(13, 17, 23, 0.7)',
-                        accentBlue: "#00e5ff",
-                        glowBlue: "rgba(0, 229, 255, 0.15)",
+                        primaryBlue: '#0ea5e9',    /* sky-500 */
+                        secondaryBlue: '#0284c7',  /* sky-600 */
+                        accentYellow: '#f59e0b',   /* amber-500 */
+                        lightBg: '#f8fafc',        /* slate-50 */
+                        textDark: '#0f172a',       /* slate-900 */
                     }
                 }
             }
@@ -22,504 +23,258 @@
     </script>
     <style>
         body {
-            background-color: #05070B;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
-        /* Radial background glow effect */
-        .glow-effect {
-            background: radial-gradient(circle at 50% 30%, rgba(0, 229, 255, 0.12) 0%, rgba(5, 7, 11, 0) 60%);
+        .blue-gradient {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        }
+        .yellow-glow {
+            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);
         }
     </style>
 </head>
-<body class="text-white min-height-screen relative overflow-x-hidden">
-
-    <!-- background glow -->
-    <div class="absolute inset-0 glow-effect pointer-events-none z-0"></div>
+<body class="min-h-screen relative overflow-x-hidden">
 
     <!-- HEADER -->
-    <header class="sticky top-0 z-50 backdrop-blur-md bg-darkBg/80 border-b border-white/5 px-6 py-4">
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-slate-200 px-6 py-4">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center">
-                    <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="w-10 h-10 rounded-xl bg-primaryBlue flex items-center justify-center shadow-lg shadow-sky-200">
+                    <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <circle cx="12" cy="12" r="10" />
                         <path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6" />
                     </svg>
                 </div>
                 <div>
-                    <span class="font-bold text-lg block tracking-wide">Smart Mercury Energy</span>
-                    <span class="text-[10px] text-gray-500 block -mt-1 tracking-widest">SMART MERCURY ENERGY · KZ</span>
+                    <span class="font-bold text-lg block tracking-tight text-textDark">Smart Mercury Energy</span>
+                    <span class="text-[10px] text-primaryBlue font-black uppercase tracking-widest -mt-1">Energy Solutions</span>
                 </div>
             </div>
 
-            <!-- Desktop Nav Links -->
-            <nav class="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/10 text-sm">
-                <button onclick="switchTab('home')" id="tab-home" class="px-5 py-2 rounded-full font-medium transition-colors bg-white/10 text-white">Басты бет</button>
-                <button onclick="switchTab('prices')" id="tab-prices" class="px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white">Прайс-лист</button>
-                <button onclick="switchTab('company')" id="tab-company" class="px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white">Компания</button>
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-2 bg-slate-100 p-1 rounded-full border border-slate-200 text-sm">
+                <button onclick="switchTab('home')" id="tab-home" class="px-5 py-2 rounded-full font-semibold transition-all bg-white text-primaryBlue shadow-sm">Басты бет</button>
+                <button onclick="switchTab('prices')" id="tab-prices" class="px-5 py-2 rounded-full font-semibold transition-all text-slate-500 hover:text-primaryBlue">Бағалар</button>
+                <button onclick="switchTab('company')" id="tab-company" class="px-5 py-2 rounded-full font-semibold transition-all text-slate-500 hover:text-primaryBlue">Компания</button>
             </nav>
 
             <div class="flex items-center gap-4">
-                <a href="auth.html" class="hidden md:flex items-center gap-2 border border-white/15 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full text-sm font-medium transition-all">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                <a href="auth.html" class="hidden md:flex items-center gap-2 bg-accentYellow text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all hover:bg-amber-600 yellow-glow">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                     </svg>
                     Кіру
                 </a>
-                <button onclick="toggleMobileMenu(true)" class="p-2 border border-white/10 bg-white/5 rounded-full hover:bg-white/10 transition-colors">
-                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
-                    </svg>
+                <button onclick="toggleMobileMenu(true)" class="md:hidden p-2 bg-slate-100 rounded-lg">
+                    <svg class="w-6 h-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16m-7 6h7" /></svg>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- TAB 1: HOME PAGE -->
-    <section id="sec-home" class="relative z-10 max-w-7xl mx-auto px-6 py-8">
-        <!-- Hero Box -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent p-6 lg:p-12 rounded-3xl mb-16 shadow-2xl">
-            <!-- Left Info -->
-            <div class="lg:col-span-7 flex flex-col justify-between py-2">
-                <div>
-                    <span class="text-xs font-semibold text-cyan-500 tracking-wider flex items-center gap-2 mb-4">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        Алматы · Байзақова 280 · 2026
-                    </span>
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-20 h-20 rounded-2xl bg-white flex items-center justify-center p-3 shadow-md">
-                            <svg class="w-full h-full text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <circle cx="12" cy="12" r="10" />
-                                <path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6" />
-                            </svg>
-                        </div>
-                        <div>
-                            <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Smart Mercury Energy · LLP</span>
-                            <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-none mt-1" >Smart Mercury <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Energy</span></h1>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 text-base lg:text-lg max-w-xl leading-relaxed mb-8">
-                        Қазақстан бойынша <strong class="text-white font-semibold">АИ-92, АИ-95, дизель отыны</strong> және <strong class="text-white font-semibold">JET A-1 / РТ</strong> авиакеросинін көтерме жеткіземіз. Тұрақты сапа, тікелей келісім, Argus индексіне байланған әділ баға.
-                    </p>
-                    <div class="flex flex-wrap items-center gap-4 mb-10">
-                        <a href="auth.html" class="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 py-3.5 rounded-2xl flex items-center gap-2 transition-all shadow-lg shadow-cyan-600/20">
-                            Кіру / Тіркелу
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </a>
-                        <button onclick="switchTab('company')" class="border border-white/10 hover:border-white/20 bg-white/5 hover:bg-white/10 text-white font-medium px-6 py-3.5 rounded-2xl transition-all">
-                            Компания туралы
-                        </button>
-                    </div>
+    <!-- TAB 1: HOME -->
+    <section id="sec-home" class="max-w-7xl mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24">
+            <!-- Left -->
+            <div class="lg:col-span-7">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-sky-100 rounded-full mb-6">
+                    <span class="w-2 h-2 rounded-full bg-primaryBlue animate-pulse"></span>
+                    <span class="text-xs font-bold text-primaryBlue uppercase tracking-wider">Қазақстанның сенімді серіктесі</span>
                 </div>
-                <!-- Stats Row -->
-                <div class="grid grid-cols-3 gap-4 border-t border-white/5 pt-8">
-                    <div class="bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
-                        <span class="text-2xl font-black block text-white">16+</span>
-                        <span class="text-[10px] text-gray-500 uppercase font-semibold block tracking-wider mt-1">Жыл нарықта</span>
-                    </div>
-                    <div class="bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
-                        <span class="text-2xl font-black block text-white">4</span>
-                        <span class="text-[10px] text-gray-500 uppercase font-semibold block tracking-wider mt-1">Өңір бойынша</span>
-                    </div>
-                    <div class="bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
-                        <span class="text-2xl font-black block text-white">JIG 2</span>
-                        <span class="text-[10px] text-gray-500 uppercase font-semibold block tracking-wider mt-1">Стандарты</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Live Pricing Widget -->
-            <div class="lg:col-span-5 border border-white/10 bg-slate-900/40 rounded-3xl p-6 shadow-xl relative overflow-hidden backdrop-blur-sm">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
-                        <span class="font-bold text-sm tracking-widest text-green-500">ARGUS · LIVE</span>
-                    </div>
-                    <span class="text-[11px] text-gray-500">2026-06-15</span>
-                </div>
-
-                <!-- Tabs (City Select) -->
-                <div class="flex flex-wrap gap-1.5 bg-white/5 p-1 rounded-xl border border-white/5 mb-6 text-xs">
-                    <button onclick="setLiveCity('almaty')" id="live-btn-almaty" class="flex-1 py-1.5 px-3 rounded-lg font-medium bg-cyan-600 text-white transition-all">Алматы</button>
-                    <button onclick="setLiveCity('astana')" id="live-btn-astana" class="flex-1 py-1.5 px-3 rounded-lg font-medium text-gray-400 hover:text-white transition-all">Астана</button>
-                    <button onclick="setLiveCity('shymkent')" id="live-btn-shymkent" class="flex-1 py-1.5 px-3 rounded-lg font-medium text-gray-400 hover:text-white transition-all">Шымкент</button>
-                    <button onclick="setLiveCity('atyrau')" id="live-btn-atyrau" class="flex-1 py-1.5 px-3 rounded-lg font-medium text-gray-400 hover:text-white transition-all">Атырау</button>
-                </div>
-
-                <!-- Fuel Price List -->
-                <div id="live-prices-container" class="space-y-4">
-                    <!-- Dynamic rendering via JS -->
-                </div>
-
-                <div class="text-center mt-6">
-                    <a href="auth.html" class="text-xs text-cyan-400 hover:text-blue-300 font-semibold underline">
-                        Барлық аймақтар мен талдау үшін жүйеге кіріңіз
+                <h1 class="text-5xl lg:text-7xl font-black text-textDark leading-tight mb-6">
+                    Тиімді энергия <br>
+                    <span class="text-primaryBlue">Болашақ кепілі</span>
+                </h1>
+                <p class="text-slate-500 text-lg lg:text-xl max-w-xl leading-relaxed mb-10">
+                    Smart Mercury Energy — мұнай өнімдерінің көтерме нарығындағы көшбасшы. АИ-92, АИ-95 және жоғары сапалы авиаотын жеткізу.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="auth.html" class="bg-primaryBlue hover:bg-secondaryBlue text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-sky-200 flex items-center gap-3">
+                        Тіркелу
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                     </a>
+                    <button onclick="switchTab('company')" class="bg-white border-2 border-slate-200 hover:border-primaryBlue text-slate-700 px-8 py-4 rounded-2xl font-bold transition-all">
+                        Толығырақ
+                    </button>
                 </div>
+            </div>
+
+            <!-- Right: Interactive Widget -->
+            <div class="lg:col-span-5 bg-white rounded-[40px] shadow-2xl shadow-slate-200 p-8 border border-slate-100 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-accentYellow/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="font-black text-xl text-textDark">Баға мониторингі</h3>
+                    <div class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Argus Live</div>
+                </div>
+
+                <div class="flex gap-2 mb-6 bg-slate-50 p-1.5 rounded-2xl">
+                    <button onclick="setLiveCity('almaty')" id="live-btn-almaty" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all bg-primaryBlue text-white">Алматы</button>
+                    <button onclick="setLiveCity('astana')" id="live-btn-astana" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all text-slate-500">Астана</button>
+                </div>
+
+                <div id="live-prices-container" class="space-y-4">
+                    <!-- Dynamic JS -->
+                </div>
+
+                <a href="auth.html" class="mt-8 block text-center py-4 bg-slate-50 hover:bg-slate-100 rounded-2xl text-xs font-bold text-primaryBlue transition-all border border-slate-100">
+                    Барлық аймақтарды көру
+                </a>
             </div>
         </div>
 
-        <!-- ABOUT SECTION (БІЗ ТУРАЛЫ) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
-            <!-- Left Info -->
-            <div class="lg:col-span-5">
-                <span class="text-xs font-bold text-cyan-500 uppercase tracking-widest block mb-3">Біз туралы</span>
-                <h2 class="text-3xl lg:text-5xl font-extrabold tracking-tight mb-6">Қазақстанның <br>отын инфрақұрылымы</h2>
-                <p class="text-gray-400 leading-relaxed mb-6">
-                    Smart Mercury Energy — Алматы облысында тіркелген, мұнай өнімдерін көтерме жеткізумен айналысатын компания. Біз тікелей өндірушілермен жұмыс істеп, тұрақты сапа мен әділ бағаны кепілдендіреміз.
-                </p>
-                <ul class="space-y-3 text-sm text-gray-300">
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> АИ-92 / АИ-95 автобензин
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> ДТ-Л және ДТ-З дизель
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> JET A-1 / РТ авиациялық керосин
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Авто және теміржол арқылы жеткізу
-                    </li>
-                </ul>
+        <!-- Features -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+            <div class="bg-white p-10 rounded-[32px] border border-slate-100 shadow-xl shadow-slate-100/50 hover:border-primaryBlue transition-all group">
+                <div class="w-14 h-14 rounded-2xl bg-sky-50 text-primaryBlue flex items-center justify-center mb-6 group-hover:bg-primaryBlue group-hover:text-white transition-all">
+                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </div>
+                <h4 class="text-xl font-black mb-4">Жылдам жеткізу</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Логистикалық тізбекті оңтайландыру арқылы отынды уақытылы жеткіземіз.</p>
             </div>
-            <!-- Right Features Grid -->
-            <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Көтерме сату</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">Тікелей келісімдер, тұрақты графиктер.</p>
-                    </div>
+            <div class="bg-white p-10 rounded-[32px] border border-slate-100 shadow-xl shadow-slate-100/50 hover:border-accentYellow transition-all group">
+                <div class="w-14 h-14 rounded-2xl bg-amber-50 text-accentYellow flex items-center justify-center mb-6 group-hover:bg-accentYellow group-hover:text-white transition-all">
+                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                 </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Авиаотын</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">JIG 2 стандартына сай JET A-1 / РТ.</p>
-                    </div>
+                <h4 class="text-xl font-black mb-4">Сапа кепілдігі</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Әрбір өнім халықаралық стандарттарға және зертханалық сынақтарға сай келеді.</p>
+            </div>
+            <div class="bg-white p-10 rounded-[32px] border border-slate-100 shadow-xl shadow-slate-100/50 hover:border-primaryBlue transition-all group">
+                <div class="w-14 h-14 rounded-2xl bg-sky-50 text-primaryBlue flex items-center justify-center mb-6 group-hover:bg-primaryBlue group-hover:text-white transition-all">
+                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM15 20H9a6 6 0 016-6v-2a6 6 0 00-6 6h6z" /></svg>
                 </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Логистика</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">Авто және теміржол жеткізу.</p>
-                    </div>
-                </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Сапа бақылауы</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">Әр партияға зертханалық сертификат.</p>
-                    </div>
-                </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11V5a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2h3a2 2 0 001.943-1.498m3.057-3.002H20a2 2 0 012 2v3a2 2 0 01-2 2h-3a2 2 0 01-1.943-1.498m-3.057-3.002z"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Сенімді серіктес</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">SCAT Airlines, iON, өңірлік желілер.</p>
-                    </div>
-                </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">4 өңір</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">Алматы, Астана, Шымкент, Атырау.</p>
-                    </div>
-                </div>
+                <h4 class="text-xl font-black mb-4">Сенімділік</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Біздің клиенттер тізімінде еліміздің ірі кәсіпорындары мен әуежайлары бар.</p>
             </div>
         </div>
+    </section>
 
-        <!-- NEWS SECTION (ЖАҢАЛЫҚТАР) -->
-        <div class="mb-16">
-            <div class="flex items-center justify-between mb-8">
+    <!-- TAB 2: PRICES -->
+    <section id="sec-prices" class="hidden max-w-7xl mx-auto px-6 py-12">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-black mb-4">Нарықтық бағалар</h2>
+            <p class="text-slate-500">Argus индексі негізіндегі ағымдағы көтерме бағалар кестесі</p>
+        </div>
+
+        <div id="prices-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Dynamic JS -->
+        </div>
+    </section>
+
+    <!-- TAB 3: COMPANY -->
+    <section id="sec-company" class="hidden max-w-7xl mx-auto px-6 py-12">
+        <div class="bg-white p-12 rounded-[40px] border border-slate-100 shadow-2xl">
+            <h2 class="text-4xl font-black mb-8">Компания туралы</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div>
-                    <span class="text-xs font-bold text-cyan-500 uppercase tracking-widest block mb-2">Жаңалықтар</span>
-                    <h2 class="text-3xl font-extrabold">Соңғы жаңалықтар</h2>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                    </button>
-                    <button class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div class="border border-white/5 bg-white/[0.02] rounded-3xl overflow-hidden group">
-                    <div class="h-48 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News 1">
-                    </div>
-                    <div class="p-6">
-                        <span class="text-[10px] text-gray-500 block mb-2">2026-06-12</span>
-                        <h3 class="font-bold text-lg mb-3 line-clamp-2">Smart Mercury Energy — Алматы өңіріндегі сенімді отын жеткізушісі</h3>
-                        <p class="text-xs text-gray-400 line-clamp-3 mb-4">АИ-92, АИ-95, дизель отыны және авиакеросин JET A-1 / РТ маркаларын көтерме жеткіземіз.</p>
-                        <a href="#" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1 font-semibold">Толық оқу <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></a>
+                    <p class="text-slate-600 leading-relaxed mb-6">
+                        Smart Mercury Energy — Қазақстанның энергетикалық нарығында қарқынды дамып келе жатқан компания. Біздің басты мақсатымыз — тұтынушыларды сапалы мұнай өнімдерімен үздіксіз қамтамасыз ету.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-accentYellow"></div>
+                            <span class="font-bold text-slate-700">12 жылдан астам тәжірибе</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-accentYellow"></div>
+                            <span class="font-bold text-slate-700">ISO халықаралық сертификаттары</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-accentYellow"></div>
+                            <span class="font-bold text-slate-700">Жеке логистикалық парк</span>
+                        </div>
                     </div>
                 </div>
-                <!-- Card 2 -->
-                <div class="border border-white/5 bg-white/[0.02] rounded-3xl overflow-hidden group">
-                    <div class="h-48 overflow-hidden relative">
-                        <div class="absolute top-4 left-4 z-10 bg-yellow-400 text-slate-900 text-[9px] font-black uppercase px-2 py-0.5 rounded">Мұнайбаза</div>
-                        <img src="https://images.unsplash.com/photo-1542060748-10c28b629f6f?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News 2">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-6 rounded-3xl text-center">
+                        <span class="text-3xl font-black text-primaryBlue block mb-1">500+</span>
+                        <span class="text-[10px] font-black uppercase text-slate-400">Клиенттер</span>
                     </div>
-                    <div class="p-6">
-                        <span class="text-[10px] text-gray-500 block mb-2">2026-06-09</span>
-                        <h3 class="font-bold text-lg mb-3 line-clamp-2">Жаңа мұнай базасының іске қосылуы — Алматы облысы</h3>
-                        <p class="text-xs text-gray-400 line-clamp-3 mb-4">Сыйымдылығы 24 000 тоннаға жететін, заманауи өлшеу жүйелерімен жабдықталған жаңа кешен.</p>
-                        <a href="#" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1 font-semibold">Толық оқу <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></a>
+                    <div class="bg-slate-50 p-6 rounded-3xl text-center">
+                        <span class="text-3xl font-black text-accentYellow block mb-1">100k</span>
+                        <span class="text-[10px] font-black uppercase text-slate-400">Тонна/жыл</span>
                     </div>
                 </div>
-                <!-- Card 3 -->
-                <div class="border border-white/5 bg-white/[0.02] rounded-3xl overflow-hidden group">
-                    <div class="h-48 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News 3">
-                    </div>
-                    <div class="p-6">
-                        <span class="text-[10px] text-gray-500 block mb-2">2026-06-06</span>
-                        <h3 class="font-bold text-lg mb-3 line-clamp-2">JET A-1 авиакеросинін Алматы әуежайына жеткізу басталды</h3>
-                        <p class="text-xs text-gray-400 line-clamp-3 mb-4">Халықаралық сапа стандарттарына (JIG, ASTM D1655) сай авиаотынды кедергісіз жеткізе бастадық.</p>
-                        <a href="#" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1 font-semibold">Толық оқу <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- TAB 2: PRICE LIST PAGE -->
-    <section id="sec-prices" class="hidden relative z-10 max-w-7xl mx-auto px-6 py-8">
-        <div class="mb-8">
-            <span class="text-xs font-bold text-cyan-500 uppercase tracking-widest block mb-2">ПРАЙС-ЛИСТ · ARGUS</span>
-            <h2 class="text-4xl font-extrabold tracking-tight mb-4">Ағымдағы көтерме бағалар</h2>
-            <p class="text-gray-400 text-sm max-w-2xl">Аймақ пен отын түрі бойынша сүзіңіз. Бағалар Argus индексіне байланған, әкімші қолмен де реттей алады.</p>
-        </div>
-
-        <!-- Filters Section -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-white/5 pb-6">
-            <div class="flex flex-wrap gap-2">
-                <!-- City Pills -->
-                <button onclick="setFilterCity('almaty')" id="filter-city-almaty" class="px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-cyan-600 bg-cyan-600 text-white flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    Алматы
-                </button>
-                <button onclick="setFilterCity('astana')" id="filter-city-astana" class="px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-white/10 bg-white/5 text-gray-400 hover:text-white flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                    Астана
-                </button>
-                <button onclick="setFilterCity('shymkent')" id="filter-city-shymkent" class="px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-white/10 bg-white/5 text-gray-400 hover:text-white flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                    Шымкент
-                </button>
-                <button onclick="setFilterCity('atyrau')" id="filter-city-atyrau" class="px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-white/10 bg-white/5 text-gray-400 hover:text-white flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                    Атырау
-                </button>
-            </div>
-
-            <!-- Categories -->
-            <div class="flex items-center gap-2 bg-white/5 border border-white/10 p-1.5 rounded-full self-start">
-                <button onclick="setFilterCategory('all')" id="filter-cat-all" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white transition-all">Барлығы</button>
-                <button onclick="setFilterCategory('auto')" id="filter-cat-auto" class="px-4 py-1.5 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-all flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
-                    Авто
-                </button>
-                <button onclick="setFilterCategory('avia')" id="filter-cat-avia" class="px-4 py-1.5 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-all flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                    Авиация
-                </button>
-            </div>
-        </div>
-
-        <!-- Prices Grid -->
-        <div id="prices-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-            <!-- Rendered dynamically -->
-        </div>
-    </section>
-
-    <!-- TAB 3: COMPANY PAGE -->
-    <section id="sec-company" class="hidden relative z-10 max-w-7xl mx-auto px-6 py-8">
-        <div class="mb-12">
-            <span class="text-xs font-bold text-cyan-500 uppercase tracking-widest block mb-2">Компания</span>
-            <h2 class="text-4xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6">Энергия — біздің<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">мамандығымыз</span></h2>
-            <p class="text-gray-400 text-base lg:text-lg max-w-3xl leading-relaxed">
-                Smart Mercury Energy — Қазақстан нарығында АИ-92, АИ-95 бензинін, дизель отынын және JET A-1 авиакеросинін көтерме жеткізетін кешенді компания. Біз сапалы өнім мен ашық әріптестікті басты орынға қоямыз.
-            </p>
-        </div>
-
-        <!-- Stats Block -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-            <div class="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center mb-4 text-cyan-400">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg>
-                </div>
-                <h3 class="text-3xl font-black mb-1">12+ жыл</h3>
-                <p class="text-xs text-gray-500">Нарықтағы тәжірибеміз</p>
-            </div>
-            <div class="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center mb-4 text-cyan-400">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a3 3 0 003-3V7.228M11 3H4a2 2 0 00-2 2v10a2 2 0 002 2h7"/></svg>
-                </div>
-                <h3 class="text-3xl font-black mb-1">8 өңір</h3>
-                <p class="text-xs text-gray-500">Қазақстан бойынша серіктестіктер</p>
-            </div>
-            <div class="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center mb-4 text-cyan-400">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                </div>
-                <h3 class="text-3xl font-black mb-1">ISO 9001</h3>
-                <p class="text-xs text-gray-500">Халықаралық сапа стандарттары</p>
-            </div>
-            <div class="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center mb-4 text-cyan-400">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707"/></svg>
-                </div>
-                <h3 class="text-3xl font-black mb-1">ESG-бағыт</h3>
-                <p class="text-xs text-gray-500">Жасыл энергетика мен экология</p>
-            </div>
-        </div>
-
-        <!-- Vision and Mission -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            <div class="border border-white/5 bg-white/[0.02] p-8 rounded-3xl">
-                <h4 class="text-xl font-bold mb-4 text-cyan-400">Миссия</h4>
-                <p class="text-sm text-gray-400 leading-relaxed">
-                    Қазақстанның әрбір өңіріне сапалы әрі сенімді энергия жеткізіп, цифрлық технологиялар арқылы бизнес-процестерді мөлдір әрі тиімді ету. Серіктестеріміздің жұмысын жеңілдетіп, нақты уақыттағы әділ бағалар арқылы нарық сенімін нығайту.
-                </p>
-            </div>
-            <div class="border border-white/5 bg-white/[0.02] p-8 rounded-3xl">
-                <h4 class="text-xl font-bold mb-4 text-cyan-400">Көзқарас</h4>
-                <p class="text-sm text-gray-400 leading-relaxed">
-                    2030 жылға қарай — Орталық Азиядағы ең цифрланған және экологиялық жауапты энергетикалық компания болу. Нарық тенденцияларына серпінді бейімделіп, қызмет көрсету сапасын жаңа халықаралық деңгейге көтеру.
-                </p>
             </div>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="border-t border-white/5 bg-darkBg/50 py-10 px-6 text-sm text-gray-500">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded-full border border-white/10 bg-white/5 flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6" />
-                    </svg>
+    <footer class="bg-white border-t border-slate-200 py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-primaryBlue flex items-center justify-center text-white">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
                 </div>
-                <span>© 2026 Smart Mercury Energy · Smart Mercury Energy LLP</span>
+                <span class="font-bold text-slate-900">Smart Mercury Energy</span>
             </div>
-            <div class="flex flex-wrap items-center gap-6 text-xs">
-                <a href="tel:+77714929537" class="hover:text-white transition-colors">+7 (771) 492-95-37</a>
-                <a href="mailto:info@smart-mercury.kz" class="hover:text-white transition-colors">info@smart-mercury.kz</a>
-                <span>Алматы, Байзақова 280</span>
+            <div class="flex gap-8 text-sm font-semibold text-slate-500">
+                <a href="#" class="hover:text-primaryBlue">Құпиялылық</a>
+                <a href="#" class="hover:text-primaryBlue">Шарттар</a>
+                <a href="mailto:info@smart-mercury.kz" class="hover:text-primaryBlue">info@smart-mercury.kz</a>
             </div>
+            <p class="text-xs text-slate-400">© 2026 Smart Mercury Energy KZ</p>
         </div>
     </footer>
 
-    <!-- MOBILE NAVIGATION OVERLAY MENU -->
-    <div id="mobile-menu" class="fixed inset-0 bg-darkBg/95 z-50 transform translate-x-full transition-transform duration-300 p-6 flex flex-col justify-between md:hidden">
-        <div>
-            <div class="flex items-center justify-between mb-10">
-                <span class="font-bold text-lg">Мәзір</span>
-                <button onclick="toggleMobileMenu(false)" class="p-2 border border-white/10 bg-white/5 rounded-full">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <nav class="flex flex-col gap-4 text-lg">
-                <button onclick="switchTab('home'); toggleMobileMenu(false);" class="text-left py-2 border-b border-white/5">Басты бет</button>
-                <button onclick="switchTab('prices'); toggleMobileMenu(false);" class="text-left py-2 border-b border-white/5">Прайс-лист</button>
-                <button onclick="switchTab('company'); toggleMobileMenu(false);" class="text-left py-2 border-b border-white/5">Компания</button>
-            </nav>
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="fixed inset-0 z-[100] bg-white translate-x-full transition-transform duration-300 p-8 flex flex-col md:hidden">
+        <div class="flex justify-between items-center mb-12">
+            <span class="font-black text-xl">Мәзір</span>
+            <button onclick="toggleMobileMenu(false)" class="p-2 bg-slate-100 rounded-full">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
         </div>
-        <a href="auth.html" class="w-full bg-cyan-600 hover:bg-cyan-700 py-4 rounded-2xl font-semibold tracking-wide flex items-center justify-center gap-2">
-            Кіру / Тіркелу
-        </a>
+        <nav class="flex flex-col gap-6 text-2xl font-black">
+            <button onclick="switchTab('home'); toggleMobileMenu(false);">Басты бет</button>
+            <button onclick="switchTab('prices'); toggleMobileMenu(false);">Бағалар</button>
+            <button onclick="switchTab('company'); toggleMobileMenu(false);">Компания</button>
+        </nav>
+        <a href="auth.html" class="mt-auto w-full bg-accentYellow text-white py-5 rounded-2xl text-center font-black">Кіру / Тіркелу</a>
     </div>
 
-
-    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Mock data base matching the screenshot states
         const pricingData = {
             almaty: [
-                { name: "АИ-92", price: "245", trend: "+1.2%", status: "up", cat: "auto", vol: "35% көлем" },
-                { name: "АИ-95", price: "275", trend: "+0.8%", status: "up", cat: "auto", vol: "25% көлем" },
-                { name: "Дизель (ДТ)", price: "320", trend: "+2.4%", status: "up", cat: "auto", vol: "30% көлем" },
-                { name: "JET A-1", price: "410", trend: "-0.6%", status: "down", cat: "avia", vol: "15% көлем" },
-                { name: "РТ керосин", price: "395", trend: "+0.3%", status: "up", cat: "avia", vol: "10% көлем" }
+                { name: "АИ-92", price: "245", trend: "+1.2%", status: "up", cat: "auto" },
+                { name: "АИ-95", price: "275", trend: "+0.8%", status: "up", cat: "auto" },
+                { name: "ДТ", price: "320", trend: "+2.4%", status: "up", cat: "auto" }
             ],
             astana: [
-                { name: "АИ-92", price: "244", trend: "+1.0%", status: "up", cat: "auto", vol: "32% көлем" },
-                { name: "АИ-95", price: "274", trend: "+0.7%", status: "up", cat: "auto", vol: "28% көлем" },
-                { name: "Дизель (ДТ)", price: "319", trend: "+2.2%", status: "up", cat: "auto", vol: "29% көлем" },
-                { name: "JET A-1", price: "409", trend: "-0.5%", status: "down", cat: "avia", vol: "11% көлем" }
-            ],
-            shymkent: [
-                { name: "АИ-92", price: "242", trend: "+0.9%", status: "up", cat: "auto", vol: "18% көлем" },
-                { name: "АИ-95", price: "272", trend: "+0.6%", status: "up", cat: "auto", vol: "16% көлем" },
-                { name: "Дизель (ДТ)", price: "318", trend: "+2.1%", status: "up", cat: "auto", vol: "20% көлем" }
-            ],
-            atyrau: [
-                { name: "JET A-1", price: "408", trend: "-0.4%", status: "down", cat: "avia", vol: "12% көлем" }
+                { name: "АИ-92", price: "244", trend: "+1.0%", status: "up", cat: "auto" },
+                { name: "АИ-95", price: "274", trend: "+0.7%", status: "up", cat: "auto" },
+                { name: "ДТ", price: "319", trend: "+2.2%", status: "up", cat: "auto" }
             ]
         };
 
-        // State managers
         let activeLiveCity = 'almaty';
-        let activeFilterCity = 'almaty';
-        let activeFilterCategory = 'all';
 
-        // Initialize view
         document.addEventListener('DOMContentLoaded', () => {
             renderLivePrices();
             renderPricesGrid();
         });
 
-        // Tab Switcher
         function switchTab(tabName) {
-            // Hide all
-            document.getElementById('sec-home').classList.add('hidden');
-            document.getElementById('sec-prices').classList.add('hidden');
-            document.getElementById('sec-company').classList.add('hidden');
-            
-            // Remove active style from tabs
-            document.getElementById('tab-home').className = "px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white";
-            document.getElementById('tab-prices').className = "px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white";
-            document.getElementById('tab-company').className = "px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white";
-
-            // Show and set active
+            ['home', 'prices', 'company'].forEach(t => {
+                document.getElementById(`sec-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).className = "px-5 py-2 rounded-full font-semibold transition-all text-slate-500 hover:text-primaryBlue";
+            });
             document.getElementById(`sec-${tabName}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabName}`).className = "px-5 py-2 rounded-full font-medium transition-colors bg-white/10 text-white";
+            document.getElementById(`tab-${tabName}`).className = "px-5 py-2 rounded-full font-semibold transition-all bg-white text-primaryBlue shadow-sm";
         }
 
-        // Live prices widget selector
+        function toggleMobileMenu(show) {
+            document.getElementById('mobile-menu').style.transform = show ? 'translateX(0)' : 'translateX(100%)';
+        }
+
         function setLiveCity(city) {
             activeLiveCity = city;
-            ['almaty', 'astana', 'shymkent', 'atyrau'].forEach(c => {
-                const btn = document.getElementById(`live-btn-${c}`);
-                if (c === city) {
-                    btn.className = "flex-1 py-1.5 px-3 rounded-lg font-medium bg-cyan-600 text-white transition-all";
-                } else {
-                    btn.className = "flex-1 py-1.5 px-3 rounded-lg font-medium text-gray-400 hover:text-white transition-all";
-                }
+            ['almaty', 'astana'].forEach(c => {
+                document.getElementById(`live-btn-${c}`).className = c === city
+                    ? "flex-1 py-2 rounded-xl text-xs font-bold transition-all bg-primaryBlue text-white"
+                    : "flex-1 py-2 rounded-xl text-xs font-bold transition-all text-slate-500";
             });
             renderLivePrices();
         }
@@ -528,138 +283,43 @@
             const list = pricingData[activeLiveCity];
             const container = document.getElementById('live-prices-container');
             container.innerHTML = '';
-
             list.forEach(item => {
-                const isUp = item.status === 'up';
-                const trendColor = isUp ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10';
-                
-                const html = `
-                    <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-sky-200 transition-all">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-xs text-gray-400">
-                                ${item.cat === 'auto' ? '⛽' : '✈️'}
-                            </div>
-                            <div>
-                                <span class="font-semibold text-sm block">${item.name}</span>
-                                <span class="text-[10px] text-gray-500 capitalize block">${activeLiveCity}</span>
-                            </div>
+                            <span class="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-sm shadow-sm">${item.cat === 'auto' ? '⛽' : '✈️'}</span>
+                            <span class="font-bold text-slate-700">${item.name}</span>
                         </div>
                         <div class="text-right">
-                            <span class="font-black text-base block">${item.price}.00 <span class="text-[10px] text-gray-400 font-normal">т/л</span></span>
-                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md ${trendColor}">${item.trend}</span>
+                            <span class="block font-black text-slate-900">${item.price} ₸</span>
+                            <span class="text-[10px] font-black text-green-500">${item.trend}</span>
                         </div>
                     </div>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
+                `);
             });
-        }
-
-        // Filter Page Functions
-        function setFilterCity(city) {
-            activeFilterCity = city;
-            ['almaty', 'astana', 'shymkent', 'atyrau'].forEach(c => {
-                const btn = document.getElementById(`filter-city-${c}`);
-                if (c === city) {
-                    btn.className = "px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-cyan-600 bg-cyan-600 text-white flex items-center gap-2";
-                } else {
-                    btn.className = "px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-white/10 bg-white/5 text-gray-400 hover:text-white flex items-center gap-2";
-                }
-            });
-            renderPricesGrid();
-        }
-
-        function setFilterCategory(cat) {
-            activeFilterCategory = cat;
-            ['all', 'auto', 'avia'].forEach(c => {
-                const btn = document.getElementById(`filter-cat-${c}`);
-                if (c === cat) {
-                    btn.className = "px-4 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white transition-all";
-                } else {
-                    btn.className = "px-4 py-1.5 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-all";
-                }
-            });
-            renderPricesGrid();
         }
 
         function renderPricesGrid() {
-            const list = pricingData[activeFilterCity];
             const container = document.getElementById('prices-grid');
             container.innerHTML = '';
-
-            const filtered = list.filter(item => {
-                if (activeFilterCategory === 'all') return true;
-                return item.cat === activeFilterCategory;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-12">Таңдалған санат бойынша өнімдер табылмады.</div>';
-                return;
-            }
-
-            filtered.forEach(item => {
-                const isUp = item.status === 'up';
-                const trendColor = isUp ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10';
-                
-                // SVG dynamic path for sparkline based on up/down status
-                const graphPath = isUp 
-                    ? "M10 50 Q 80 10, 160 40 T 320 30" 
-                    : "M10 20 Q 80 50, 160 15 T 320 45";
-                const graphColor = isUp ? "url(#green-glow)" : "url(#red-glow)";
-                const graphStroke = isUp ? "#10b981" : "#ef4444";
-
-                const html = `
-                    <div class="border border-white/5 bg-slate-900/30 backdrop-blur-md rounded-3xl p-6 shadow-lg hover:border-white/10 transition-all flex flex-col justify-between h-64">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs text-gray-500 flex items-center gap-1">
-                                    ${item.cat === 'auto' ? '⛽' : '✈️'} ${item.name}
-                                </span>
-                                <span class="text-xs font-bold px-2 py-0.5 rounded-md ${trendColor}">${item.trend}</span>
-                            </div>
-                            <div class="flex items-baseline gap-1.5">
-                                <span class="text-4xl font-black">${item.price}</span>
-                                <span class="text-xs text-gray-400 font-medium">т/л</span>
-                            </div>
-                            <span class="text-[10px] text-gray-500 block capitalize mt-1">📍 ${activeFilterCity}</span>
+            const all = [...pricingData.almaty, ...pricingData.astana];
+            all.slice(0, 6).forEach(item => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="bg-white p-8 rounded-[32px] border border-slate-100 shadow-xl shadow-slate-100/50">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest">${item.name}</span>
+                            <span class="text-xs font-bold text-green-500">${item.trend}</span>
                         </div>
-
-                        <!-- Sparkline graphic -->
-                        <div class="w-full h-16 my-2">
-                            <svg class="w-full h-full" viewBox="0 0 320 60" fill="none" preserveAspectRatio="none">
-                                <defs>
-                                    <linearGradient id="green-glow" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/>
-                                        <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
-                                    </linearGradient>
-                                    <linearGradient id="red-glow" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#ef4444" stop-opacity="0.25"/>
-                                        <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
-                                    </linearGradient>
-                                </defs>
-                                <path d="${graphPath} L 320 60 L 10 60 Z" fill="${graphColor}" />
-                                <path d="${graphPath}" stroke="${graphStroke}" stroke-width="2.5" stroke-linecap="round"/>
-                            </svg>
+                        <div class="flex items-baseline gap-2 mb-4">
+                            <span class="text-4xl font-black text-slate-900">${item.price}</span>
+                            <span class="text-sm font-bold text-slate-400">₸ / л</span>
                         </div>
-
-                        <div class="flex items-center justify-between border-t border-white/5 pt-3 text-[10px] text-gray-500">
-                            <span>14 күндік динамика</span>
-                            <span>${item.vol}</span>
+                        <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-primaryBlue w-2/3"></div>
                         </div>
                     </div>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
+                `);
             });
-        }
-
-
-        // Mobile Menu Drawer Toggle
-        function toggleMobileMenu(show) {
-            const menu = document.getElementById('mobile-menu');
-            if (show) {
-                menu.classList.remove('translate-x-full');
-            } else {
-                menu.classList.add('translate-x-full');
-            }
         }
     </script>
 </body>
