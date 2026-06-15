@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="kk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — Navarro Energy</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#05070B',
+                        cardBg: 'rgba(13, 17, 23, 0.7)',
+                        accentBlue: '#2563eb',
+                        glowBlue: 'rgba(37, 99, 235, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #05070B; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        .glow-effect { background: radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.12) 0%, rgba(5, 7, 11, 0) 60%); }
+        .glass { background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); backdrop-filter: blur(6px); }
+        /* simple scrollbar for data tables */
+        .scrollbar-thin::-webkit-scrollbar { height: 8px; width: 8px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 8px; }
+    </style>
+</head>
+<body class="text-white min-h-screen relative overflow-x-hidden">
+
+    <div class="absolute inset-0 glow-effect pointer-events-none z-0"></div>
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-darkBg/80 border-b border-white/5 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="m16.2 7.8-8.4 8.4M12 7v10" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-sm font-semibold">Navarro Energy</div>
+                    <div class="text-xs text-white/50">Админ панель</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center bg-white/3 text-sm rounded-lg px-3 py-2 gap-2">
+                    <input id="globalSearch" class="bg-transparent outline-none placeholder-white/40 text-sm" placeholder="Іздеу: пайдаланушылар, тапсырыстар..." />
+                    <button id="searchBtn" class="text-white/60 hover:text-white">Іздеу</button>
+                </div>
+
+                <button id="themeToggle" class="bg-white/3 p-2 rounded-lg text-sm hover:bg-white/5">Тақырып</button>
+
+                <div class="relative">
+                    <button id="userBtn" class="flex items-center gap-2 bg-white/3 rounded-lg px-3 py-1">
+                        <img src="https://avatars.githubusercontent.com/u/206360829?v=4" alt="avatar" class="w-7 h-7 rounded-full border border-white/10" />
+                        <div class="text-left leading-tight">
+                            <div class="text-sm">Dako-Bai</div>
+                            <div class="text-xs text-white/50">Суперқұқық</div>
+                        </div>
+                    </button>
+                    <div id="userMenu" class="hidden absolute right-0 mt-2 w-48 bg-cardBg rounded-lg border border-white/5 p-3 shadow-lg">
+                        <a href="#" class="block py-2 text-sm hover:bg-white/5 rounded px-2">Профиль</a>
+                        <a href="#" class="block py-2 text-sm hover:bg-white/5 rounded px-2">Шығу</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-6 gap-6 relative z-10">
+
+        <!-- Sidebar -->
+        <aside class="md:col-span-1 col-span-1 bg-cardBg glass rounded-lg p-4 border border-white/5 h-fit">
+            <nav class="flex flex-col gap-2">
+                <a href="#dashboard" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/3 active:bg-white/5">
+                    <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12h18M12 3v18" /></svg>
+                    <span class="text-sm">Жалпы шолу</span>
+                </a>
+                <a href="#users" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/3">
+                    <svg class="w-5 h-5 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM6 20v-1c0-2.21 3.58-4 6-4s6 1.79 6 4v1"/></svg>
+                    <span class="text-sm">Пайдаланушылар</span>
+                </a>
+                <a href="#roles" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/3">
+                    <svg class="w-5 h-5 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16 4.5 20l2-7L1 9h7z"/></svg>
+                    <span class="text-sm">Рөлдер</span>
+                </a>
+                <a href="#settings" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/3">
+                    <svg class="w-5 h-5 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zM2 12a10 10 0 0120 0 10 10 0 01-20 0z"/></svg>
+                    <span class="text-sm">Баптаулар</span>
+                </a>
+            </nav>
+
+            <div class="mt-6 border-t border-white/5 pt-4 text-xs text-white/60">
+                <div>Жүйе: Navarro</div>
+                <div class="mt-2">Версия: <span id="appVersion">v2.0.0</span></div>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <section class="md:col-span-5 col-span-1 flex flex-col gap-6">
+
+            <!-- Dashboard header cards -->
+            <div id="dashboard" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-4 rounded-lg bg-cardBg border border-white/5">
+                    <div class="text-xs text-white/50">Жалпы пайдаланушылар</div>
+                    <div class="text-2xl font-semibold mt-2" id="totalUsers">0</div>
+                </div>
+                <div class="p-4 rounded-lg bg-cardBg border border-white/5">
+                    <div class="text-xs text-white/50">Активті соңғы 7 күн</div>
+                    <div class="text-2xl font-semibold mt-2" id="active7">0</div>
+                </div>
+                <div class="p-4 rounded-lg bg-cardBg border border-white/5">
+                    <div class="text-xs text-white/50">Рөлдер саны</div>
+                    <div class="text-2xl font-semibold mt-2" id="rolesCount">0</div>
+                </div>
+                <div class="p-4 rounded-lg bg-cardBg border border-white/5">
+                    <div class="text-xs text-white/50">Соңғы жаңарту</div>
+                    <div class="text-2xl font-semibold mt-2" id="lastUpdated">—</div>
+                </div>
+            </div>
+
+            <!-- Users management -->
+            <div id="users" class="p-4 rounded-lg bg-cardBg border border-white/5">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-lg font-semibold">Пайдаланушыларды басқару</h2>
+                        <p class="text-xs text-white/50">Пайдаланушыларды қарау, қосу, өңдеу және жою.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="exportCsv" class="px-3 py-2 bg-accentBlue/80 hover:bg-accentBlue rounded text-sm">Экспорт CSV</button>
+                        <button id="addUserBtn" class="px-3 py-2 bg-green-600 hover:bg-green-500 rounded text-sm">Жаңа қосу</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto scrollbar-thin">
+                    <table class="w-full text-left table-auto">
+                        <thead>
+                            <tr class="text-xs text-white/50 border-b border-white/5">
+                                <th class="p-3">#</th>
+                                <th class="p-3">Аты-жөні</th>
+                                <th class="p-3">Электрондық пошта</th>
+                                <th class="p-3">Рөлі</th>
+                                <th class="p-3">Статус</th>
+                                <th class="p-3">Әрекеттер</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody" class="text-sm">
+                            <!-- populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between text-xs text-white/50">
+                    <div id="paginationInfo">0 нәтижелер</div>
+                    <div class="flex items-center gap-2">
+                        <button id="prevPage" class="px-3 py-1 rounded bg-white/3">Алдыңғы</button>
+                        <button id="nextPage" class="px-3 py-1 rounded bg-white/3">Келесі</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Roles management -->
+            <div id="roles" class="p-4 rounded-lg bg-cardBg border border-white/5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold">Рөлдер</h2>
+                    <button id="addRoleBtn" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-sm">Рөл қосу</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="p-3 rounded bg-white/3">Админ — толық құқық</div>
+                    <div class="p-3 rounded bg-white/3">Модератор — мазмұнды басқару</div>
+                    <div class="p-3 rounded bg-white/3">Қолданушы — шектеулі</div>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div id="settings" class="p-4 rounded-lg bg-cardBg border border-white/5">
+                <h2 class="text-lg font-semibold mb-3">Жалпы баптаулар</h2>
+                <form id="settingsForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-sm text-white/60">Қолданба атауы</label>
+                        <input id="appName" class="mt-2 w-full rounded bg-transparent border border-white/5 px-3 py-2 text-sm" value="Navarro Energy" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-white/60">Қолданба URL</label>
+                        <input id="appUrl" class="mt-2 w-full rounded bg-transparent border border-white/5 px-3 py-2 text-sm" value="https://navarro.example" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-white/60">Жүйелік хабарламалар</label>
+                        <select id="notifications" class="mt-2 w-full rounded bg-transparent border border-white/5 px-3 py-2 text-sm">
+                            <option value="enabled">Қосулы</option>
+                            <option value="disabled">Өшірулі</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="px-4 py-2 bg-accentBlue rounded">Сақтау</button>
+                    </div>
+                </form>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modals (hidden by default) -->
+    <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
+        <div class="w-full max-w-2xl p-6 rounded-lg bg-cardBg border border-white/5">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="modalTitle" class="text-lg font-semibold">Модаль</h3>
+                <button id="closeModal" class="text-white/60">✕</button>
+            </div>
+
+            <div id="modalBody">
+                <!-- dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/admin.js"></script>
+</body>
+</html>
