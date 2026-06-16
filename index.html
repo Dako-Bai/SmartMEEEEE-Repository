@@ -3,664 +3,1402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mercury Energy - SMART MERCURY ENERGY KZ</title>
+    <title>Navarro Trade · Көтерме отын жеткізу</title>
+    <meta name="description" content="Navarro Trade — Қазақстандағы мұнай өнімдерін көтерме жеткізуші">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter & SF Pro (approx) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#05070B',
-                        cardBg: 'rgba(13, 17, 23, 0.7)',
-                        accentBlue: "#00e5ff",
-                        glowBlue: "rgba(0, 229, 255, 0.15)",
+                        navarro: {
+                            bg: '#0A0E14',
+                            card: 'rgba(255, 255, 255, 0.06)',
+                            border: 'rgba(255, 255, 255, 0.08)',
+                            primary: '#3B7DD8', // oklch(0.62 0.14 250)
+                            accent: '#3A3A8C',  // oklch(0.38 0.12 260)
+                            destructive: '#E5484D',
+                            text: '#FAFAFA',
+                            dim: '#A1A1AA'
+                        }
+                    },
+                    borderRadius: {
+                        '2xl': '1rem',
+                        '3xl': '2rem',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-    <style>
-        body {
-            background-color: #05070B;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+    <style type="text/css">
+        :root {
+            --bg-color: #0A0E14;
+            --primary-color: #3B7DD8;
+            --accent-color: #3A3A8C;
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --card-border: rgba(255, 255, 255, 0.08);
         }
-        /* Radial background glow effect */
-        .glow-effect {
-            background: radial-gradient(circle at 50% 30%, rgba(0, 229, 255, 0.12) 0%, rgba(5, 7, 11, 0) 60%);
+
+        body {
+            background-color: var(--bg-color);
+            color: #FAFAFA;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+        }
+
+        .glass-strong {
+            background: rgba(10, 14, 20, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% -20%, rgba(59, 125, 216, 0.15) 0%, rgba(58, 58, 140, 0.05) 40%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .glow-blue {
+            box-shadow: 0 0 40px -10px rgba(59, 125, 216, 0.5);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Nav active state */
+        .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        /* News Carousel */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body class="text-white min-height-screen relative overflow-x-hidden">
+<body class="selection:bg-primary/30">
+    <div class="hero-glow"></div>
 
-    <!-- background glow -->
-    <div class="absolute inset-0 glow-effect pointer-events-none z-0"></div>
-
-    <!-- HEADER -->
-    <header class="sticky top-0 z-50 backdrop-blur-md bg-darkBg/80 border-b border-white/5 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Fixed Header -->
+        <header class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 glass-strong rounded-2xl px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center">
-                    <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6" />
-                    </svg>
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Chevron_Logo.svg" alt="Navarro Logo" class="w-8 h-8">
                 </div>
                 <div>
-                    <span class="font-bold text-lg block tracking-wide">Smart Mercury Energy</span>
-                    <span class="text-[10px] text-gray-500 block -mt-1 tracking-widest">SMART MERCURY ENERGY · KZ</span>
+                    <h1 class="text-white font-bold text-lg leading-tight">Navarro Energy</h1>
+                    <p class="text-[10px] text-navarro-dim tracking-[0.2em] uppercase">Navarro Trade · KZ</p>
                 </div>
             </div>
 
-            <!-- Desktop Nav Links -->
-            <nav class="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/10 text-sm">
-                <button onclick="switchTab('home')" id="tab-home" class="px-5 py-2 rounded-full font-medium transition-colors bg-white/10 text-white">Басты бет</button>
-                <button onclick="switchTab('prices')" id="tab-prices" class="px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white">Прайс-лист</button>
-                <button onclick="switchTab('company')" id="tab-company" class="px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white">Компания</button>
+            <!-- Desktop Nav -->
+            <nav class="hidden lg:flex items-center gap-8">
+                <a href="#/" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/">Басты бет</a>
+                <a href="#/prices" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/prices">Прайс-лист</a>
+                <a href="#/products" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/products">Өнімдер</a>
+                <a href="#/about" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/about">Компания</a>
+                <a href="#/contact" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/contact">Байланыс</a>
+
+                <!-- Protected Links (Hidden by default) -->
+                <div id="protected-links" class="hidden flex items-center gap-8">
+                    <a href="#/lab" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/lab">Зертхана</a>
+                    <a href="#/nb" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/nb">Нефтебаза</a>
+                    <a href="#/azk" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/azk">АЗК</a>
+                </div>
             </nav>
 
             <div class="flex items-center gap-4">
-                <a href="auth.html" class="hidden md:flex items-center gap-2 border border-white/15 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full text-sm font-medium transition-all">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                    </svg>
-                    Кіру
-                </a>
-                <button onclick="toggleMobileMenu(true)" class="p-2 border border-white/10 bg-white/5 rounded-full hover:bg-white/10 transition-colors">
-                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
-                    </svg>
+                <div id="auth-buttons">
+                    <a href="#/auth" class="bg-navarro-primary hover:bg-blue-600 text-white text-sm font-semibold px-6 py-2 rounded-xl transition-all shadow-lg shadow-blue-500/20">
+                        Кіру
+                    </a>
+                </div>
+                <div id="user-menu" class="hidden flex items-center gap-4">
+                    <a href="#/cabinet" class="text-sm font-medium hover:text-navarro-primary transition-colors" data-route="/cabinet">Кабинет</a>
+                    <div id="admin-link-container" class="hidden">
+                        <a href="#/admin" class="bg-gradient-to-r from-navarro-primary to-navarro-accent text-white text-sm font-semibold px-5 py-2 rounded-xl flex items-center gap-2 transition-all">
+                            <i data-lucide="shield" class="w-4 h-4"></i>
+                            Admin
+                        </a>
+                    </div>
+                </div>
+                <!-- Mobile Toggle -->
+                <button id="mobile-toggle" class="lg:hidden p-2 text-white">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- TAB 1: HOME PAGE -->
-    <section id="sec-home" class="relative z-10 max-w-7xl mx-auto px-6 py-8">
-        <!-- Hero Box -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent p-6 lg:p-12 rounded-3xl mb-16 shadow-2xl">
-            <!-- Left Info -->
-            <div class="lg:col-span-7 flex flex-col justify-between py-2">
+        <!-- Main Content Area -->
+        <main id="view-container" class="flex-grow pt-28 pb-12">
+            <!-- Views will be injected here -->
+        </main>
+
+        <!-- Footer -->
+        <footer class="border-t border-navarro-border py-12 px-6">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div>
-                    <span class="text-xs font-semibold text-cyan-500 tracking-wider flex items-center gap-2 mb-4">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        Алматы · Байзақова 280 · 2026
-                    </span>
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-20 h-20 rounded-2xl bg-white flex items-center justify-center p-3 shadow-md">
-                            <svg class="w-full h-full text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <circle cx="12" cy="12" r="10" />
-                                <path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6" />
-                            </svg>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 bg-white rounded flex items-center justify-center p-1">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Chevron_Logo.svg" alt="Navarro Logo" class="w-6 h-6">
                         </div>
-                        <div>
-                            <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Smart Mercury Energy · LLP</span>
-                            <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-none mt-1" >Smart Mercury <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Energy</span></h1>
-                        </div>
+                        <h2 class="text-white font-bold text-xl">Navarro Trade</h2>
                     </div>
-                    <p class="text-gray-400 text-base lg:text-lg max-w-xl leading-relaxed mb-8">
-                        Қазақстан бойынша <strong class="text-white font-semibold">АИ-92, АИ-95, дизель отыны</strong> және <strong class="text-white font-semibold">JET A-1 / РТ</strong> авиакеросинін көтерме жеткіземіз. Тұрақты сапа, тікелей келісім, Argus индексіне байланған әділ баға.
+                    <p class="text-navarro-dim text-sm leading-relaxed mb-6">
+                        Қазақстанның энергетикалық қауіпсіздігіне үлес қосатын сенімді отын серіктесі. Жоғары сапа, жедел жеткізу, ашық баға.
                     </p>
-                    <div class="flex flex-wrap items-center gap-4 mb-10">
-                        <a href="auth.html" class="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 py-3.5 rounded-2xl flex items-center gap-2 transition-all shadow-lg shadow-cyan-600/20">
-                            Кіру / Тіркелу
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </a>
-                        <button onclick="switchTab('company')" class="border border-white/10 hover:border-white/20 bg-white/5 hover:bg-white/10 text-white font-medium px-6 py-3.5 rounded-2xl transition-all">
-                            Компания туралы
+                    <p class="text-white text-sm font-semibold">Алматы, Байзақова 280</p>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-white font-bold mb-4">Бөлімдер</h4>
+                        <ul class="space-y-2 text-sm text-navarro-dim">
+                            <li><a href="#/" class="hover:text-white transition-colors">Басты бет</a></li>
+                            <li><a href="#/prices" class="hover:text-white transition-colors">Прайс-лист</a></li>
+                            <li><a href="#/products" class="hover:text-white transition-colors">Өнімдер</a></li>
+                            <li><a href="#/about" class="hover:text-white transition-colors">Компания</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-4">Қолдау</h4>
+                        <ul class="space-y-2 text-sm text-navarro-dim">
+                            <li><a href="#/contact" class="hover:text-white transition-colors">Байланыс</a></li>
+                            <li><a href="#/auth" class="hover:text-white transition-colors">Кіру</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Сұрақ-жауап</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Жазылым</h4>
+                    <p class="text-navarro-dim text-sm mb-4">Бағалардың өзгеруі туралы жедел ақпарат алыңыз.</p>
+                    <div class="flex gap-2">
+                        <input type="email" placeholder="Email" class="bg-navarro-card border border-navarro-border rounded-xl px-4 py-2 text-sm w-full outline-none focus:border-navarro-primary transition-colors">
+                        <button class="bg-navarro-primary p-2 rounded-xl text-white">
+                            <i data-lucide="send" class="w-5 h-5"></i>
                         </button>
                     </div>
                 </div>
-                <!-- Stats Row -->
-                <div class="grid grid-cols-3 gap-4 border-t border-white/5 pt-8">
-                    <div class="bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
-                        <span class="text-2xl font-black block text-white">16+</span>
-                        <span class="text-[10px] text-gray-500 uppercase font-semibold block tracking-wider mt-1">Жыл нарықта</span>
-                    </div>
-                    <div class="bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
-                        <span class="text-2xl font-black block text-white">4</span>
-                        <span class="text-[10px] text-gray-500 uppercase font-semibold block tracking-wider mt-1">Өңір бойынша</span>
-                    </div>
-                    <div class="bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
-                        <span class="text-2xl font-black block text-white">JIG 2</span>
-                        <span class="text-[10px] text-gray-500 uppercase font-semibold block tracking-wider mt-1">Стандарты</span>
-                    </div>
+            </div>
+            <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-navarro-border flex flex-col md:row items-center justify-between gap-4 text-xs text-navarro-dim">
+                <p>© 2026 Navarro Energy / Navarro Trade. Барлық құқықтар қорғалған.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white transition-colors">Құпиялылық саясаты</a>
+                    <a href="#" class="hover:text-white transition-colors">Қолдану шарттары</a>
                 </div>
             </div>
+        </footer>
 
-            <!-- Right Live Pricing Widget -->
-            <div class="lg:col-span-5 border border-white/10 bg-slate-900/40 rounded-3xl p-6 shadow-xl relative overflow-hidden backdrop-blur-sm">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
-                        <span class="font-bold text-sm tracking-widest text-green-500">ARGUS · LIVE</span>
-                    </div>
-                    <span class="text-[11px] text-gray-500">2026-06-15</span>
-                </div>
-
-                <!-- Tabs (City Select) -->
-                <div class="flex flex-wrap gap-1.5 bg-white/5 p-1 rounded-xl border border-white/5 mb-6 text-xs">
-                    <button onclick="setLiveCity('almaty')" id="live-btn-almaty" class="flex-1 py-1.5 px-3 rounded-lg font-medium bg-cyan-600 text-white transition-all">Алматы</button>
-                    <button onclick="setLiveCity('astana')" id="live-btn-astana" class="flex-1 py-1.5 px-3 rounded-lg font-medium text-gray-400 hover:text-white transition-all">Астана</button>
-                    <button onclick="setLiveCity('shymkent')" id="live-btn-shymkent" class="flex-1 py-1.5 px-3 rounded-lg font-medium text-gray-400 hover:text-white transition-all">Шымкент</button>
-                    <button onclick="setLiveCity('atyrau')" id="live-btn-atyrau" class="flex-1 py-1.5 px-3 rounded-lg font-medium text-gray-400 hover:text-white transition-all">Атырау</button>
-                </div>
-
-                <!-- Fuel Price List -->
-                <div id="live-prices-container" class="space-y-4">
-                    <!-- Dynamic rendering via JS -->
-                </div>
-
-                <div class="text-center mt-6">
-                    <a href="auth.html" class="text-xs text-cyan-400 hover:text-blue-300 font-semibold underline">
-                        Барлық аймақтар мен талдау үшін жүйеге кіріңіз
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABOUT SECTION (БІЗ ТУРАЛЫ) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
-            <!-- Left Info -->
-            <div class="lg:col-span-5">
-                <span class="text-xs font-bold text-cyan-500 uppercase tracking-widest block mb-3">Біз туралы</span>
-                <h2 class="text-3xl lg:text-5xl font-extrabold tracking-tight mb-6">Қазақстанның <br>отын инфрақұрылымы</h2>
-                <p class="text-gray-400 leading-relaxed mb-6">
-                    Smart Mercury Energy — Алматы облысында тіркелген, мұнай өнімдерін көтерме жеткізумен айналысатын компания. Біз тікелей өндірушілермен жұмыс істеп, тұрақты сапа мен әділ бағаны кепілдендіреміз.
-                </p>
-                <ul class="space-y-3 text-sm text-gray-300">
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> АИ-92 / АИ-95 автобензин
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> ДТ-Л және ДТ-З дизель
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> JET A-1 / РТ авиациялық керосин
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Авто және теміржол арқылы жеткізу
-                    </li>
-                </ul>
-            </div>
-            <!-- Right Features Grid -->
-            <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Көтерме сату</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">Тікелей келісімдер, тұрақты графиктер.</p>
-                    </div>
-                </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Авиаотын</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">JIG 2 стандартына сай JET A-1 / РТ.</p>
-                    </div>
-                </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Логистика</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">Авто және теміржол жеткізу.</p>
-                    </div>
-                </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Сапа бақылауы</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">Әр партияға зертханалық сертификат.</p>
-                    </div>
-                </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11V5a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2h3a2 2 0 001.943-1.498m3.057-3.002H20a2 2 0 012 2v3a2 2 0 01-2 2h-3a2 2 0 01-1.943-1.498m-3.057-3.002z"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">Сенімді серіктес</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">SCAT Airlines, iON, өңірлік желілер.</p>
-                    </div>
-                </div>
-                <div class="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-1">4 өңір</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">Алматы, Астана, Шымкент, Атырау.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- NEWS SECTION (ЖАҢАЛЫҚТАР) -->
-        <div class="mb-16">
-            <div class="flex items-center justify-between mb-8">
-                <div>
-                    <span class="text-xs font-bold text-cyan-500 uppercase tracking-widest block mb-2">Жаңалықтар</span>
-                    <h2 class="text-3xl font-extrabold">Соңғы жаңалықтар</h2>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                    </button>
-                    <button class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div class="border border-white/5 bg-white/[0.02] rounded-3xl overflow-hidden group">
-                    <div class="h-48 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News 1">
-                    </div>
-                    <div class="p-6">
-                        <span class="text-[10px] text-gray-500 block mb-2">2026-06-12</span>
-                        <h3 class="font-bold text-lg mb-3 line-clamp-2">Smart Mercury Energy — Алматы өңіріндегі сенімді отын жеткізушісі</h3>
-                        <p class="text-xs text-gray-400 line-clamp-3 mb-4">АИ-92, АИ-95, дизель отыны және авиакеросин JET A-1 / РТ маркаларын көтерме жеткіземіз.</p>
-                        <a href="#" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1 font-semibold">Толық оқу <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></a>
-                    </div>
-                </div>
-                <!-- Card 2 -->
-                <div class="border border-white/5 bg-white/[0.02] rounded-3xl overflow-hidden group">
-                    <div class="h-48 overflow-hidden relative">
-                        <div class="absolute top-4 left-4 z-10 bg-yellow-400 text-slate-900 text-[9px] font-black uppercase px-2 py-0.5 rounded">Мұнайбаза</div>
-                        <img src="https://images.unsplash.com/photo-1542060748-10c28b629f6f?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News 2">
-                    </div>
-                    <div class="p-6">
-                        <span class="text-[10px] text-gray-500 block mb-2">2026-06-09</span>
-                        <h3 class="font-bold text-lg mb-3 line-clamp-2">Жаңа мұнай базасының іске қосылуы — Алматы облысы</h3>
-                        <p class="text-xs text-gray-400 line-clamp-3 mb-4">Сыйымдылығы 24 000 тоннаға жететін, заманауи өлшеу жүйелерімен жабдықталған жаңа кешен.</p>
-                        <a href="#" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1 font-semibold">Толық оқу <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></a>
-                    </div>
-                </div>
-                <!-- Card 3 -->
-                <div class="border border-white/5 bg-white/[0.02] rounded-3xl overflow-hidden group">
-                    <div class="h-48 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News 3">
-                    </div>
-                    <div class="p-6">
-                        <span class="text-[10px] text-gray-500 block mb-2">2026-06-06</span>
-                        <h3 class="font-bold text-lg mb-3 line-clamp-2">JET A-1 авиакеросинін Алматы әуежайына жеткізу басталды</h3>
-                        <p class="text-xs text-gray-400 line-clamp-3 mb-4">Халықаралық сапа стандарттарына (JIG, ASTM D1655) сай авиаотынды кедергісіз жеткізе бастадық.</p>
-                        <a href="#" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1 font-semibold">Толық оқу <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- TAB 2: PRICE LIST PAGE -->
-    <section id="sec-prices" class="hidden relative z-10 max-w-7xl mx-auto px-6 py-8">
-        <div class="mb-8">
-            <span class="text-xs font-bold text-cyan-500 uppercase tracking-widest block mb-2">ПРАЙС-ЛИСТ · ARGUS</span>
-            <h2 class="text-4xl font-extrabold tracking-tight mb-4">Ағымдағы көтерме бағалар</h2>
-            <p class="text-gray-400 text-sm max-w-2xl">Аймақ пен отын түрі бойынша сүзіңіз. Бағалар Argus индексіне байланған, әкімші қолмен де реттей алады.</p>
-        </div>
-
-        <!-- Filters Section -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-white/5 pb-6">
-            <div class="flex flex-wrap gap-2">
-                <!-- City Pills -->
-                <button onclick="setFilterCity('almaty')" id="filter-city-almaty" class="px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-cyan-600 bg-cyan-600 text-white flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    Алматы
-                </button>
-                <button onclick="setFilterCity('astana')" id="filter-city-astana" class="px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-white/10 bg-white/5 text-gray-400 hover:text-white flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                    Астана
-                </button>
-                <button onclick="setFilterCity('shymkent')" id="filter-city-shymkent" class="px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-white/10 bg-white/5 text-gray-400 hover:text-white flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                    Шымкент
-                </button>
-                <button onclick="setFilterCity('atyrau')" id="filter-city-atyrau" class="px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-white/10 bg-white/5 text-gray-400 hover:text-white flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                    Атырау
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 z-[60] glass-strong translate-x-full transition-transform duration-300 lg:hidden flex flex-col p-8">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="text-white font-bold text-2xl">Мәзір</h2>
+                <button id="mobile-close" class="p-2 text-white">
+                    <i data-lucide="x" class="w-8 h-8"></i>
                 </button>
             </div>
-
-            <!-- Categories -->
-            <div class="flex items-center gap-2 bg-white/5 border border-white/10 p-1.5 rounded-full self-start">
-                <button onclick="setFilterCategory('all')" id="filter-cat-all" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white transition-all">Барлығы</button>
-                <button onclick="setFilterCategory('auto')" id="filter-cat-auto" class="px-4 py-1.5 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-all flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
-                    Авто
-                </button>
-                <button onclick="setFilterCategory('avia')" id="filter-cat-avia" class="px-4 py-1.5 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-all flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                    Авиация
-                </button>
-            </div>
-        </div>
-
-        <!-- Prices Grid -->
-        <div id="prices-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-            <!-- Rendered dynamically -->
-        </div>
-    </section>
-
-    <!-- TAB 3: COMPANY PAGE -->
-    <section id="sec-company" class="hidden relative z-10 max-w-7xl mx-auto px-6 py-8">
-        <div class="mb-12">
-            <span class="text-xs font-bold text-cyan-500 uppercase tracking-widest block mb-2">Компания</span>
-            <h2 class="text-4xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6">Энергия — біздің<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">мамандығымыз</span></h2>
-            <p class="text-gray-400 text-base lg:text-lg max-w-3xl leading-relaxed">
-                Smart Mercury Energy — Қазақстан нарығында АИ-92, АИ-95 бензинін, дизель отынын және JET A-1 авиакеросинін көтерме жеткізетін кешенді компания. Біз сапалы өнім мен ашық әріптестікті басты орынға қоямыз.
-            </p>
-        </div>
-
-        <!-- Stats Block -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-            <div class="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center mb-4 text-cyan-400">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg>
+            <nav class="flex flex-col gap-6 text-xl font-medium">
+                <a href="#/" class="mobile-nav-link text-white">Басты бет</a>
+                <a href="#/prices" class="mobile-nav-link text-white">Прайс-лист</a>
+                <a href="#/products" class="mobile-nav-link text-white">Өнімдер</a>
+                <a href="#/about" class="mobile-nav-link text-white">Компания</a>
+                <a href="#/contact" class="mobile-nav-link text-white">Байланыс</a>
+                <div id="protected-links-mobile" class="hidden flex flex-col gap-6">
+                    <div class="h-px bg-navarro-border my-2"></div>
+                    <a href="#/lab" class="mobile-nav-link text-white">Зертхана</a>
+                    <a href="#/nb" class="mobile-nav-link text-white">Нефтебаза</a>
+                    <a href="#/azk" class="mobile-nav-link text-white">АЗК</a>
                 </div>
-                <h3 class="text-3xl font-black mb-1">12+ жыл</h3>
-                <p class="text-xs text-gray-500">Нарықтағы тәжірибеміз</p>
-            </div>
-            <div class="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center mb-4 text-cyan-400">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a3 3 0 003-3V7.228M11 3H4a2 2 0 00-2 2v10a2 2 0 002 2h7"/></svg>
-                </div>
-                <h3 class="text-3xl font-black mb-1">8 өңір</h3>
-                <p class="text-xs text-gray-500">Қазақстан бойынша серіктестіктер</p>
-            </div>
-            <div class="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center mb-4 text-cyan-400">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                </div>
-                <h3 class="text-3xl font-black mb-1">ISO 9001</h3>
-                <p class="text-xs text-gray-500">Халықаралық сапа стандарттары</p>
-            </div>
-            <div class="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div class="w-10 h-10 rounded-xl bg-cyan-600/10 flex items-center justify-center mb-4 text-cyan-400">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707"/></svg>
-                </div>
-                <h3 class="text-3xl font-black mb-1">ESG-бағыт</h3>
-                <p class="text-xs text-gray-500">Жасыл энергетика мен экология</p>
-            </div>
-        </div>
-
-        <!-- Vision and Mission -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            <div class="border border-white/5 bg-white/[0.02] p-8 rounded-3xl">
-                <h4 class="text-xl font-bold mb-4 text-cyan-400">Миссия</h4>
-                <p class="text-sm text-gray-400 leading-relaxed">
-                    Қазақстанның әрбір өңіріне сапалы әрі сенімді энергия жеткізіп, цифрлық технологиялар арқылы бизнес-процестерді мөлдір әрі тиімді ету. Серіктестеріміздің жұмысын жеңілдетіп, нақты уақыттағы әділ бағалар арқылы нарық сенімін нығайту.
-                </p>
-            </div>
-            <div class="border border-white/5 bg-white/[0.02] p-8 rounded-3xl">
-                <h4 class="text-xl font-bold mb-4 text-cyan-400">Көзқарас</h4>
-                <p class="text-sm text-gray-400 leading-relaxed">
-                    2030 жылға қарай — Орталық Азиядағы ең цифрланған және экологиялық жауапты энергетикалық компания болу. Нарық тенденцияларына серпінді бейімделіп, қызмет көрсету сапасын жаңа халықаралық деңгейге көтеру.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="border-t border-white/5 bg-darkBg/50 py-10 px-6 text-sm text-gray-500">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded-full border border-white/10 bg-white/5 flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6" />
-                    </svg>
-                </div>
-                <span>© 2026 Smart Mercury Energy · Smart Mercury Energy LLP</span>
-            </div>
-            <div class="flex flex-wrap items-center gap-6 text-xs">
-                <a href="tel:+77714929537" class="hover:text-white transition-colors">+7 (771) 492-95-37</a>
-                <a href="mailto:info@smart-mercury.kz" class="hover:text-white transition-colors">info@smart-mercury.kz</a>
-                <span>Алматы, Байзақова 280</span>
-            </div>
-        </div>
-    </footer>
-
-    <!-- MOBILE NAVIGATION OVERLAY MENU -->
-    <div id="mobile-menu" class="fixed inset-0 bg-darkBg/95 z-50 transform translate-x-full transition-transform duration-300 p-6 flex flex-col justify-between md:hidden">
-        <div>
-            <div class="flex items-center justify-between mb-10">
-                <span class="font-bold text-lg">Мәзір</span>
-                <button onclick="toggleMobileMenu(false)" class="p-2 border border-white/10 bg-white/5 rounded-full">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <nav class="flex flex-col gap-4 text-lg">
-                <button onclick="switchTab('home'); toggleMobileMenu(false);" class="text-left py-2 border-b border-white/5">Басты бет</button>
-                <button onclick="switchTab('prices'); toggleMobileMenu(false);" class="text-left py-2 border-b border-white/5">Прайс-лист</button>
-                <button onclick="switchTab('company'); toggleMobileMenu(false);" class="text-left py-2 border-b border-white/5">Компания</button>
             </nav>
+            <div class="mt-auto pt-12">
+                <a href="#/auth" class="block w-full bg-navarro-primary text-white text-center py-4 rounded-2xl font-bold">Кіру</a>
+            </div>
         </div>
-        <a href="auth.html" class="w-full bg-cyan-600 hover:bg-cyan-700 py-4 rounded-2xl font-semibold tracking-wide flex items-center justify-center gap-2">
-            Кіру / Тіркелу
-        </a>
     </div>
 
-
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- SPA Router and State Logic -->
     <script>
-        // Mock data base matching the screenshot states
-        const pricingData = {
-            almaty: [
-                { name: "АИ-92", price: "245", trend: "+1.2%", status: "up", cat: "auto", vol: "35% көлем" },
-                { name: "АИ-95", price: "275", trend: "+0.8%", status: "up", cat: "auto", vol: "25% көлем" },
-                { name: "Дизель (ДТ)", price: "320", trend: "+2.4%", status: "up", cat: "auto", vol: "30% көлем" },
-                { name: "JET A-1", price: "410", trend: "-0.6%", status: "down", cat: "avia", vol: "15% көлем" },
-                { name: "РТ керосин", price: "395", trend: "+0.3%", status: "up", cat: "avia", vol: "10% көлем" }
+        // Store
+        const state = {
+            user: JSON.parse(localStorage.getItem('navarro_user')) || null,
+            prices: JSON.parse(localStorage.getItem('navarro_prices')) || [
+                { id: 1, name: 'АИ-92', price: 245, unit: 'литр', trend: '+1.5', status: 'up', source: 'Argus', cat: 'auto', density: 0.730 },
+                { id: 2, name: 'АИ-95', price: 280, unit: 'литр', trend: '+0.8', status: 'up', source: 'Argus', cat: 'auto', density: 0.745 },
+                { id: 3, name: 'Дизель (Жаз)', price: 315, unit: 'литр', trend: '-0.4', status: 'down', source: 'Argus', cat: 'auto', density: 0.840 },
+                { id: 4, name: 'Дизель (Қыс)', price: 450, unit: 'литр', trend: '0.0', status: 'neutral', source: 'Argus', cat: 'auto', density: 0.830 },
+                { id: 5, name: 'JET A-1', price: 420, unit: 'литр', trend: '+2.1', status: 'up', source: 'Argus', cat: 'avia', density: 0.800 },
+                { id: 6, name: 'РТ (Керосин)', price: 410, unit: 'литр', trend: '-1.2', status: 'down', source: 'Argus', cat: 'avia', density: 0.780 }
             ],
-            astana: [
-                { name: "АИ-92", price: "244", trend: "+1.0%", status: "up", cat: "auto", vol: "32% көлем" },
-                { name: "АИ-95", price: "274", trend: "+0.7%", status: "up", cat: "auto", vol: "28% көлем" },
-                { name: "Дизель (ДТ)", price: "319", trend: "+2.2%", status: "up", cat: "auto", vol: "29% көлем" },
-                { name: "JET A-1", price: "409", trend: "-0.5%", status: "down", cat: "avia", vol: "11% көлем" }
-            ],
-            shymkent: [
-                { name: "АИ-92", price: "242", trend: "+0.9%", status: "up", cat: "auto", vol: "18% көлем" },
-                { name: "АИ-95", price: "272", trend: "+0.6%", status: "up", cat: "auto", vol: "16% көлем" },
-                { name: "Дизель (ДТ)", price: "318", trend: "+2.1%", status: "up", cat: "auto", vol: "20% көлем" }
-            ],
-            atyrau: [
-                { name: "JET A-1", price: "408", trend: "-0.4%", status: "down", cat: "avia", vol: "12% көлем" }
-            ]
+            logs: JSON.parse(localStorage.getItem('navarro_logs')) || []
         };
 
-        // State managers
-        let activeLiveCity = 'almaty';
-        let activeFilterCity = 'almaty';
-        let activeFilterCategory = 'all';
+        const routes = {
+            '/': { title: 'Басты бет', protected: false },
+            '/prices': { title: 'Прайс-лист', protected: false },
+            '/products': { title: 'Өнімдер', protected: false },
+            '/about': { title: 'Компания', protected: false },
+            '/contact': { title: 'Байланыс', protected: false },
+            '/auth': { title: 'Кіру', protected: false },
+            '/lab': { title: 'Зертхана', protected: true },
+            '/nb': { title: 'Нефтебаза', protected: true },
+            '/azk': { title: 'АЗК', protected: true },
+            '/cabinet': { title: 'Кабинет', protected: true },
+            '/admin': { title: 'Admin', protected: true, role: 'admin' }
+        };
 
-        // Initialize view
-        document.addEventListener('DOMContentLoaded', () => {
-            renderLivePrices();
-            renderPricesGrid();
-        });
+        // Router
+        function navigate() {
+            const hash = window.location.hash || '#/';
+            const path = hash.slice(1);
+            const route = routes[path] || routes['/'];
 
-        // Tab Switcher
-        function switchTab(tabName) {
-            // Hide all
-            document.getElementById('sec-home').classList.add('hidden');
-            document.getElementById('sec-prices').classList.add('hidden');
-            document.getElementById('sec-company').classList.add('hidden');
-            
-            // Remove active style from tabs
-            document.getElementById('tab-home').className = "px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white";
-            document.getElementById('tab-prices').className = "px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white";
-            document.getElementById('tab-company').className = "px-5 py-2 rounded-full font-medium transition-colors text-gray-400 hover:text-white";
-
-            // Show and set active
-            document.getElementById(`sec-${tabName}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabName}`).className = "px-5 py-2 rounded-full font-medium transition-colors bg-white/10 text-white";
-        }
-
-        // Live prices widget selector
-        function setLiveCity(city) {
-            activeLiveCity = city;
-            ['almaty', 'astana', 'shymkent', 'atyrau'].forEach(c => {
-                const btn = document.getElementById(`live-btn-${c}`);
-                if (c === city) {
-                    btn.className = "flex-1 py-1.5 px-3 rounded-lg font-medium bg-cyan-600 text-white transition-all";
-                } else {
-                    btn.className = "flex-1 py-1.5 px-3 rounded-lg font-medium text-gray-400 hover:text-white transition-all";
-                }
-            });
-            renderLivePrices();
-        }
-
-        function renderLivePrices() {
-            const list = pricingData[activeLiveCity];
-            const container = document.getElementById('live-prices-container');
-            container.innerHTML = '';
-
-            list.forEach(item => {
-                const isUp = item.status === 'up';
-                const trendColor = isUp ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10';
-                
-                const html = `
-                    <div class="flex items-center justify-between border-b border-white/5 pb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-xs text-gray-400">
-                                ${item.cat === 'auto' ? '⛽' : '✈️'}
-                            </div>
-                            <div>
-                                <span class="font-semibold text-sm block">${item.name}</span>
-                                <span class="text-[10px] text-gray-500 capitalize block">${activeLiveCity}</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span class="font-black text-base block">${item.price}.00 <span class="text-[10px] text-gray-400 font-normal">т/л</span></span>
-                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md ${trendColor}">${item.trend}</span>
-                        </div>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
-            });
-        }
-
-        // Filter Page Functions
-        function setFilterCity(city) {
-            activeFilterCity = city;
-            ['almaty', 'astana', 'shymkent', 'atyrau'].forEach(c => {
-                const btn = document.getElementById(`filter-city-${c}`);
-                if (c === city) {
-                    btn.className = "px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-cyan-600 bg-cyan-600 text-white flex items-center gap-2";
-                } else {
-                    btn.className = "px-5 py-2.5 rounded-full border text-sm font-semibold transition-all border-white/10 bg-white/5 text-gray-400 hover:text-white flex items-center gap-2";
-                }
-            });
-            renderPricesGrid();
-        }
-
-        function setFilterCategory(cat) {
-            activeFilterCategory = cat;
-            ['all', 'auto', 'avia'].forEach(c => {
-                const btn = document.getElementById(`filter-cat-${c}`);
-                if (c === cat) {
-                    btn.className = "px-4 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white transition-all";
-                } else {
-                    btn.className = "px-4 py-1.5 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-all";
-                }
-            });
-            renderPricesGrid();
-        }
-
-        function renderPricesGrid() {
-            const list = pricingData[activeFilterCity];
-            const container = document.getElementById('prices-grid');
-            container.innerHTML = '';
-
-            const filtered = list.filter(item => {
-                if (activeFilterCategory === 'all') return true;
-                return item.cat === activeFilterCategory;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-12">Таңдалған санат бойынша өнімдер табылмады.</div>';
+            // Protection
+            if (route.protected && !state.user) {
+                window.location.hash = '#/auth';
+                return;
+            }
+            if (route.role === 'admin' && state.user?.role !== 'admin') {
+                window.location.hash = '#/';
                 return;
             }
 
-            filtered.forEach(item => {
-                const isUp = item.status === 'up';
-                const trendColor = isUp ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10';
-                
-                // SVG dynamic path for sparkline based on up/down status
-                const graphPath = isUp 
-                    ? "M10 50 Q 80 10, 160 40 T 320 30" 
-                    : "M10 20 Q 80 50, 160 15 T 320 45";
-                const graphColor = isUp ? "url(#green-glow)" : "url(#red-glow)";
-                const graphStroke = isUp ? "#10b981" : "#ef4444";
+            document.title = `${route.title} | Navarro Energy`;
+            renderView(path);
+            updateNav(path);
+            lucide.createIcons();
+        }
 
-                const html = `
-                    <div class="border border-white/5 bg-slate-900/30 backdrop-blur-md rounded-3xl p-6 shadow-lg hover:border-white/10 transition-all flex flex-col justify-between h-64">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs text-gray-500 flex items-center gap-1">
-                                    ${item.cat === 'auto' ? '⛽' : '✈️'} ${item.name}
-                                </span>
-                                <span class="text-xs font-bold px-2 py-0.5 rounded-md ${trendColor}">${item.trend}</span>
+        function renderView(path) {
+            const container = document.getElementById('view-container');
+            container.innerHTML = `<div class="animate-fade-in px-6 max-w-7xl mx-auto" id="view-content">
+                <p class="text-navarro-dim">Жүктелуде...</p>
+            </div>`;
+
+            const viewContent = document.getElementById('view-content');
+
+            switch(path) {
+                case '/': renderHome(viewContent); break;
+                case '/prices': renderPrices(viewContent); break;
+                case '/products': renderProducts(viewContent); break;
+                case '/about': renderAbout(viewContent); break;
+                case '/contact': renderContact(viewContent); break;
+                case '/auth': renderAuth(viewContent); break;
+                case '/cabinet': renderCabinet(viewContent); break;
+                case '/admin': renderAdmin(viewContent); break;
+                case '/lab': renderLab(viewContent); break;
+                case '/nb': renderNB(viewContent); break;
+                case '/azk': renderAZK(viewContent); break;
+                default: viewContent.innerHTML = `<div class="p-12 text-center"><h1 class="text-4xl font-bold mb-4">404</h1><p>Бет табылмады</p></div>`;
+            }
+            lucide.createIcons();
+        }
+
+        function updateNav(path) {
+            // Update active state in nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.toggle('active', link.getAttribute('data-route') === path);
+            });
+
+            // Update Header visibility based on user
+            const authButtons = document.getElementById('auth-buttons');
+            const userMenu = document.getElementById('user-menu');
+            const protectedLinks = document.getElementById('protected-links');
+            const protectedLinksMobile = document.getElementById('protected-links-mobile');
+            const adminLink = document.getElementById('admin-link-container');
+
+            if (state.user) {
+                authButtons.classList.add('hidden');
+                userMenu.classList.remove('hidden');
+                protectedLinks.classList.remove('hidden');
+                protectedLinksMobile.classList.remove('hidden');
+                adminLink.classList.toggle('hidden', state.user.role !== 'admin');
+            } else {
+                authButtons.classList.remove('hidden');
+                userMenu.classList.add('hidden');
+                protectedLinks.classList.add('hidden');
+                protectedLinksMobile.classList.add('hidden');
+            }
+        }
+
+        // Event Listeners
+        window.addEventListener('hashchange', navigate);
+        window.addEventListener('load', () => {
+            navigate();
+            lucide.createIcons();
+        });
+
+        // Mobile Menu
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileClose = document.getElementById('mobile-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileToggle.onclick = () => mobileMenu.classList.remove('translate-x-full');
+        mobileClose.onclick = () => mobileMenu.classList.add('translate-x-full');
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.onclick = () => mobileMenu.classList.add('translate-x-full');
+        });
+
+        // Public Views
+        function renderHome(target) {
+            const news = [
+                { id: 1, title: 'Жаңа мұнай базасы іске қосылды', date: '12.06.2026', img: 'https://images.unsplash.com/photo-1542060748-10c28b629f6f?auto=format&fit=crop&q=80&w=500', content: 'Алматы облысында сыйымдылығы 24 000 тонна болатын жаңа мұнай базасы пайдалануға берілді.' },
+                { id: 2, title: 'JET A-1 жеткізу көлемі артты', date: '10.06.2026', img: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=500', content: 'Халықаралық әуежайларға авиаотын жеткізу бойынша жаңа келісімшарттар жасалды.' },
+                { id: 3, title: 'Argus индексі бойынша талдау', date: '08.06.2026', img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=500', content: 'Маусым айындағы бағалар динамикасы және нарық болжамы.' }
+            ];
+
+            const html = `
+                <div class="space-y-24">
+                    <!-- Hero Section -->
+                    <section class="flex flex-col lg:flex-row items-center gap-16 py-12">
+                        <div class="lg:w-3/5">
+                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-navarro-border bg-navarro-card text-xs font-bold text-navarro-primary mb-8 uppercase tracking-widest">
+                                <span class="w-2 h-2 rounded-full bg-navarro-primary animate-pulse"></span>
+                                Алматы · Байзақова 280 · 2026
                             </div>
-                            <div class="flex items-baseline gap-1.5">
-                                <span class="text-4xl font-black">${item.price}</span>
-                                <span class="text-xs text-gray-400 font-medium">т/л</span>
+                            <h1 class="text-6xl lg:text-8xl font-black tracking-tighter leading-[0.9] mb-8">
+                                Navarro <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-navarro-primary to-blue-300">Trade</span>
+                            </h1>
+                            <p class="text-lg text-navarro-dim max-w-xl mb-12 leading-relaxed">
+                                Қазақстанның көтерме отын нарығындағы көшбасшы. <span class="text-white font-medium">АИ-92, АИ-95, ДТ</span> және <span class="text-white font-medium">JET A-1</span> өнімдерін тікелей зауыттан жеткіземіз.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <a href="#/prices" class="bg-navarro-primary hover:bg-blue-600 text-white font-bold px-8 py-4 rounded-2xl transition-all flex items-center gap-2">
+                                    Бағаларды көру
+                                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                                </a>
+                                <a href="#/about" class="glass hover:bg-white/10 text-white font-bold px-8 py-4 rounded-2xl transition-all">
+                                    Компания туралы
+                                </a>
                             </div>
-                            <span class="text-[10px] text-gray-500 block capitalize mt-1">📍 ${activeFilterCity}</span>
                         </div>
-
-                        <!-- Sparkline graphic -->
-                        <div class="w-full h-16 my-2">
-                            <svg class="w-full h-full" viewBox="0 0 320 60" fill="none" preserveAspectRatio="none">
-                                <defs>
-                                    <linearGradient id="green-glow" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/>
-                                        <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
-                                    </linearGradient>
-                                    <linearGradient id="red-glow" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#ef4444" stop-opacity="0.25"/>
-                                        <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
-                                    </linearGradient>
-                                </defs>
-                                <path d="${graphPath} L 320 60 L 10 60 Z" fill="${graphColor}" />
-                                <path d="${graphPath}" stroke="${graphStroke}" stroke-width="2.5" stroke-linecap="round"/>
-                            </svg>
+                        <div class="lg:w-2/5 w-full">
+                            <div class="glass p-8 rounded-[2.5rem] relative overflow-hidden">
+                                <div class="flex items-center justify-between mb-8">
+                                    <h3 class="font-bold text-xl">Тірі бағалар</h3>
+                                    <span class="text-[10px] bg-green-500/10 text-green-500 px-2 py-1 rounded font-black uppercase tracking-widest">Live · Argus</span>
+                                </div>
+                                <div class="space-y-6">
+                                    ${state.prices.slice(0, 4).map(p => `
+                                        <div class="flex items-center justify-between border-b border-navarro-border pb-4 last:border-0 last:pb-0">
+                                            <div class="flex items-center gap-4">
+                                                <div class="w-10 h-10 rounded-xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary">
+                                                    <i data-lucide="${p.cat === 'auto' ? 'fuel' : 'plane'}" class="w-5 h-5"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-sm">${p.name}</p>
+                                                    <p class="text-[10px] text-navarro-dim uppercase">Көтерме</p>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="font-black text-lg">${p.price}.00 <span class="text-[10px] text-navarro-dim">тг/л</span></p>
+                                                <p class="text-[10px] font-bold ${p.status === 'up' ? 'text-green-500' : p.status === 'down' ? 'text-red-500' : 'text-navarro-dim'}">
+                                                    ${p.status === 'up' ? '↑' : p.status === 'down' ? '↓' : '•'} ${p.trend}%
+                                                </p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
                         </div>
+                    </section>
 
-                        <div class="flex items-center justify-between border-t border-white/5 pt-3 text-[10px] text-gray-500">
-                            <span>14 күндік динамика</span>
-                            <span>${item.vol}</span>
+                    <!-- Bento Advantages -->
+                    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass p-8 rounded-3xl col-span-1 md:col-span-2 flex flex-col justify-between h-64 border-l-4 border-l-navarro-primary">
+                            <div>
+                                <i data-lucide="check-circle" class="w-8 h-8 text-navarro-primary mb-4"></i>
+                                <h3 class="text-2xl font-bold mb-2">Сапа кепілдігі</h3>
+                                <p class="text-navarro-dim text-sm max-w-md">Әрбір жеткізілім халықаралық стандарттар мен ГОСТ-қа сәйкес келеді. Зертханалық тексеруден өткен.</p>
+                            </div>
+                        </div>
+                        <div class="glass p-8 rounded-3xl flex flex-col justify-between h-64">
+                            <div>
+                                <i data-lucide="truck" class="w-8 h-8 text-navarro-primary mb-4"></i>
+                                <h3 class="text-2xl font-bold mb-2">Жедел жеткізу</h3>
+                                <p class="text-navarro-dim text-sm">Жеке логистикалық желі арқылы Қазақстанның кез келген нүктесіне жеткізу.</p>
+                            </div>
+                        </div>
+                        <div class="glass p-8 rounded-3xl flex flex-col justify-between h-64">
+                            <div>
+                                <i data-lucide="bar-chart-3" class="w-8 h-8 text-navarro-primary mb-4"></i>
+                                <h3 class="text-2xl font-bold mb-2">Ашық баға</h3>
+                                <p class="text-navarro-dim text-sm">Argus индексіне негізделген әділ және тұрақты баға саясаты.</p>
+                            </div>
+                        </div>
+                        <div class="glass p-8 rounded-3xl col-span-1 md:col-span-2 flex flex-col justify-between h-64 border-r-4 border-r-navarro-accent">
+                            <div>
+                                <i data-lucide="globe" class="w-8 h-8 text-navarro-primary mb-4"></i>
+                                <h3 class="text-2xl font-bold mb-2">Ауқымды желі</h3>
+                                <p class="text-navarro-dim text-sm max-w-md">Біздің мұнай базалары мен АЗК желілері елдің маңызды транзиттік дәліздерінде орналасқан.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- News Carousel -->
+                    <section>
+                        <div class="flex items-center justify-between mb-12">
+                            <h2 class="text-4xl font-bold">Жаңалықтар</h2>
+                            <div class="flex gap-2">
+                                <button class="p-2 glass rounded-full hover:bg-white/10 transition-colors"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+                                <button class="p-2 glass rounded-full hover:bg-white/10 transition-colors"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                            </div>
+                        </div>
+                        <div class="flex gap-6 overflow-x-auto no-scrollbar pb-6">
+                            ${news.map(n => `
+                                <div class="min-w-[350px] glass rounded-3xl overflow-hidden group cursor-pointer" onclick="openNewsModal(${n.id})">
+                                    <div class="h-48 overflow-hidden">
+                                        <img src="${n.img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="${n.title}">
+                                    </div>
+                                    <div class="p-6">
+                                        <p class="text-[10px] text-navarro-dim font-bold mb-2 uppercase">${n.date}</p>
+                                        <h3 class="text-xl font-bold mb-4 line-clamp-2">${n.title}</h3>
+                                        <p class="text-navarro-dim text-sm line-clamp-3 mb-6">${n.content}</p>
+                                        <span class="text-navarro-primary font-bold text-sm flex items-center gap-2">
+                                            Толығырақ <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                </div>
+
+                <!-- News Modal -->
+                <div id="news-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
+                    <div class="absolute inset-0 bg-black/60 backdrop-blur-md" onclick="closeNewsModal()"></div>
+                    <div class="glass-strong rounded-[2.5rem] max-w-2xl w-full p-8 relative animate-fade-in overflow-y-auto max-h-[90vh]">
+                        <button onclick="closeNewsModal()" class="absolute top-6 right-6 p-2 glass rounded-full text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+                        <div id="modal-content"></div>
+                    </div>
+                </div>
+            `;
+            target.innerHTML = html;
+        }
+
+        function openNewsModal(id) {
+            const news = {
+                1: { title: 'Жаңа мұнай базасы іске қосылды', date: '12.06.2026', img: 'https://images.unsplash.com/photo-1542060748-10c28b629f6f?auto=format&fit=crop&q=80&w=800', content: 'Алматы облысында сыйымдылығы 24 000 тонна болатын жаңа мұнай базасы пайдалануға берілді. Бұл кешен ең заманауи автоматтандырылған басқару жүйелерімен және өрт қауіпсіздігі құрылғыларымен жабдықталған. Жаңа база өңірдегі отын тапшылығын жоюға және баға тұрақтылығын сақтауға көмектеседі.' },
+                2: { title: 'JET A-1 жеткізу көлемі артты', date: '10.06.2026', img: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=800', content: 'Халықаралық әуежайларға авиаотын жеткізу бойынша жаңа келісімшарттар жасалды. Navarro Trade авиациялық отын нарығындағы үлесін 15%-ға дейін арттырды. Біз жеткізетін JET A-1 отыны JIG 2 стандартына толық сәйкес келеді.' },
+                3: { title: 'Argus индексі бойынша талдау', date: '08.06.2026', img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=800', content: 'Маусым айындағы бағалар динамикасы және нарық болжамы. Халықаралық Argus агенттігінің мәліметтері бойынша, жазғы маусымда дизель отынына сұраныс артады. Біздің сарапшылар бағаның 2-3%-ға өсуін болжап отыр.' }
+            };
+            const n = news[id];
+            document.getElementById('modal-content').innerHTML = `
+                <img src="${n.img}" class="w-full h-64 object-cover rounded-3xl mb-8">
+                <p class="text-xs text-navarro-primary font-bold uppercase mb-2">${n.date}</p>
+                <h2 class="text-3xl font-bold mb-6">${n.title}</h2>
+                <p class="text-navarro-dim leading-relaxed mb-8">${n.content}</p>
+                <div class="h-px bg-navarro-border mb-8"></div>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-navarro-primary flex items-center justify-center text-white font-bold">N</div>
+                    <div>
+                        <p class="text-white font-bold">Navarro Editorial</p>
+                        <p class="text-xs text-navarro-dim">Нарық сарапшысы</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('news-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeNewsModal() {
+            document.getElementById('news-modal').classList.add('hidden');
+        }
+
+        function renderPrices(target) {
+            const html = `
+                <div class="space-y-12">
+                    <header>
+                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Прайс-лист</h1>
+                        <p class="text-navarro-dim max-w-2xl">Ағымдағы бағалар Argus индексіне негізделген. Соңғы жаңарту: ${new Date().toLocaleDateString()}</p>
+                    </header>
+
+                    <!-- Fuel Calculator -->
+                    <section class="glass p-8 rounded-[2.5rem]">
+                        <div class="flex items-center gap-3 mb-8">
+                            <i data-lucide="calculator" class="w-6 h-6 text-navarro-primary"></i>
+                            <h3 class="font-bold text-xl">Отын калькуляторы</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Отын түрі</label>
+                                <select id="calc-fuel" onchange="updateCalcDensity()" class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
+                                    ${state.prices.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Көлем (литр)</label>
+                                <input type="number" id="calc-vol" oninput="calculateMass()" placeholder="0" class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Тығыздық (кг/м³)</label>
+                                <input type="number" id="calc-dens" step="0.001" oninput="calculateMass()" placeholder="0.000" class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
+                            </div>
+                            <div class="bg-navarro-primary/10 border border-navarro-primary/20 rounded-2xl p-4 flex flex-col justify-center">
+                                <p class="text-[10px] text-navarro-primary font-bold uppercase mb-1">Жалпы Масса / Құны</p>
+                                <div class="flex items-baseline justify-between">
+                                    <span id="calc-res-mass" class="text-xl font-black">0 <span class="text-[10px]">кг</span></span>
+                                    <span id="calc-res-total" class="text-xl font-black text-navarro-primary">0 <span class="text-[10px]">тг</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Prices Table -->
+                    <div class="overflow-x-auto glass rounded-3xl">
+                        <table class="w-full text-left">
+                            <thead class="bg-white/5 border-b border-navarro-border">
+                                <tr>
+                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Отын түрі</th>
+                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Өлшем бірлігі</th>
+                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Баға (теңге)</th>
+                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Өзгеріс</th>
+                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Дереккөз</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-navarro-border">
+                                ${state.prices.map(p => `
+                                    <tr class="hover:bg-white/[0.02] transition-colors">
+                                        <td class="px-8 py-6 font-bold">${p.name}</td>
+                                        <td class="px-8 py-6 text-navarro-dim">${p.unit}</td>
+                                        <td class="px-8 py-6 font-black text-xl">${p.price}.00</td>
+                                        <td class="px-8 py-6">
+                                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${p.status === 'up' ? 'bg-green-500/10 text-green-500' : p.status === 'down' ? 'bg-red-500/10 text-red-500' : 'bg-gray-500/10 text-gray-500'}">
+                                                ${p.status === 'up' ? '↑' : p.status === 'down' ? '↓' : '•'} ${p.trend}%
+                                            </span>
+                                        </td>
+                                        <td class="px-8 py-6">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                                <span class="text-xs font-bold">${p.source}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            target.innerHTML = html;
+            updateCalcDensity();
+        }
+
+        function updateCalcDensity() {
+            const fuelId = document.getElementById('calc-fuel').value;
+            const fuel = state.prices.find(p => p.id == fuelId);
+            if (fuel) {
+                document.getElementById('calc-dens').value = fuel.density;
+                calculateMass();
+            }
+        }
+
+        function calculateMass() {
+            const vol = parseFloat(document.getElementById('calc-vol').value) || 0;
+            const dens = parseFloat(document.getElementById('calc-dens').value) || 0;
+            const fuelId = document.getElementById('calc-fuel').value;
+            const fuel = state.prices.find(p => p.id == fuelId);
+
+            const mass = vol * dens;
+            const total = vol * (fuel ? fuel.price : 0);
+
+            document.getElementById('calc-res-mass').innerHTML = `${mass.toFixed(1)} <span class="text-[10px]">кг</span>`;
+            document.getElementById('calc-res-total').innerHTML = `${total.toLocaleString()} <span class="text-[10px]">тг</span>`;
+        }
+
+        function renderProducts(target) {
+            const products = [
+                { name: 'АИ-92 Автобензин', gost: 'ГОСТ 32513-2013', desc: 'Детонацияға төзімділігі жоғары, күнделікті қолданысқа арналған отын.', specs: ['Октан саны: 92+', 'Күкірт мөлшері: <10 мг/кг', 'Тікелей жеткізу'] },
+                { name: 'АИ-95 Автобензин', gost: 'ГОСТ 32513-2013', desc: 'Премиум санаттағы қозғалтқыштарға арналған жоғары сапалы отын.', specs: ['Октан саны: 95+', 'Экологиялық класс: К5', 'Қозғалтқыш қорғанысы'] },
+                { name: 'Дизель отыны (ДТ)', gost: 'СТ РК 1528-2006', desc: 'Жазғы және қысқы дизель отыны. Цетан саны жоғары.', specs: ['Цетан саны: 51+', 'Тығыздығы: 820-845 кг/м³', 'Сүзгіштік шегі: -35°C (қысқы)'] },
+                { name: 'JET A-1 Авиаотын', gost: 'ASTM D1655 / JIG 2', desc: 'Халықаралық стандарттарға сай авиациялық керосин.', specs: ['Қату температурасы: -47°C', 'Жылу сыйымдылығы: жоғары', 'Сертификатталған'] }
+            ];
+
+            const html = `
+                <div class="space-y-12">
+                    <header>
+                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Өнімдер</h1>
+                        <p class="text-navarro-dim max-w-2xl">Біз ұсынатын өнімдердің барлығы сапа сертификаттарымен қамтамасыз етілген және мемлекеттік стандарттарға толық сәйкес келеді.</p>
+                    </header>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        ${products.map(p => `
+                            <div class="glass p-8 rounded-[2.5rem] border-t border-white/5 hover:border-navarro-primary transition-all group">
+                                <div class="flex justify-between items-start mb-8">
+                                    <div>
+                                        <h3 class="text-2xl font-bold mb-2">${p.name}</h3>
+                                        <span class="text-[10px] bg-navarro-primary/20 text-navarro-primary px-2 py-1 rounded font-black">${p.gost}</span>
+                                    </div>
+                                    <div class="w-12 h-12 rounded-2xl glass flex items-center justify-center text-navarro-dim group-hover:text-navarro-primary transition-colors">
+                                        <i data-lucide="package" class="w-6 h-6"></i>
+                                    </div>
+                                </div>
+                                <p class="text-navarro-dim text-sm mb-8 leading-relaxed">${p.desc}</p>
+                                <ul class="space-y-3">
+                                    ${p.specs.map(s => `
+                                        <li class="flex items-center gap-3 text-xs font-medium">
+                                            <i data-lucide="check" class="w-4 h-4 text-navarro-primary"></i>
+                                            ${s}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                                <button class="w-full mt-10 py-4 rounded-2xl glass font-bold hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                                    Сертификатты жүктеу
+                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            target.innerHTML = html;
+        }
+
+        function renderAbout(target) {
+            const html = `
+                <div class="space-y-24">
+                    <section class="flex flex-col lg:flex-row gap-16 items-center">
+                        <div class="lg:w-1/2">
+                            <h1 class="text-6xl font-black mb-8 leading-tight">Энергия — <br>біздің <span class="text-navarro-primary">мамандығымыз</span></h1>
+                            <p class="text-navarro-dim text-lg leading-relaxed mb-8">
+                                Navarro Trade — 2012 жылдан бері Қазақстанның мұнай өнімдері нарығында табысты жұмыс істеп келе жатқан динамикалық компания. Біздің басты мақсатымыз — тұтынушыларды сапалы отынмен үздіксіз қамтамасыз ету.
+                            </p>
+                            <div class="grid grid-cols-2 gap-8">
+                                <div>
+                                    <p class="text-4xl font-black text-white mb-2">14+</p>
+                                    <p class="text-xs text-navarro-dim uppercase font-bold tracking-widest">Жыл нарықта</p>
+                                </div>
+                                <div>
+                                    <p class="text-4xl font-black text-white mb-2">500+</p>
+                                    <p class="text-xs text-navarro-dim uppercase font-bold tracking-widest">Тұрақты клиенттер</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2 w-full">
+                            <div class="relative">
+                                <div class="absolute -inset-4 bg-navarro-primary/20 blur-3xl rounded-full"></div>
+                                <img src="https://images.unsplash.com/photo-1454165833767-027ff33027ef?auto=format&fit=crop&q=80&w=800" class="relative rounded-[3rem] border border-white/10 shadow-2xl">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="glass p-10 rounded-[2.5rem]">
+                            <h3 class="text-xl font-bold mb-6 text-navarro-primary italic">Миссия</h3>
+                            <p class="text-navarro-dim text-sm leading-relaxed">Нарықтағы ең озық технологияларды қолдана отырып, отын жеткізу процесін қарапайым, ашық және сенімді ету.</p>
+                        </div>
+                        <div class="glass p-10 rounded-[2.5rem]">
+                            <h3 class="text-xl font-bold mb-6 text-navarro-primary italic">Құндылықтар</h3>
+                            <p class="text-navarro-dim text-sm leading-relaxed">Біз үшін серіктестеріміздің сенімі мен өнім сапасы кез келген пайдадан жоғары тұрады.</p>
+                        </div>
+                        <div class="glass p-10 rounded-[2.5rem]">
+                            <h3 class="text-xl font-bold mb-6 text-navarro-primary italic">Болашақ</h3>
+                            <p class="text-navarro-dim text-sm leading-relaxed">2030 жылға қарай Орталық Азиядағы ең цифрланған энергетикалық хабқа айналу.</p>
+                        </div>
+                    </section>
+                </div>
+            `;
+            target.innerHTML = html;
+        }
+
+        function renderContact(target) {
+            const html = `
+                <div class="space-y-12">
+                    <header>
+                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Байланыс</h1>
+                        <p class="text-navarro-dim max-w-2xl">Бізбен кез келген ыңғайлы жолмен хабарласыңыз. Біздің мамандар сізге көмектесуге дайын.</p>
+                    </header>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        <div class="lg:col-span-5 space-y-8">
+                            <div class="glass p-8 rounded-3xl flex gap-6">
+                                <div class="w-12 h-12 rounded-2xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary shrink-0">
+                                    <i data-lucide="map-pin" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2">Мекенжай</h4>
+                                    <p class="text-navarro-dim text-sm italic">Алматы қаласы, Байзақова көшесі, 280, "Almaty Towers" БО</p>
+                                </div>
+                            </div>
+                            <div class="glass p-8 rounded-3xl flex gap-6">
+                                <div class="w-12 h-12 rounded-2xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary shrink-0">
+                                    <i data-lucide="phone" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2">Телефон</h4>
+                                    <p class="text-navarro-dim text-sm">+7 (771) 492-95-37</p>
+                                    <p class="text-navarro-dim text-sm">+7 (727) 344-22-11</p>
+                                </div>
+                            </div>
+                            <div class="glass p-8 rounded-3xl flex gap-6">
+                                <div class="w-12 h-12 rounded-2xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary shrink-0">
+                                    <i data-lucide="mail" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2">Email</h4>
+                                    <p class="text-navarro-dim text-sm">info@navarro.kz</p>
+                                    <p class="text-navarro-dim text-sm">sales@navarro.kz</p>
+                                </div>
+                            </div>
+                            <div class="glass p-8 rounded-3xl flex gap-6">
+                                <div class="w-12 h-12 rounded-2xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary shrink-0">
+                                    <i data-lucide="clock" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2">Жұмыс уақыты</h4>
+                                    <p class="text-navarro-dim text-sm italic">Дүйсенбі - Жұма: 09:00 - 18:00</p>
+                                    <p class="text-navarro-dim text-sm italic">Сенбі - Жексенбі: Демалыс</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-7 h-[600px] glass rounded-[2.5rem] overflow-hidden relative border border-white/5">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2906.7701764654316!2d76.9073173!3d43.2352528!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836ec7d87d4653%3A0xf635193907a9807b!2z0YPQuy4g0JHQsNC50LfQsNC60L7QstCwIDI4MCwg0JDQu9C80LDRgtGLIDA1MDAwMA!5e0!3m2!1sru!2skz!4v1718451234567!5m2!1sru!2skz" width="100%" height="100%" style="border:0; filter: invert(90%) hue-rotate(180deg) contrast(90%);" allowfullscreen="" loading="lazy"></iframe>
+                            <div class="absolute bottom-8 right-8">
+                                <a href="https://wa.me/77714929537" target="_blank" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl flex items-center gap-3 transition-all">
+                                    <i data-lucide="message-circle" class="w-6 h-6"></i>
+                                    <span class="font-bold">WhatsApp жазу</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
+                </div>
+            `;
+            target.innerHTML = html;
+        }
+
+        // Auth Views
+        function renderAuth(target) {
+            const html = `
+                <div class="max-w-md mx-auto py-12">
+                    <div class="glass p-10 rounded-[2.5rem]">
+                        <h2 class="text-3xl font-bold mb-2">Қош келдіңіз</h2>
+                        <p class="text-navarro-dim text-sm mb-8">Жүйеге кіру үшін деректеріңізді енгізіңіз</p>
+
+                        <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-6">
+                            <div>
+                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Email</label>
+                                <input type="email" id="auth-email" required class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Құпия сөз</label>
+                                <input type="password" id="auth-password" required class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
+                            </div>
+                            <button type="submit" class="w-full bg-navarro-primary hover:bg-blue-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-500/20">
+                                Кіру
+                            </button>
+                        </form>
+
+                        <div class="relative my-8">
+                            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-navarro-border"></div></div>
+                            <div class="relative flex justify-center text-xs uppercase"><span class="bg-navarro-card px-2 text-navarro-dim">Немесе</span></div>
+                        </div>
+
+                        <button onclick="handleGoogleLogin()" class="w-full glass hover:bg-white/10 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-3">
+                            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5">
+                            Google арқылы кіру
+                        </button>
+
+                        <p class="mt-8 text-center text-sm text-navarro-dim">
+                            Аккаунтыңыз жоқ па? <a href="#" class="text-navarro-primary font-bold">Тіркелу</a>
+                        </p>
+
+                        <div class="mt-8 p-4 bg-white/5 rounded-2xl border border-white/5">
+                            <p class="text-[10px] text-navarro-dim font-bold uppercase mb-2">Демо аккаунттар:</p>
+                            <p class="text-[10px] text-navarro-dim italic">admin@navarro.kz / admin123</p>
+                            <p class="text-[10px] text-navarro-dim italic">user1@navarro.kz / user123</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            target.innerHTML = html;
+        }
+
+        const demoUsers = [
+            { email: 'admin@navarro.kz', password: 'admin123', name: 'Admin Navarro', role: 'admin', company: 'Navarro Trade' },
+            { email: 'user1@navarro.kz', password: 'user123', name: 'Асхат Серіков', role: 'user', company: 'Oil Trans LLP' },
+            { email: 'user2@navarro.kz', password: 'user456', name: 'Жанна Мұрат', role: 'user', company: 'Azk Gold' }
+        ];
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-password').value;
+
+            const user = demoUsers.find(u => u.email === email && u.password === pass);
+
+            if (user) {
+                state.user = { ...user, avatar: 'https://i.pravatar.cc/150?u=' + email };
+                localStorage.setItem('navarro_user', JSON.stringify(state.user));
+                logAction('Жүйеге кіру', `Пайдаланушы ${user.name} жүйеге кірді`);
+                window.location.hash = user.role === 'admin' ? '#/admin' : '#/cabinet';
+            } else {
+                alert('Қате email немесе құпия сөз');
+            }
+        }
+
+        function handleGoogleLogin() {
+            const user = demoUsers[1]; // Mock user1
+            state.user = { ...user, avatar: 'https://i.pravatar.cc/150?u=' + user.email };
+            localStorage.setItem('navarro_user', JSON.stringify(state.user));
+            logAction('Google арқылы кіру', `Пайдаланушы ${user.name} Google арқылы кірді`);
+            window.location.hash = '#/cabinet';
+        }
+
+        function logout() {
+            logAction('Жүйеден шығу', `Пайдаланушы ${state.user.name} жүйеден шықты`);
+            state.user = null;
+            localStorage.removeItem('navarro_user');
+            window.location.hash = '#/auth';
+        }
+
+        function logAction(type, desc) {
+            const log = {
+                id: Date.now(),
+                user: state.user ? state.user.name : 'Қонақ',
+                email: state.user ? state.user.email : 'guest',
+                type,
+                desc,
+                date: new Date().toLocaleString()
+            };
+            state.logs.unshift(log);
+            localStorage.setItem('navarro_logs', JSON.stringify(state.logs.slice(0, 100)));
+
+            // Trigger notification for admin
+            if (state.user && state.user.role !== 'admin') {
+                const notifications = JSON.parse(localStorage.getItem('navarro_notifications')) || [];
+                notifications.unshift({ ...log, read: false });
+                localStorage.setItem('navarro_notifications', JSON.stringify(notifications.slice(0, 20)));
+                updateAdminBadge();
+            }
+        }
+
+        // Protected Views
+        function renderCabinet(target) {
+            const userLogs = state.logs.filter(l => l.email === state.user.email);
+            const html = `
+                <div class="space-y-12">
+                    <header class="flex items-center justify-between">
+                        <div>
+                            <h1 class="text-4xl font-black mb-2">Жеке кабинет</h1>
+                            <p class="text-navarro-dim">Сәлеметсіз бе, ${state.user.name}!</p>
+                        </div>
+                        <button onclick="logout()" class="glass px-6 py-3 rounded-xl text-navarro-destructive font-bold flex items-center gap-2 hover:bg-white/10 transition-all">
+                            <i data-lucide="log-out" class="w-5 h-5"></i>
+                            Шығу
+                        </button>
+                    </header>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div class="lg:col-span-4 space-y-8">
+                            <div class="glass p-8 rounded-[2.5rem] text-center">
+                                <div class="relative inline-block mb-6">
+                                    <img src="${state.user.avatar}" class="w-32 h-32 rounded-full border-4 border-navarro-primary p-1">
+                                    <button class="absolute bottom-0 right-0 p-2 bg-navarro-primary rounded-full text-white border-4 border-navarro-bg">
+                                        <i data-lucide="camera" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                <h3 class="text-xl font-bold mb-1">${state.user.name}</h3>
+                                <p class="text-xs text-navarro-dim uppercase font-black mb-6">${state.user.role}</p>
+                                <div class="space-y-4 text-left">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <i data-lucide="mail" class="w-4 h-4 text-navarro-dim"></i>
+                                        <span>${state.user.email}</span>
+                                    </div>
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <i data-lucide="briefcase" class="w-4 h-4 text-navarro-dim"></i>
+                                        <span>${state.user.company}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-8">
+                            <div class="glass p-8 rounded-[2.5rem]">
+                                <h3 class="text-xl font-bold mb-8 flex items-center gap-3">
+                                    <i data-lucide="activity" class="w-6 h-6 text-navarro-primary"></i>
+                                    Әрекеттер тарихы
+                                </h3>
+                                <div class="space-y-8 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-px before:bg-navarro-border">
+                                    ${userLogs.length > 0 ? userLogs.map(l => `
+                                        <div class="relative pl-10">
+                                            <div class="absolute left-0 top-1 w-[24px] h-[24px] rounded-full bg-navarro-bg border-4 border-navarro-primary"></div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <p class="font-bold text-sm">${l.type}</p>
+                                                <span class="text-[10px] text-navarro-dim">${l.date}</span>
+                                            </div>
+                                            <p class="text-sm text-navarro-dim">${l.desc}</p>
+                                        </div>
+                                    `).join('') : '<p class="text-center text-navarro-dim py-12">Әрекеттер табылмады</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            target.innerHTML = html;
+        }
+
+        function renderAdmin(target) {
+            const notifications = JSON.parse(localStorage.getItem('navarro_notifications')) || [];
+            const html = `
+                <div class="space-y-12">
+                    <header class="flex items-center justify-between">
+                        <div>
+                            <h1 class="text-4xl font-black mb-2">Admin Dashboard</h1>
+                            <p class="text-navarro-dim">Жүйені басқару және мониторинг</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="relative">
+                                <button onclick="toggleNotifications()" class="glass p-3 rounded-xl hover:bg-white/10 transition-all relative">
+                                    <i data-lucide="bell" class="w-6 h-6"></i>
+                                    <span id="notif-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-navarro-destructive rounded-full text-[10px] flex items-center justify-center font-bold">
+                                        ${notifications.filter(n => !n.read).length}
+                                    </span>
+                                </button>
+                                <div id="notif-panel" class="hidden absolute right-0 mt-4 w-80 glass-strong rounded-2xl p-4 z-50 border border-white/10 shadow-2xl">
+                                    <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
+                                        <span class="font-bold">Хабарламалар</span>
+                                        <button onclick="markAllRead()" class="text-[10px] text-navarro-primary font-bold">Бәрін оқылды деп белгілеу</button>
+                                    </div>
+                                    <div class="max-h-64 overflow-y-auto space-y-4">
+                                        ${notifications.length > 0 ? notifications.map(n => `
+                                            <div class="text-xs p-2 rounded-lg ${n.read ? '' : 'bg-white/5 border-l-2 border-navarro-primary'}">
+                                                <p class="font-bold mb-1">${n.type}</p>
+                                                <p class="text-navarro-dim">${n.desc}</p>
+                                                <p class="text-[8px] mt-1 opacity-50">${n.date}</p>
+                                            </div>
+                                        `).join('') : '<p class="text-center text-navarro-dim py-4">Жаңа хабарлама жоқ</p>'}
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="logout()" class="glass p-3 rounded-xl text-navarro-destructive hover:bg-white/10 transition-all">
+                                <i data-lucide="log-out" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                    </header>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="glass p-6 rounded-3xl">
+                            <p class="text-xs text-navarro-dim font-bold uppercase mb-2">Орташа баға</p>
+                            <p class="text-3xl font-black">285 <span class="text-sm">тг/л</span></p>
+                            <p class="text-[10px] text-green-500 mt-2 font-bold flex items-center gap-1">
+                                <i data-lucide="arrow-up" class="w-3 h-3"></i> +1.2% өткен аптадан
+                            </p>
+                        </div>
+                        <div class="glass p-6 rounded-3xl">
+                            <p class="text-xs text-navarro-dim font-bold uppercase mb-2">Пайдаланушылар</p>
+                            <p class="text-3xl font-black">124</p>
+                            <p class="text-[10px] text-navarro-primary mt-2 font-bold flex items-center gap-1">
+                                <i data-lucide="users" class="w-3 h-3"></i> 5 белсенді қазір
+                            </p>
+                        </div>
+                        <div class="glass p-6 rounded-3xl">
+                            <p class="text-xs text-navarro-dim font-bold uppercase mb-2">Тапсырыстар</p>
+                            <p class="text-3xl font-black">48</p>
+                            <p class="text-[10px] text-navarro-dim mt-2 font-bold">Бүгінгі таңда</p>
+                        </div>
+                        <div class="glass p-6 rounded-3xl">
+                            <p class="text-xs text-navarro-dim font-bold uppercase mb-2">Жүйе статусы</p>
+                            <p class="text-3xl font-black text-green-500">Active</p>
+                            <p class="text-[10px] text-navarro-dim mt-2 font-bold">99.9% Uptime</p>
+                        </div>
+                    </div>
+
+                    <!-- CRUD Prices -->
+                    <div class="glass p-8 rounded-[2.5rem]">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-xl font-bold flex items-center gap-3">
+                                <i data-lucide="edit" class="w-6 h-6 text-navarro-primary"></i>
+                                Прайс-листті басқару
+                            </h3>
+                            <button onclick="showPriceModal()" class="bg-navarro-primary px-6 py-2 rounded-xl text-white text-sm font-bold shadow-lg shadow-blue-500/20">
+                                Баға қосу
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="border-b border-navarro-border">
+                                    <tr>
+                                        <th class="py-4 font-bold text-navarro-dim">Отын түрі</th>
+                                        <th class="py-4 font-bold text-navarro-dim">Баға</th>
+                                        <th class="py-4 font-bold text-navarro-dim">Тренд %</th>
+                                        <th class="py-4 font-bold text-navarro-dim">Әрекет</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${state.prices.map(p => `
+                                        <tr class="border-b border-white/5">
+                                            <td class="py-4 font-bold">${p.name}</td>
+                                            <td class="py-4 font-black">${p.price}</td>
+                                            <td class="py-4 font-bold ${p.status === 'up' ? 'text-green-500' : 'text-red-500'}">${p.trend}%</td>
+                                            <td class="py-4">
+                                                <div class="flex gap-2">
+                                                    <button onclick="editPrice(${p.id})" class="p-2 hover:text-navarro-primary transition-colors"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                                    <button onclick="deletePrice(${p.id})" class="p-2 hover:text-navarro-destructive transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- All Logs -->
+                    <div class="glass p-8 rounded-[2.5rem]">
+                        <h3 class="text-xl font-bold mb-8">Жалпы журнал</h3>
+                        <div class="space-y-4">
+                            ${state.logs.slice(0, 10).map(l => `
+                                <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full bg-navarro-primary/20 flex items-center justify-center text-navarro-primary font-bold">
+                                            ${l.user.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-sm">${l.user}</p>
+                                            <p class="text-xs text-navarro-dim">${l.desc}</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-[10px] text-navarro-dim">${l.date}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            target.innerHTML = html;
+        }
+
+        // Lab Simulation (Heatmap)
+        function renderLab(target) {
+            const html = `
+                <div class="space-y-12">
+                    <header>
+                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Физикалық зертхана</h1>
+                        <p class="text-navarro-dim">Мұнай өнімдерінің жылу таралу симуляциясы (Heatmap Simulation)</p>
+                    </header>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div class="lg:col-span-8">
+                            <div class="glass p-4 rounded-[2.5rem] flex items-center justify-center bg-black/40">
+                                <canvas id="heat-canvas" width="600" height="400" class="w-full h-auto rounded-2xl cursor-crosshair"></canvas>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4 space-y-6">
+                            <div class="glass p-8 rounded-[2.5rem]">
+                                <h3 class="font-bold mb-6">Параметрлер</h3>
+                                <div class="space-y-6">
+                                    <div>
+                                        <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Температура (°C)</label>
+                                        <input type="range" id="heat-temp" min="0" max="100" value="50" class="w-full accent-navarro-primary">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Тұтқырлық</label>
+                                        <input type="range" id="heat-viscosity" min="1" max="10" value="5" class="w-full accent-navarro-primary">
+                                    </div>
+                                    <button onclick="resetHeatmap()" class="w-full bg-navarro-primary text-white font-bold py-4 rounded-xl">Қалпына келтіру</button>
+                                </div>
+                            </div>
+                            <div class="glass p-8 rounded-[2.5rem]">
+                                <h3 class="font-bold mb-4">Талдау нәтижесі</h3>
+                                <div class="space-y-2 text-sm">
+                                    <p class="flex justify-between"><span class="text-navarro-dim">Макс. температура:</span> <span id="max-temp">50°C</span></p>
+                                    <p class="flex justify-between"><span class="text-navarro-dim">Таралу жылдамдығы:</span> <span id="spread-speed">2.4 м/с</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            target.innerHTML = html;
+            initHeatmap();
+        }
+
+        let heatMapPoints = [];
+        function initHeatmap() {
+            const canvas = document.getElementById('heat-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function draw() {
+                ctx.fillStyle = '#05070B';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                heatMapPoints.forEach(p => {
+                    const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+                    gradient.addColorStop(0, `rgba(229, 72, 77, ${p.intensity})`);
+                    gradient.addColorStop(0.5, `rgba(245, 158, 11, ${p.intensity/2})`);
+                    gradient.addColorStop(1, 'rgba(59, 125, 216, 0)');
+
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    p.radius += 0.5;
+                    p.intensity -= 0.005;
+                });
+
+                heatMapPoints = heatMapPoints.filter(p => p.intensity > 0);
+                requestAnimationFrame(draw);
+            }
+
+            canvas.onmousemove = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+                const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+                heatMapPoints.push({ x, y, radius: 10, intensity: 0.6 });
+            };
+
+            draw();
+        }
+
+        function resetHeatmap() { heatMapPoints = []; }
+
+        // Dashboards
+        function renderNB(target) {
+            const html = `
+                <div class="space-y-12">
+                    <header>
+                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Нефтебаза аналитикасы</h1>
+                        <p class="text-navarro-dim">Резервуарлар деңгейі және қор мониторингі</p>
+                    </header>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div class="lg:col-span-8 glass p-8 rounded-[2.5rem]">
+                            <canvas id="nb-chart" height="300"></canvas>
+                        </div>
+                        <div class="lg:col-span-4 space-y-6">
+                            ${[1,2,3].map(i => `
+                                <div class="glass p-6 rounded-3xl">
+                                    <div class="flex justify-between mb-4">
+                                        <span class="font-bold text-sm text-navarro-dim uppercase">Резервуар №${i}</span>
+                                        <span class="text-navarro-primary font-black">${80 - i*10}%</span>
+                                    </div>
+                                    <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-navarro-primary h-full" style="width: ${80 - i*10}%"></div>
+                                    </div>
+                                    <p class="text-[10px] text-navarro-dim mt-4">Отын түрі: ${state.prices[i].name}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            target.innerHTML = html;
+            setTimeout(() => initChart('nb-chart', 'Резервуарлар қоры (тонна)', [5000, 4200, 6800, 3100, 5900, 4800]), 100);
+        }
+
+        function renderAZK(target) {
+            const html = `
+                <div class="space-y-12">
+                    <header>
+                        <h1 class="text-4xl lg:text-6xl font-black mb-4">АЗК аналитикасы</h1>
+                        <p class="text-navarro-dim">Жанармай бекеттері бойынша сату көрсеткіштері</p>
+                    </header>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div class="lg:col-span-8 glass p-8 rounded-[2.5rem]">
+                            <canvas id="azk-chart" height="300"></canvas>
+                        </div>
+                        <div class="lg:col-span-4 space-y-6">
+                            <div class="glass p-8 rounded-3xl text-center">
+                                <p class="text-navarro-dim uppercase font-bold text-xs mb-4">Жалпы сату (24с)</p>
+                                <p class="text-5xl font-black text-white">12.4М</p>
+                                <p class="text-xs text-green-500 font-bold mt-4">+8% кешегі күнмен салыстырғанда</p>
+                            </div>
+                            <div class="glass p-6 rounded-3xl">
+                                <h4 class="font-bold mb-4">Ең көп сатылған</h4>
+                                <div class="space-y-4 text-sm">
+                                    <div class="flex justify-between"><span>АИ-92</span> <span>45%</span></div>
+                                    <div class="flex justify-between"><span>Дизель</span> <span>30%</span></div>
+                                    <div class="flex justify-between"><span>АИ-95</span> <span>25%</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            target.innerHTML = html;
+            setTimeout(() => initChart('azk-chart', 'Күндік сату көлемі (мың теңге)', [1200, 1500, 1100, 1800, 2200, 1900, 2500]), 100);
+        }
+
+        function initChart(id, label, data) {
+            const ctx = document.getElementById(id);
+            if (!ctx) return;
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Ду', 'Се', 'Сә', 'Бе', 'Жұ', 'Се', 'Же'],
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: '#3B7DD8',
+                        backgroundColor: 'rgba(59, 125, 216, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#3B7DD8',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#A1A1AA' } },
+                        x: { grid: { display: false }, ticks: { color: '#A1A1AA' } }
+                    }
+                }
             });
         }
 
+        // Admin Helpers
+        function toggleNotifications() {
+            document.getElementById('notif-panel').classList.toggle('hidden');
+        }
 
-        // Mobile Menu Drawer Toggle
-        function toggleMobileMenu(show) {
-            const menu = document.getElementById('mobile-menu');
-            if (show) {
-                menu.classList.remove('translate-x-full');
-            } else {
-                menu.classList.add('translate-x-full');
+        function markAllRead() {
+            const notifications = JSON.parse(localStorage.getItem('navarro_notifications')) || [];
+            notifications.forEach(n => n.read = true);
+            localStorage.setItem('navarro_notifications', JSON.stringify(notifications));
+            renderAdmin();
+        }
+
+        function updateAdminBadge() {
+             const notifications = JSON.parse(localStorage.getItem('navarro_notifications')) || [];
+             const badge = document.getElementById('notif-badge');
+             if (badge) {
+                 badge.innerText = notifications.filter(n => !n.read).length;
+             }
+        }
+
+        function deletePrice(id) {
+            if (confirm('Бағаны жоюға сенімдісіз бе?')) {
+                state.prices = state.prices.filter(p => p.id !== id);
+                localStorage.setItem('navarro_prices', JSON.stringify(state.prices));
+                logAction('Бағаны жою', `ID: ${id} өшірілді`);
+                renderAdmin();
             }
         }
+
+        function editPrice(id) {
+            const p = state.prices.find(x => x.id === id);
+            const newPrice = prompt(`${p.name} үшін жаңа баға енгізіңіз:`, p.price);
+            if (newPrice && !isNaN(newPrice)) {
+                p.price = parseFloat(newPrice);
+                localStorage.setItem('navarro_prices', JSON.stringify(state.prices));
+                logAction('Бағаны өзгерту', `${p.name} бағасы ${newPrice} болып өзгерді`);
+                renderAdmin();
+                
+                // Mock email trigger
+                sendAdminEmail(state.user.name, `Прайс өзгерді: ${p.name} -> ${newPrice}тг`);
+            }
+        }
+
+        function showPriceModal() {
+             alert('Жаңа баға қосу терезесі (Demo)');
+        }
+
+        function sendAdminEmail(user, action) {
+            console.log(`Email sending to admin@navarro.kz: User ${user} performed ${action}`);
+
+            // Mock EmailJS call configuration
+            const emailConfig = {
+                serviceId: 'service_navarro',
+                templateId: 'template_alert',
+                publicKey: 'YOUR_PUBLIC_KEY'
+            };
+
+            const templateParams = {
+                to_name: 'Admin',
+                from_name: user,
+                message: action,
+                time: new Date().toLocaleString()
+            };
+
+            // In a real scenario, we would call:
+            // emailjs.send(emailConfig.serviceId, emailConfig.templateId, templateParams, emailConfig.publicKey)
+            //     .then(() => console.log('Email sent successfully'))
+            //     .catch(err => console.error('Email failed', err));
+        }
+
+        // Real-time notification poller mockup
+        setInterval(() => {
+            if (state.user && state.user.role === 'admin') {
+                updateAdminBadge();
+            }
+        }, 5000);
+
+
     </script>
 </body>
 </html>
