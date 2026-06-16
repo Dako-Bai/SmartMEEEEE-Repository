@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mercury Energy | Инновациялық Энергетикалық Шешімдер</title>
+    <title>Smart Mercury Energy | Интеллектуалды Энергия</title>
+
+    <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brandPrimary: '#f59e0b',  /* Amber 500 (Gold) */
+                        brandPrimary: '#f59e0b',  /* Amber 500 */
                         brandSecondary: '#38bdf8',/* Sky 400 */
                         bgDeep: '#0f172a',        /* Slate 950 */
                         bgSurface: '#1e293b',     /* Slate 800 */
-                        textMain: '#f8fafc',      /* Slate 50 */
-                        textMuted: '#94a3b8',     /* Slate 400 */
+                        textMain: '#f8fafc',
+                        textMuted: '#94a3b8',
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
@@ -26,281 +30,654 @@
             }
         }
     </script>
+
     <style>
-        .glass-nav {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .hero-gradient {
-            background: radial-gradient(circle at 20% 30%, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0) 50%),
-                        radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.1) 0%, rgba(15, 23, 42, 0) 50%);
-        }
-        .card-glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .card-glass:hover {
-            background: rgba(30, 41, 59, 0.9);
-            transform: translateY(-8px);
-            border-color: rgba(245, 158, 11, 0.3);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-        }
-        .text-gradient-gold {
-            background: linear-gradient(to right, #f59e0b, #fbbf24);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .custom-carousel {
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        .custom-carousel::-webkit-scrollbar {
-            display: none;
-        }
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-nav { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .hide { display: none !important; }
+
+        /* Layout specific styles */
+        .sidebar-item-active { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-right: 4px solid #f59e0b; }
+        .dashboard-card { background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+        .dashboard-card:hover { border-color: rgba(245, 158, 11, 0.2); transform: translateY(-2px); }
+
+        .price-card { background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+        .price-card:hover { border-color: rgba(245, 158, 11, 0.3); transform: translateY(-4px); }
+
+        .auth-input { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); color: #f8fafc; transition: all 0.3s ease; }
+        .auth-input:focus { background: rgba(15, 23, 42, 0.8); border-color: #f59e0b; outline: none; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1); }
+
+        .animate-fade-in { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-bgDeep text-textMain font-sans antialiased">
+<body class="antialiased">
 
-    <!-- NAVIGATION -->
-    <nav class="fixed top-0 w-full z-[100] glass-nav">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-2xl bg-brandPrimary flex items-center justify-center shadow-lg shadow-amber-900/20">
-                    <svg class="w-7 h-7 text-bgDeep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6" />
-                    </svg>
-                </div>
-                <div class="leading-tight">
-                    <span class="font-display font-bold text-xl block tracking-tight">Smart Mercury</span>
-                    <span class="text-[10px] font-bold text-brandPrimary uppercase tracking-[0.2em]">Energy Solutions</span>
-                </div>
-            </div>
+    <!-- APP CONTAINER -->
+    <div id="app">
 
-            <div class="hidden lg:flex items-center gap-1 bg-white/5 p-1.5 rounded-full border border-white/10">
-                <button onclick="scrollToSection('hero')" class="px-6 py-2 rounded-full text-sm font-bold text-textMuted hover:text-brandPrimary transition-all">Басты бет</button>
-                <button onclick="scrollToSection('services')" class="px-6 py-2 rounded-full text-sm font-bold text-textMuted hover:text-brandPrimary transition-all">Қызметтер</button>
-                <button onclick="scrollToSection('news')" class="px-6 py-2 rounded-full text-sm font-bold text-textMuted hover:text-brandPrimary transition-all">Жаңалықтар</button>
-                <button onclick="scrollToSection('about')" class="px-6 py-2 rounded-full text-sm font-bold text-textMuted hover:text-brandPrimary transition-all">Компания</button>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <a href="auth.html" class="hidden sm:flex items-center gap-2 font-bold text-sm text-brandPrimary hover:text-amber-400 transition-all">Кіру</a>
-                <a href="auth.html" class="bg-brandPrimary hover:bg-amber-600 text-bgDeep px-7 py-3 rounded-2xl font-bold text-sm transition-all shadow-xl shadow-amber-900/40">Тіркелу</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- HERO SECTION -->
-    <section id="hero" class="relative min-h-screen flex items-center pt-20 overflow-hidden hero-gradient">
-        <!-- Background Image with Overlay -->
-        <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80&w=2000" class="w-full h-full object-cover opacity-20" alt="Energy Background">
-            <div class="absolute inset-0 bg-gradient-to-r from-bgDeep via-bgDeep/80 to-transparent"></div>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10 w-full">
-            <div class="lg:col-span-7">
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 rounded-full mb-8 border border-amber-500/20">
-                    <span class="text-[11px] font-black text-brandPrimary uppercase tracking-widest">Smart Mercury Energy</span>
-                </div>
-                <h1 class="font-display text-6xl lg:text-8xl font-extrabold text-white leading-[1.05] mb-8 tracking-tighter">
-                    Болашақ <br><span class="text-gradient-gold">Энергиясы</span>
-                </h1>
-                <p class="text-lg lg:text-xl text-textMuted leading-relaxed max-w-xl mb-12">
-                    Біз Қазақстанның энергетикалық нарығына жаңа деңгейдегі сенімділік пен цифрлық мөлдірлікті әкелеміз.
-                </p>
-                <div class="flex flex-wrap gap-6">
-                    <a href="auth.html" class="bg-brandPrimary hover:bg-amber-600 text-bgDeep px-10 py-5 rounded-[24px] font-bold transition-all shadow-2xl shadow-amber-900/40 flex items-center gap-4 group">
-                        Жұмысты бастау
-                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Compact Price Widget -->
-            <div class="lg:col-span-5">
-                <div class="card-glass rounded-[40px] p-8 lg:p-10">
-                    <div class="flex items-center justify-between mb-8">
-                        <h3 class="font-display font-bold text-2xl">Ағымдағы Бағалар</h3>
-                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+        <!-- PAGE: LANDING -->
+        <section id="page-landing" class="animate-fade-in">
+            <!-- Navigation -->
+            <nav class="fixed top-0 w-full z-[100] glass-nav">
+                <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('landing')">
+                        <div class="w-10 h-10 rounded-xl bg-brandPrimary flex items-center justify-center text-bgDeep shadow-lg">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
+                        </div>
+                        <span class="font-display font-bold text-xl tracking-tight text-white">Smart Mercury</span>
                     </div>
+                    <div class="hidden md:flex items-center gap-8">
+                        <a href="#features" class="text-sm font-bold text-textMuted hover:text-brandPrimary transition-colors">Мүмкіндіктер</a>
+                        <button onclick="showPage('prices')" class="text-sm font-bold text-textMuted hover:text-brandPrimary transition-colors">Бағалар</button>
+                        <a href="#news" class="text-sm font-bold text-textMuted hover:text-brandPrimary transition-colors">Жаңалықтар</a>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="showPage('auth')" class="text-sm font-bold text-brandPrimary hover:text-amber-400 transition-colors px-4 py-2">Кіру</button>
+                        <button onclick="showPage('auth', 'register')" class="bg-brandPrimary hover:bg-amber-600 text-bgDeep px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-amber-900/20">Тіркелу</button>
+                    </div>
+                </div>
+            </nav>
 
+            <!-- Hero Section -->
+            <header class="relative pt-40 pb-32 overflow-hidden">
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80&w=2070" class="w-full h-full object-cover opacity-20" alt="Energy Background">
+                    <div class="absolute inset-0 bg-gradient-to-b from-bgDeep via-transparent to-bgDeep"></div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
+                    <span class="inline-block px-4 py-1.5 rounded-full bg-brandPrimary/10 border border-brandPrimary/20 text-brandPrimary text-[10px] font-black uppercase tracking-[0.2em] mb-8">Болашақ Энергиясы</span>
+                    <h1 class="font-display text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.1] tracking-tight">
+                        Энергияны <span class="text-brandPrimary">ақылмен</span> <br> басқарыңыз
+                    </h1>
+                    <p class="max-w-2xl mx-auto text-textMuted text-lg md:text-xl mb-12 leading-relaxed">
+                        Smart Mercury Energy — жанармай нарығындағы сіздің сенімді цифрлық серіктесіңіз. Тиімділік пен ашықтық бір жерде.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <button onclick="showPage('auth', 'register')" class="w-full sm:w-auto bg-brandPrimary hover:bg-amber-600 text-bgDeep px-10 py-5 rounded-2xl font-bold transition-all shadow-2xl shadow-amber-900/40 flex items-center justify-center gap-3 group">
+                            Серіктес болу
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats/Prices Widget -->
+            <section class="max-w-7xl mx-auto px-6 -mt-16 relative z-20">
+                <div class="glass p-8 md:p-12 rounded-[40px] grid grid-cols-1 md:grid-cols-3 gap-10 shadow-2xl">
                     <div class="space-y-4">
-                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
-                            <span class="font-bold text-textMuted">АИ-92</span>
-                            <span class="font-black text-xl text-brandPrimary">245.00 ₸</span>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-textMuted uppercase tracking-widest">АИ-92</span>
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
                         </div>
-                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
-                            <span class="font-bold text-textMuted">АИ-95</span>
-                            <span class="font-black text-xl text-brandPrimary">275.00 ₸</span>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
-                            <span class="font-bold text-textMuted">ДТ (Жазғы)</span>
-                            <span class="font-black text-xl text-brandPrimary">320.00 ₸</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-4xl font-black text-white">245.00</span>
+                            <span class="text-sm font-bold text-textMuted">₸/л</span>
                         </div>
                     </div>
+                    <div class="space-y-4 border-l border-white/5 md:pl-10">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-textMuted uppercase tracking-widest">АИ-95</span>
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-4xl font-black text-white">275.00</span>
+                            <span class="text-sm font-bold text-textMuted">₸/л</span>
+                        </div>
+                    </div>
+                    <div class="space-y-4 border-l border-white/5 md:pl-10">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-textMuted uppercase tracking-widest">Дизель</span>
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-4xl font-black text-white">320.00</span>
+                            <span class="text-sm font-bold text-textMuted">₸/л</span>
+                        </div>
+                        <button onclick="showPage('prices')" class="text-[10px] font-black uppercase text-brandPrimary hover:underline block pt-2">Барлық бағалар →</button>
+                    </div>
+                </div>
+            </section>
 
-                    <div class="mt-8 text-right">
-                        <a href="prices.html" class="text-sm font-bold text-brandSecondary hover:underline flex items-center justify-end gap-2">
-                            Толығырақ
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" /></svg>
-                        </a>
+            <!-- News Slider -->
+            <section id="news" class="max-w-7xl mx-auto px-6 py-32">
+                <div class="flex items-end justify-between mb-16">
+                    <div>
+                        <h2 class="font-display text-4xl font-black mb-4">Нарық тынысы</h2>
+                        <p class="text-textMuted">Соңғы жаңалықтар мен талдаулар</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="group cursor-pointer">
+                        <div class="aspect-video rounded-[32px] overflow-hidden mb-8 relative">
+                            <img src="https://images.unsplash.com/photo-1541888941295-1e8762d46d3a?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="News">
+                            <div class="absolute top-6 left-6 px-4 py-1.5 rounded-xl bg-bgDeep/80 backdrop-blur-md text-[10px] font-black text-brandPrimary uppercase tracking-widest">Нарық</div>
+                        </div>
+                        <h4 class="font-display text-xl font-bold mb-4 group-hover:text-brandPrimary transition-colors">Мұнай өнімдерінің өндірісі 12%-ға артты</h4>
+                        <p class="text-textMuted text-sm line-clamp-2">Қазақстанның мұнай өңдеу зауыттары өндіріс көлемін арттыру бойынша жаңа көрсеткіштерге қол жеткізді...</p>
+                    </div>
+                    <!-- More news items would be here -->
+                </div>
+            </section>
+
+            <footer class="bg-black/20 border-t border-white/5 py-20">
+                <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+                    <div class="col-span-1 md:col-span-2">
+                        <div class="flex items-center gap-3 mb-8">
+                            <div class="w-10 h-10 rounded-xl bg-brandPrimary flex items-center justify-center text-bgDeep shadow-lg">
+                                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
+                            </div>
+                            <span class="font-display font-bold text-xl tracking-tight text-white">Smart Mercury</span>
+                        </div>
+                        <p class="text-textMuted text-sm max-w-sm">Біз энергияны жеткізу мен басқарудың жаңа стандарттарын қалыптастырамыз.</p>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-sm mb-6 uppercase tracking-widest">Байланыс</h5>
+                        <ul class="space-y-4 text-sm text-textMuted">
+                            <li>info@sme.kz</li>
+                            <li>+7 (7172) 55-00-55</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between gap-4">
+                    <p class="text-xs text-textMuted">© 2026 Smart Mercury Energy. Барлық құқықтар қорғалған.</p>
+                </div>
+            </footer>
+        </section>
+
+        <!-- PAGE: PRICES -->
+        <section id="page-prices" class="hide animate-fade-in pb-20">
+            <nav class="fixed top-0 w-full z-[100] glass-nav">
+                <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('landing')">
+                        <div class="w-10 h-10 rounded-xl bg-brandPrimary flex items-center justify-center text-bgDeep">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
+                        </div>
+                        <span class="font-display font-bold text-xl text-white">Smart Mercury</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="showPage('auth')" class="bg-brandPrimary hover:bg-amber-600 text-bgDeep px-6 py-2.5 rounded-xl font-bold text-sm transition-all">Кіру</button>
+                    </div>
+                </div>
+            </nav>
+
+            <main class="pt-40 max-w-7xl mx-auto px-6">
+                <div class="mb-12">
+                    <h1 class="font-display text-4xl lg:text-5xl font-extrabold mb-4">Жанармай бағалары</h1>
+                    <p class="text-textMuted">Аймақтар мен отын түрлері бойынша өзекті ақпарат</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Қаланы таңдаңыз</label>
+                        <select class="w-full bg-bgSurface border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-brandPrimary transition-all appearance-none text-sm font-bold">
+                            <option>Барлық қалалар</option>
+                            <option>Алматы</option>
+                            <option>Астана</option>
+                            <option>Шымкент</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Отын түрі</label>
+                        <select class="w-full bg-bgSurface border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-brandPrimary transition-all appearance-none text-sm font-bold">
+                            <option>Барлық түрлері</option>
+                            <option>АИ-92</option>
+                            <option>АИ-95</option>
+                            <option>Дизель</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="price-card p-8 rounded-[32px]">
+                        <div class="flex justify-between items-start mb-6">
+                            <div><span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest block mb-1">Алматы</span><h4 class="font-display font-bold text-2xl text-white">АИ-92</h4></div>
+                            <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl">⛽</div>
+                        </div>
+                        <div class="pt-6 border-t border-white/5">
+                            <span class="text-3xl font-black text-white">245.00 ₸</span>
+                            <span class="text-xs text-textMuted block mt-2">1 литр үшін</span>
+                        </div>
+                    </div>
+                    <div class="price-card p-8 rounded-[32px]">
+                        <div class="flex justify-between items-start mb-6">
+                            <div><span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest block mb-1">Алматы</span><h4 class="font-display font-bold text-2xl text-white">АИ-95</h4></div>
+                            <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl">⛽</div>
+                        </div>
+                        <div class="pt-6 border-t border-white/5">
+                            <span class="text-3xl font-black text-white">275.00 ₸</span>
+                            <span class="text-xs text-textMuted block mt-2">1 литр үшін</span>
+                        </div>
+                    </div>
+                    <div class="price-card p-8 rounded-[32px]">
+                        <div class="flex justify-between items-start mb-6">
+                            <div><span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest block mb-1">Алматы</span><h4 class="font-display font-bold text-2xl text-white">Дизель</h4></div>
+                            <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl">🚚</div>
+                        </div>
+                        <div class="pt-6 border-t border-white/5">
+                            <span class="text-3xl font-black text-white">320.00 ₸</span>
+                            <span class="text-xs text-textMuted block mt-2">1 литр үшін</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </section>
+
+        <!-- PAGE: AUTH -->
+        <section id="page-auth" class="hide min-h-screen flex items-center justify-center p-6 relative overflow-hidden animate-fade-in">
+            <div class="absolute inset-0 z-0">
+                <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-amber-500/10 rounded-full blur-[120px]"></div>
+                <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-sky-500/10 rounded-full blur-[120px]"></div>
+            </div>
+
+            <div class="w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-2 glass rounded-[50px] shadow-2xl overflow-hidden relative z-10">
+                <div class="hidden lg:flex flex-col justify-between p-16 bg-gradient-to-br from-bgSurface to-bgDeep text-white relative border-r border-white/5">
+                    <div>
+                        <div class="flex items-center gap-3 mb-20 cursor-pointer" onclick="showPage('landing')">
+                            <div class="w-12 h-12 rounded-2xl bg-brandPrimary flex items-center justify-center text-bgDeep shadow-xl">
+                                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
+                            </div>
+                            <span class="font-display font-bold text-2xl tracking-tight">Smart Mercury</span>
+                        </div>
+                        <h2 class="font-display text-5xl font-extrabold leading-[1.1] mb-8">Интеллектуалды <br><span class="text-brandPrimary">энергия</span></h2>
+                        <p class="text-textMuted text-lg">Бизнес-серіктестерге арналған кәсіби платформа.</p>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="flex -space-x-2">
+                            <div class="w-10 h-10 rounded-full border-2 border-bgSurface bg-amber-500/20"></div>
+                            <div class="w-10 h-10 rounded-full border-2 border-bgSurface bg-sky-500/20"></div>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-textMuted">850+ активті компания</span>
+                    </div>
+                </div>
+
+                <div class="p-10 lg:p-20 relative">
+                    <div class="flex bg-black/20 p-1.5 rounded-2xl border border-white/5 mb-12 w-fit">
+                        <button onclick="toggleAuthTab('login')" id="auth-btn-login" class="px-10 py-3 rounded-xl text-sm font-bold transition-all bg-brandPrimary text-bgDeep">Кіру</button>
+                        <button onclick="toggleAuthTab('register')" id="auth-btn-register" class="px-10 py-3 rounded-xl text-sm font-bold transition-all text-textMuted">Тіркелу</button>
+                    </div>
+
+                    <div id="auth-form-login" class="space-y-6">
+                        <h3 class="font-display text-3xl font-extrabold text-white mb-2">Қош келдіңіз</h3>
+                        <p class="text-textMuted text-sm mb-10">Жүйеге кіру үшін деректерді енгізіңіз</p>
+                        <form onsubmit="handleAuth(event, 'login')" class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Email</label>
+                                <input type="email" id="login-email" required placeholder="admin@sme.kz" class="w-full auth-input rounded-2xl px-6 py-4.5 text-sm font-semibold">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Құпиясөз</label>
+                                <input type="password" required placeholder="••••••••" class="w-full auth-input rounded-2xl px-6 py-4.5 text-sm font-semibold">
+                            </div>
+                            <button type="submit" class="w-full bg-brandPrimary hover:bg-amber-600 text-bgDeep py-5 rounded-[24px] font-bold shadow-xl transition-all hover:scale-[1.02]">Кіру</button>
+                        </form>
+                    </div>
+
+                    <div id="auth-form-register" class="hide space-y-6">
+                        <h3 class="font-display text-3xl font-extrabold text-white mb-2">Тіркелу</h3>
+                        <p class="text-textMuted text-sm mb-8">Жаңа серіктес ретінде өтінім беру</p>
+                        <form onsubmit="handleAuth(event, 'register')" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">Компания аты</label>
+                                    <input type="text" required placeholder='ЖШС "Mercury"' class="w-full auth-input rounded-xl px-5 py-3.5 text-sm font-semibold">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">БИН</label>
+                                    <input type="text" required placeholder="123456789012" class="w-full auth-input rounded-xl px-5 py-3.5 text-sm font-semibold">
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">Email</label>
+                                <input type="email" required placeholder="info@company.kz" class="w-full auth-input rounded-xl px-5 py-3.5 text-sm font-semibold">
+                            </div>
+                            <button type="submit" class="w-full bg-brandPrimary hover:bg-amber-600 text-bgDeep py-5 rounded-[24px] font-bold shadow-xl transition-all">Өтінімді жіберу</button>
+                        </form>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- NEWS CAROUSEL SECTION -->
-    <section id="news" class="py-24">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex items-end justify-between mb-12">
-                <div>
-                    <h2 class="font-display text-4xl font-extrabold mb-4">Жаңалықтар</h2>
-                    <p class="text-textMuted">Компания мен саланың соңғы жаңалықтары</p>
+        <!-- PAGE: CABINET (CLIENT) -->
+        <section id="page-cabinet" class="hide h-screen overflow-hidden flex animate-fade-in">
+            <!-- Sidebar -->
+            <aside class="w-80 bg-bgSurface border-r border-white/5 flex flex-col">
+                <div class="p-8 border-b border-white/5">
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('landing')">
+                        <div class="w-10 h-10 rounded-xl bg-brandPrimary flex items-center justify-center text-bgDeep">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
+                        </div>
+                        <span class="font-display font-bold text-lg text-white">Smart Mercury</span>
+                    </div>
                 </div>
-                <div class="flex gap-4">
-                    <button onclick="scrollNews('left')" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-all">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7" /></svg>
+                <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+                    <button onclick="switchCabinetTab('profile')" id="nav-cab-profile" class="sidebar-item-active w-full text-left px-5 py-3.5 rounded-xl font-bold flex items-center gap-4">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        Профиль
                     </button>
-                    <button onclick="scrollNews('right')" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-all">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" /></svg>
+                    <button onclick="switchCabinetTab('orders')" id="nav-cab-orders" class="w-full text-left px-5 py-3.5 rounded-xl font-bold flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        Тапсырыстар
+                    </button>
+                    <button onclick="switchCabinetTab('argus')" id="nav-cab-argus" class="w-full text-left px-5 py-3.5 rounded-xl font-bold flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        Argus Салыстыру
+                    </button>
+                </nav>
+                <div class="p-6 border-t border-white/5">
+                    <button onclick="logout()" class="w-full flex items-center gap-3 text-textMuted hover:text-red-500 px-5 py-3 rounded-xl text-sm font-bold transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        Шығу
                     </button>
                 </div>
-            </div>
+            </aside>
+            <!-- Content Area -->
+            <main class="flex-1 overflow-y-auto bg-bgDeep">
+                <header class="h-24 border-b border-white/5 flex items-center justify-between px-10 sticky top-0 bg-bgDeep/80 backdrop-blur-md z-10">
+                    <h1 id="cabinet-title" class="text-2xl font-black">Профиль</h1>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right">
+                            <span class="block text-sm font-bold">ЖШС "Mercury"</span>
+                            <span class="block text-[10px] text-brandPrimary font-black">КЛИЕНТ</span>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-brandPrimary text-bgDeep flex items-center justify-center font-black">M</div>
+                    </div>
+                </header>
+                <div class="p-10">
+                    <section id="cabinet-section-profile" class="space-y-10">
+                        <div class="dashboard-card p-10 rounded-[40px] max-w-2xl">
+                            <h3 class="font-display font-bold text-xl mb-8">Компания деректері</h3>
+                            <div class="space-y-6">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black uppercase text-textMuted">Заңды атауы</label>
+                                        <input type="text" value='ЖШС "Mercury"' class="w-full bg-bgDeep border border-white/5 rounded-xl px-4 py-3 text-sm font-bold">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black uppercase text-textMuted">БИН</label>
+                                        <input type="text" value="123456789012" readonly class="w-full bg-bgDeep border border-white/5 rounded-xl px-4 py-3 text-sm font-bold opacity-50">
+                                    </div>
+                                </div>
+                                <button class="bg-brandPrimary text-bgDeep px-8 py-3 rounded-xl font-bold text-sm">Сақтау</button>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="cabinet-section-orders" class="hide space-y-8">
+                        <div class="dashboard-card rounded-[32px] overflow-hidden">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-bgSurface text-[10px] font-black uppercase text-textMuted">
+                                    <tr><th class="py-6 px-10">ID</th><th class="py-6 px-10">Күні</th><th class="py-6 px-10">Өнім</th><th class="py-6 px-10">Көлемі</th><th class="py-6 px-10">Статус</th></tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5">
+                                    <tr><td class="py-6 px-10 font-bold">#SME-10294</td><td class="py-6 px-10 text-textMuted">12.06.2026</td><td class="py-6 px-10 font-bold">АИ-95</td><td class="py-6 px-10">25,000 Л</td><td class="py-6 px-10 text-green-500 font-bold">Жеткізілді</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section id="cabinet-section-argus" class="hide space-y-10">
+                        <div class="dashboard-card p-8 rounded-[32px] max-w-4xl">
+                            <div class="flex items-center justify-between mb-8">
+                                <h4 class="font-bold">АИ-95 Бағасының динамикасы</h4>
+                                <span class="bg-amber-500/10 text-brandPrimary px-3 py-1 rounded-full text-[10px] font-black">ARGUS САЛЫСТЫРУ</span>
+                            </div>
+                            <div class="h-[300px]"><canvas id="argusChart"></canvas></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+                            <div class="dashboard-card p-8 rounded-[32px]"><span class="text-[10px] font-black text-textMuted uppercase block mb-4">SME Бағасы</span><span class="text-3xl font-black">275.00 ₸</span></div>
+                            <div class="dashboard-card p-8 rounded-[32px]"><span class="text-[10px] font-black text-textMuted uppercase block mb-4">Argus Ind.</span><span class="text-3xl font-black">282.40 ₸</span></div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </section>
 
-            <div id="news-container" class="flex gap-8 overflow-x-auto custom-carousel pb-8">
-                <!-- News Card 1 -->
-                <div class="min-w-[350px] lg:min-w-[400px] card-glass rounded-[32px] overflow-hidden group">
-                    <div class="h-56 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="News 1">
-                    </div>
-                    <div class="p-8">
-                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest mb-4 block">15 Наурыз, 2026</span>
-                        <h4 class="font-bold text-xl mb-4 leading-snug">Жаңа цифрлық бақылау жүйесі іске қосылды</h4>
-                        <p class="text-sm text-textMuted mb-6">Логистиканы бақылаудың жаңа деңгейі клиенттерге тапсырыстың әр кезеңін көруге мүмкіндік береді.</p>
-                        <a href="#" class="text-sm font-bold text-brandPrimary hover:underline">Оқу →</a>
+        <!-- PAGE: ADMIN -->
+        <section id="page-admin" class="hide h-screen overflow-hidden flex animate-fade-in">
+            <aside class="w-80 bg-bgSurface border-r border-white/5 flex flex-col">
+                <div class="p-8 border-b border-white/5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brandPrimary flex items-center justify-center text-bgDeep shadow-lg">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
+                        </div>
+                        <div><span class="font-display font-bold text-lg block text-white">Smart Mercury</span><span class="text-[10px] text-brandPrimary font-black uppercase">Enterprise Suite</span></div>
                     </div>
                 </div>
-                <!-- News Card 2 -->
-                <div class="min-w-[350px] lg:min-w-[400px] card-glass rounded-[32px] overflow-hidden group">
-                    <div class="h-56 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="News 2">
-                    </div>
-                    <div class="p-8">
-                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest mb-4 block">10 Наурыз, 2026</span>
-                        <h4 class="font-bold text-xl mb-4 leading-snug">Атырау облысында жаңа мұнай базасы ашылды</h4>
-                        <p class="text-sm text-textMuted mb-6">Жаңа нысан өңірдегі жанармай тапшылығын жоюға және бағаны тұрақтандыруға бағытталған.</p>
-                        <a href="#" class="text-sm font-bold text-brandPrimary hover:underline">Оқу →</a>
-                    </div>
+                <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+                    <button onclick="switchAdminTab('overview')" id="nav-admin-overview" class="sidebar-item-active w-full text-left px-5 py-3.5 rounded-xl font-bold flex items-center gap-4 transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 4h4"/></svg>
+                        Шолу
+                    </button>
+                    <button onclick="switchAdminTab('pricing')" id="nav-admin-pricing" class="w-full text-left px-5 py-3.5 rounded-xl font-bold flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2"/></svg>
+                        Бағаларды реттеу
+                    </button>
+                    <button onclick="switchAdminTab('users')" id="nav-admin-users" class="w-full text-left px-5 py-3.5 rounded-xl font-bold flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM15 20H9a6 6 0 016-6v-2a6 6 0 00-6 6h6z"/></svg>
+                        Клиенттер
+                    </button>
+                </nav>
+                <div class="p-6 border-t border-white/5">
+                    <button onclick="logout()" class="w-full flex items-center gap-3 text-textMuted hover:text-red-500 px-5 py-3 rounded-xl text-sm font-bold transition-all">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        Шығу
+                    </button>
                 </div>
-                <!-- News Card 3 -->
-                <div class="min-w-[350px] lg:min-w-[400px] card-glass rounded-[32px] overflow-hidden group">
-                    <div class="h-56 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1535732759880-bbd5c7265e3f?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="News 3">
+            </aside>
+            <main class="flex-1 overflow-y-auto bg-bgDeep flex flex-col">
+                <header class="h-24 border-b border-white/5 flex items-center justify-between px-10 sticky top-0 bg-bgDeep/80 backdrop-blur-md z-10">
+                    <h1 id="admin-title" class="text-2xl font-black">Басқару панелі</h1>
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-4">
+                            <div class="text-right"><span class="block text-sm font-bold">Admin User</span><span class="block text-[10px] text-brandPrimary font-black">БАЙҚАУШЫ</span></div>
+                            <div class="w-12 h-12 rounded-2xl bg-brandPrimary text-bgDeep flex items-center justify-center font-black">A</div>
+                        </div>
                     </div>
-                    <div class="p-8">
-                        <span class="text-[10px] font-black text-brandPrimary uppercase tracking-widest mb-4 block">05 Наурыз, 2026</span>
-                        <h4 class="font-bold text-xl mb-4 leading-snug">ESG стратегиясы: Жасыл энергияға қадам</h4>
-                        <p class="text-sm text-textMuted mb-6">Компания қоршаған ортаны қорғау бойынша жаңа міндеттемелер қабылдады.</p>
-                        <a href="#" class="text-sm font-bold text-brandPrimary hover:underline">Оқу →</a>
-                    </div>
+                </header>
+                <div class="p-10">
+                    <section id="admin-section-overview" class="space-y-10">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                            <div class="dashboard-card p-8 rounded-[32px]"><span class="text-[10px] font-black text-textMuted uppercase block mb-1">Жылдық айналым</span><span class="text-3xl font-black">₸ 24.5М</span><span class="text-xs text-green-500 font-bold mt-2 block">+12.4%</span></div>
+                            <div class="dashboard-card p-8 rounded-[32px]"><span class="text-[10px] font-black text-textMuted uppercase block mb-1">Активті клиенттер</span><span class="text-3xl font-black">854</span><span class="text-xs text-green-500 font-bold mt-2 block">+24 жаңа</span></div>
+                            <div class="dashboard-card p-8 rounded-[32px]"><span class="text-[10px] font-black text-textMuted uppercase block mb-1">Тапсырыстар</span><span class="text-3xl font-black">42</span><span class="text-xs text-brandPrimary font-bold mt-2 block">12 шұғыл</span></div>
+                            <div class="dashboard-card p-8 rounded-[32px]"><span class="text-[10px] font-black text-textMuted uppercase block mb-1">Қауіпсіздік</span><span class="text-3xl font-black">100%</span><span class="text-xs text-green-500 font-bold mt-2 block">Оңтайлы</span></div>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                            <div class="dashboard-card p-10 rounded-[40px]"><h3 class="font-bold mb-8">Сатылым динамикасы</h3><div class="h-[350px]"><canvas id="adminSalesChart"></canvas></div></div>
+                            <div class="dashboard-card p-10 rounded-[40px]"><h3 class="font-bold mb-8">Отын түрлерінің үлесі</h3><div class="h-[350px] flex items-center justify-center"><canvas id="adminPieChart"></canvas></div></div>
+                        </div>
+                    </section>
+                    <section id="admin-section-pricing" class="hide space-y-8">
+                        <h2 class="text-2xl font-black">Бағаларды өзгерту</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="dashboard-card p-8 rounded-[32px]"><h4 class="font-bold mb-4">АИ-92</h4><input type="number" value="245" class="w-full bg-bgDeep border border-white/5 rounded-xl px-4 py-3 text-2xl font-black text-brandPrimary"></div>
+                            <div class="dashboard-card p-8 rounded-[32px]"><h4 class="font-bold mb-4">АИ-95</h4><input type="number" value="275" class="w-full bg-bgDeep border border-white/5 rounded-xl px-4 py-3 text-2xl font-black text-brandPrimary"></div>
+                            <div class="dashboard-card p-8 rounded-[32px]"><h4 class="font-bold mb-4">Дизель</h4><input type="number" value="320" class="w-full bg-bgDeep border border-white/5 rounded-xl px-4 py-3 text-2xl font-black text-brandPrimary"></div>
+                        </div>
+                        <button class="bg-brandPrimary text-bgDeep px-12 py-4 rounded-2xl font-bold">Бағаларды жаңарту</button>
+                    </section>
+                    <section id="admin-section-users" class="hide space-y-8">
+                        <h2 class="text-2xl font-black">Клиенттер базасы</h2>
+                        <div class="dashboard-card rounded-[32px] overflow-hidden">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-bgSurface text-[10px] font-black text-textMuted uppercase"><tr><th class="py-6 px-10">Компания</th><th class="py-6 px-10">БИН</th><th class="py-6 px-10">Статус</th></tr></thead>
+                                <tbody class="divide-y divide-white/5">
+                                    <tr><td class="py-6 px-10 font-bold">ЖШС "Mercury"</td><td class="py-6 px-10 text-textMuted">123456789012</td><td class="py-6 px-10"><span class="px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-[10px] font-black uppercase">Белсенді</span></td></tr>
+                                    <tr><td class="py-6 px-10 font-bold">ЖШС "Energy Systems"</td><td class="py-6 px-10 text-textMuted">987654321098</td><td class="py-6 px-10"><span class="px-3 py-1 bg-amber-500/10 text-brandPrimary rounded-full text-[10px] font-black uppercase">Тексерілуде</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
                 </div>
-            </div>
-        </div>
-    </section>
+            </main>
+        </section>
 
-    <!-- SERVICES SECTION -->
-    <section id="services" class="py-24 bg-bgSurface/30">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="max-w-2xl mb-20">
-                <h2 class="font-display text-4xl lg:text-5xl font-extrabold mb-6">Кешенді қызметтер</h2>
-                <p class="text-textMuted text-lg">Біз энергия ресурстарын тиімді басқару үшін инновациялық құралдарды ұсынамыз.</p>
-            </div>
+    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div class="card-glass p-12 rounded-[40px]">
-                    <div class="w-16 h-16 rounded-[20px] bg-amber-500/10 text-brandPrimary flex items-center justify-center mb-8">
-                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                    </div>
-                    <h4 class="font-display font-bold text-2xl mb-4 text-white">Smart Логистика</h4>
-                    <p class="text-textMuted text-sm leading-relaxed">Нақты уақыттағы GPS бақылауы және оңтайландырылған маршруттар.</p>
-                </div>
-                <div class="card-glass p-12 rounded-[40px]">
-                    <div class="w-16 h-16 rounded-[20px] bg-sky-500/10 text-brandSecondary flex items-center justify-center mb-8">
-                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                    </div>
-                    <h4 class="font-display font-bold text-2xl mb-4 text-white">Сапа Бақылауы</h4>
-                    <p class="text-textMuted text-sm leading-relaxed">Халықаралық стандарттар бойынша қатаң сертификаттау.</p>
-                </div>
-                <div class="card-glass p-12 rounded-[40px]">
-                    <div class="w-16 h-16 rounded-[20px] bg-purple-500/10 text-purple-400 flex items-center justify-center mb-8">
-                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" /></svg>
-                    </div>
-                    <h4 class="font-display font-bold text-2xl mb-4 text-white">Цифрлық Кабинет</h4>
-                    <p class="text-textMuted text-sm leading-relaxed">Барлық операцияларды онлайн басқару және аналитика.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-bgDeep pt-24 pb-12 px-6 border-t border-white/5">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
-            <div class="col-span-1 md:col-span-1">
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="w-10 h-10 rounded-xl bg-brandPrimary flex items-center justify-center text-bgDeep">
-                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-8.4 8.4M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6"/></svg>
-                    </div>
-                    <span class="font-display font-bold text-xl text-white">Smart Mercury</span>
-                </div>
-                <p class="text-sm text-textMuted leading-relaxed">Сапа мен инновацияның түйіскен жері. Энергетикалық тәуелсіздік жолында.</p>
-            </div>
-            <div>
-                <h5 class="font-bold mb-8 text-sm uppercase tracking-widest text-white/50">Компания</h5>
-                <ul class="space-y-4 text-sm font-bold text-textMuted">
-                    <li><a href="#" class="hover:text-brandPrimary">Біз туралы</a></li>
-                    <li><a href="#" class="hover:text-brandPrimary">Мұнай базалары</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-8 text-sm uppercase tracking-widest text-white/50">Қолдау</h5>
-                <ul class="space-y-4 text-sm font-bold text-textMuted">
-                    <li><a href="#" class="hover:text-brandPrimary">Көмек орталығы</a></li>
-                    <li><a href="#" class="hover:text-brandPrimary">Жиі қойылатын сұрақтар</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-8 text-sm uppercase tracking-widest text-white/50">Байланыс</h5>
-                <ul class="space-y-4 text-sm font-bold text-textMuted">
-                    <li class="text-white">info@smart-mercury.kz</li>
-                    <li class="text-white">+7 (771) 492-95-37</li>
-                </ul>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-            <span class="text-xs text-textMuted">© 2026 Smart Mercury Energy. Барлық құқықтар қорғалған.</span>
-        </div>
-    </footer>
-
+    <!-- SCRIPTS -->
     <script>
-        function scrollToSection(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        // PAGE ROUTING
+        function showPage(pageId, subType = null) {
+            // Hide all pages
+            document.querySelectorAll('section[id^="page-"]').forEach(p => p.classList.add('hide'));
+
+            // Show requested page
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) {
+                targetPage.classList.remove('hide');
+                window.scrollTo(0, 0);
+            }
+
+            // Handle sub-logic
+            if (pageId === 'auth' && subType === 'register') {
+                toggleAuthTab('register');
+            } else if (pageId === 'auth') {
+                toggleAuthTab('login');
+            }
+
+            if (pageId === 'admin') initAdminCharts();
+            if (pageId === 'cabinet') initArgusChart();
         }
 
-        function scrollNews(direction) {
-            const container = document.getElementById('news-container');
-            const scrollAmount = 400;
-            if (direction === 'left') {
-                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        // AUTH LOGIC
+        function toggleAuthTab(type) {
+            const isLogin = type === 'login';
+            document.getElementById('auth-form-login').classList.toggle('hide', !isLogin);
+            document.getElementById('auth-form-register').classList.toggle('hide', isLogin);
+
+            const btnLogin = document.getElementById('auth-btn-login');
+            const btnReg = document.getElementById('auth-btn-register');
+
+            btnLogin.className = isLogin ? 'px-10 py-3 rounded-xl text-sm font-bold transition-all bg-brandPrimary text-bgDeep' : 'px-10 py-3 rounded-xl text-sm font-bold transition-all text-textMuted';
+            btnReg.className = !isLogin ? 'px-10 py-3 rounded-xl text-sm font-bold transition-all bg-brandPrimary text-bgDeep' : 'px-10 py-3 rounded-xl text-sm font-bold transition-all text-textMuted';
+        }
+
+        function handleAuth(e, type) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+
+            // Simple mock logic
+            if (type === 'login') {
+                if (email === 'admin@sme.kz') {
+                    showPage('admin');
+                } else {
+                    showPage('cabinet');
+                }
             } else {
-                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                alert('Өтініміңіз жіберілді. Менеджер хабарласады.');
+                showPage('landing');
             }
+        }
+
+        function logout() {
+            showPage('landing');
+        }
+
+        // DASHBOARD LOGIC (ADMIN)
+        function switchAdminTab(tabId) {
+            document.querySelectorAll('section[id^="admin-section-"]').forEach(s => s.classList.add('hide'));
+            document.getElementById(`admin-section-${tabId}`).classList.remove('hide');
+
+            document.querySelectorAll('button[id^="nav-admin-"]').forEach(b => {
+                b.classList.remove('sidebar-item-active');
+                b.classList.add('text-textMuted');
+                b.classList.remove('hover:bg-white/5');
+            });
+            const activeNav = document.getElementById(`nav-admin-${tabId}`);
+            activeNav.classList.add('sidebar-item-active');
+            activeNav.classList.remove('text-textMuted');
+
+            const titles = { overview: 'Шолу', pricing: 'Бағаларды реттеу', users: 'Клиенттер базасы' };
+            document.getElementById('admin-title').textContent = titles[tabId];
+        }
+
+        // DASHBOARD LOGIC (CABINET)
+        function switchCabinetTab(tabId) {
+            document.querySelectorAll('section[id^="cabinet-section-"]').forEach(s => s.classList.add('hide'));
+            document.getElementById(`cabinet-section-${tabId}`).classList.remove('hide');
+
+            document.querySelectorAll('button[id^="nav-cab-"]').forEach(b => {
+                b.classList.remove('sidebar-item-active');
+                b.classList.add('text-textMuted');
+            });
+            const activeNav = document.getElementById(`nav-cab-${tabId}`);
+            activeNav.classList.add('sidebar-item-active');
+            activeNav.classList.remove('text-textMuted');
+
+            const titles = { profile: 'Профиль', orders: 'Тапсырыс тарихы', argus: 'Argus Салыстыру' };
+            document.getElementById('cabinet-title').textContent = titles[tabId];
+        }
+
+        // CHARTS
+        let adminSalesChart = null;
+        let adminPieChart = null;
+        let argusChart = null;
+
+        function initAdminCharts() {
+            if (adminSalesChart) return;
+            const ctxSales = document.getElementById('adminSalesChart').getContext('2d');
+            adminSalesChart = new Chart(ctxSales, {
+                type: 'line',
+                data: {
+                    labels: ['Қаң', 'Ақп', 'Нау', 'Сәу', 'Мам', 'Мау'],
+                    datasets: [{
+                        label: 'Сатылым (Млн ₸)',
+                        data: [15, 22, 18, 30, 26, 35],
+                        borderColor: '#f59e0b',
+                        borderWidth: 4,
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(245, 158, 11, 0.05)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { display: false }, x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } } }
+                }
+            });
+
+            const ctxPie = document.getElementById('adminPieChart').getContext('2d');
+            adminPieChart = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: ['АИ-95', 'ДТ', 'АИ-92'],
+                    datasets: [{
+                        data: [45, 30, 25],
+                        backgroundColor: ['#f59e0b', '#10b981', '#38bdf8'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { weight: 'bold' } } } }
+                }
+            });
+        }
+
+        function initArgusChart() {
+            if (argusChart) return;
+            const ctx = document.getElementById('argusChart').getContext('2d');
+            argusChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['01', '05', '10', '15', '20', '25', '30'],
+                    datasets: [
+                        { label: 'SME Бағасы', data: [270, 270, 275, 275, 275, 275, 275], borderColor: '#f59e0b', borderWidth: 3, tension: 0 },
+                        { label: 'Argus Ind.', data: [272, 278, 280, 274, 285, 282, 282], borderColor: '#38bdf8', borderWidth: 2, borderDash: [5, 5], tension: 0.4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8' } } },
+                    scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } }
+                }
+            });
         }
     </script>
 </body>
