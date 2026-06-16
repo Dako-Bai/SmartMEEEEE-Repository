@@ -53,6 +53,11 @@
         .animate-fade-in { animation: fadeIn 0.5s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
         .timeline-line { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: rgba(255, 255, 255, 0.1); }
         .timeline-dot { position: absolute; left: 14px; width: 12px; height: 12px; border-radius: 50%; background: #EAB308; border: 3px solid #0B1120; z-index: 10; }
 
@@ -242,6 +247,45 @@
                             <p class="text-textMuted text-sm line-clamp-2 leading-relaxed">Сарапшылар алдағы тоқсанда ішкі нарықтағы баға конъюнктурасына болжам жасады...</p>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section id="faq" class="max-w-7xl mx-auto px-6 py-32 border-t border-white/5">
+                <div class="text-center mb-20">
+                    <span class="text-[10px] font-black text-brandPrimary uppercase tracking-[0.3em] block mb-4">Көмек</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-black tracking-tighter">Жиі қойылатын <br><span class="text-brandPrimary italic">сұрақтар</span></h2>
+                </div>
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <div class="glass p-8 rounded-3xl border border-white/5 cursor-pointer group" onclick="this.querySelector('.faq-ans').classList.toggle('hide')">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-lg">SME платформасына қалай тіркелуге болады?</h4>
+                            <i data-lucide="plus" class="w-5 h-5 text-brandPrimary group-hover:rotate-45 transition-transform"></i>
+                        </div>
+                        <p class="faq-ans hide mt-6 text-textMuted text-sm leading-relaxed">Тіркелу үшін басты беттегі "Тіркелу" батырмасын басып, компания деректерін толтыру қажет. Менеджер 24 сағат ішінде өтініміңізді қарастырады.</p>
+                    </div>
+                    <div class="glass p-8 rounded-3xl border border-white/5 cursor-pointer group" onclick="this.querySelector('.faq-ans').classList.toggle('hide')">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-lg">Бағалар қаншалықты жиі жаңартылып тұрады?</h4>
+                            <i data-lucide="plus" class="w-5 h-5 text-brandPrimary group-hover:rotate-45 transition-transform"></i>
+                        </div>
+                        <p class="faq-ans hide mt-6 text-textMuted text-sm leading-relaxed">Бағалар нарық конъюнктурасына байланысты нақты уақыт режимінде немесе күніне кемінде бір рет жаңартылады.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Partners Section -->
+            <section class="py-20 border-t border-white/5 bg-black/20 overflow-hidden">
+                <div class="flex animate-[marquee_30s_linear_infinite] whitespace-nowrap gap-20 items-center">
+                    <span class="font-display font-black text-4xl opacity-20 uppercase italic tracking-tighter">KAZMUNAYGAS</span>
+                    <span class="font-display font-black text-4xl opacity-20 uppercase italic tracking-tighter">HELIOS</span>
+                    <span class="font-display font-black text-4xl opacity-20 uppercase italic tracking-tighter">SINOOIL</span>
+                    <span class="font-display font-black text-4xl opacity-20 uppercase italic tracking-tighter">QAZAQ OIL</span>
+                    <span class="font-display font-black text-4xl opacity-20 uppercase italic tracking-tighter">PETROSUN</span>
+                    <!-- Repeat for smooth loop -->
+                    <span class="font-display font-black text-4xl opacity-20 uppercase italic tracking-tighter">KAZMUNAYGAS</span>
+                    <span class="font-display font-black text-4xl opacity-20 uppercase italic tracking-tighter">HELIOS</span>
+                    <span class="font-display font-black text-4xl opacity-20 uppercase italic tracking-tighter">SINOOIL</span>
                 </div>
             </section>
 
@@ -495,7 +539,10 @@
                                 <input type="email" id="login-email" required placeholder="admin@sme.kz" class="w-full auth-input rounded-2xl px-6 py-4.5 text-sm font-semibold">
                             </div>
                             <div class="space-y-2">
-                                <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Құпиясөз</label>
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Құпиясөз</label>
+                                    <button type="button" onclick="alert('Құпиясөзді қалпына келтіру сілтемесі поштаңызға жіберілді.')" class="text-[9px] font-black uppercase tracking-widest text-brandPrimary hover:underline">Ұмыттыңыз ба?</button>
+                                </div>
                                 <input type="password" id="login-password" required placeholder="••••••••" class="w-full auth-input rounded-2xl px-6 py-4.5 text-sm font-semibold">
                             </div>
                             <button type="submit" class="w-full bg-brandPrimary hover:bg-amber-600 text-bgDeep py-5 rounded-[24px] font-bold shadow-xl transition-all hover:scale-[1.02]">Кіру</button>
@@ -514,6 +561,20 @@
                                 <div class="space-y-1.5">
                                     <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">БИН</label>
                                     <input type="text" required placeholder="123456789012" class="w-full auth-input rounded-xl px-5 py-3.5 text-sm font-semibold">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">Телефон</label>
+                                    <input type="tel" required placeholder="+7 (700) 000-00-00" class="w-full auth-input rounded-xl px-5 py-3.5 text-sm font-semibold">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-black uppercase tracking-widest text-textMuted">Аймақ</label>
+                                    <select required class="w-full auth-input rounded-xl px-5 py-3.5 text-sm font-semibold appearance-none bg-bgSurface">
+                                        <option value="almaty">Алматы</option>
+                                        <option value="astana">Астана</option>
+                                        <option value="shymkent">Шымкент</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="space-y-1.5">
@@ -551,6 +612,10 @@
                     <button onclick="switchCabinetTab('argus')" id="nav-cab-argus" class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all">
                         <i data-lucide="bar-chart" class="w-5 h-5"></i>
                         Argus Салыстыру
+                    </button>
+                    <button onclick="switchCabinetTab('security')" id="nav-cab-security" class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all">
+                        <i data-lucide="lock" class="w-5 h-5"></i>
+                        Қауіпсіздік
                     </button>
                 </nav>
                 <div class="p-8 border-t border-white/5">
@@ -642,6 +707,27 @@
                             </div>
                         </div>
                     </section>
+                    <section id="cabinet-section-security" class="hide space-y-12 animate-fade-in">
+                        <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 max-w-3xl">
+                            <h3 class="font-display font-black text-xl uppercase tracking-tighter italic mb-8">Қауіпсіздік баптаулары</h3>
+                            <div class="space-y-8">
+                                <div class="p-6 bg-bgDeep rounded-2xl border border-white/5 flex items-center justify-between">
+                                    <div>
+                                        <span class="block font-bold">Екі факторлы аутентификация</span>
+                                        <span class="block text-xs text-textMuted">Аккаунтты қосымша қорғау</span>
+                                    </div>
+                                    <button class="px-6 py-2 bg-brandPrimary text-bgDeep rounded-xl font-bold text-xs uppercase tracking-widest">Қосу</button>
+                                </div>
+                                <div class="space-y-4">
+                                    <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Құпиясөзді өзгерту</label>
+                                    <input type="password" placeholder="Ағымдағы құпиясөз" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold">
+                                    <input type="password" placeholder="Жаңа құпиясөз" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold">
+                                    <button class="bg-white/5 border border-white/10 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/10">Жаңарту</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     <section id="cabinet-section-argus" class="hide space-y-12 animate-fade-in">
                         <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 max-w-5xl">
                             <div class="flex items-center justify-between mb-10">
@@ -695,7 +781,7 @@
                 </div>
 
                 <div class="flex-1 px-6 space-y-10 custom-scrollbar overflow-y-auto pb-10">
-                    <!-- Section: Основное -->
+                    <!-- Section: Басқару -->
                     <div class="space-y-4">
                         <span class="px-4 text-[10px] font-black uppercase tracking-[0.3em] text-textMuted/40">Басқару</span>
                         <nav class="space-y-1">
@@ -711,31 +797,28 @@
                                 <i data-lucide="users" class="w-5 h-5"></i>
                                 Клиенттер
                             </button>
-                        </nav>
-                    </div>
-
-                    <!-- Section: Аналитика -->
-                    <div class="space-y-4">
-                        <span class="px-4 text-[10px] font-black uppercase tracking-[0.3em] text-textMuted/40">Талдау</span>
-                        <nav class="space-y-1">
-                            <button class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
-                                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                                Есептер
+                            <button onclick="switchAdminTab('finance')" id="nav-admin-finance" class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
+                                <i data-lucide="wallet" class="w-5 h-5"></i>
+                                Қаржы
                             </button>
-                            <button class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
-                                <i data-lucide="trending-up" class="w-5 h-5"></i>
-                                Болжамдар
+                            <button onclick="switchAdminTab('news')" id="nav-admin-news" class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
+                                <i data-lucide="newspaper" class="w-5 h-5"></i>
+                                Жаңалықтар
                             </button>
                         </nav>
                     </div>
 
-                    <!-- Section: Баптаулар -->
+                    <!-- Section: Жүйе -->
                     <div class="space-y-4">
-                        <span class="px-4 text-[10px] font-black uppercase tracking-[0.3em] text-textMuted/40">Баптаулар</span>
+                        <span class="px-4 text-[10px] font-black uppercase tracking-[0.3em] text-textMuted/40">Жүйе</span>
                         <nav class="space-y-1">
-                            <button class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
-                                <i data-lucide="settings" class="w-5 h-5"></i>
-                                Жүйе
+                            <button onclick="switchAdminTab('logs')" id="nav-admin-logs" class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
+                                <i data-lucide="scroll-text" class="w-5 h-5"></i>
+                                Жүйе журналы
+                            </button>
+                            <button onclick="switchAdminTab('settings')" id="nav-admin-settings" class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
+                                <i data-lucide="sliders" class="w-5 h-5"></i>
+                                Баптаулар
                             </button>
                         </nav>
                     </div>
@@ -845,8 +928,11 @@
                             <div class="bg-bgSurface p-8 rounded-[32px] border border-white/5 hover:border-brandPrimary/20 transition-all relative group overflow-hidden">
                                 <span class="text-[10px] font-black text-textMuted uppercase tracking-widest block mb-4">Сервер Жүктемесі</span>
                                 <div class="flex items-end gap-3">
-                                    <span class="text-4xl font-black tracking-tighter">18%</span>
+                                    <span id="stat-cpu" class="text-4xl font-black tracking-tighter">18%</span>
                                     <span class="text-xs text-green-500 font-black mb-1.5">Оңтайлы</span>
+                                </div>
+                                <div class="mt-4 w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                                    <div id="stat-cpu-bar" class="bg-brandPrimary h-full transition-all duration-1000" style="width: 18%"></div>
                                 </div>
                             </div>
                         </div>
@@ -881,43 +967,57 @@
                                         <div class="w-10 h-10 rounded-xl bg-brandPrimary/10 flex items-center justify-center text-brandPrimary">
                                             <i data-lucide="history" class="w-5 h-5"></i>
                                         </div>
-                                        <h3 class="font-display font-black text-xl uppercase tracking-tighter italic">Әрекеттер Логі</h3>
+                                        <h3 class="font-display font-black text-sm md:text-base uppercase tracking-tighter">Барлық пайдаланушылардың әрекеттері</h3>
                                     </div>
 
-                                    <div class="flex-1 relative pl-10 space-y-12 max-h-[400px] overflow-y-auto custom-scrollbar">
+                                    <div class="flex-1 relative pl-10 space-y-12 max-h-[500px] overflow-y-auto custom-scrollbar">
                                         <div class="timeline-line"></div>
 
-                                        <!-- Log Item -->
+                                        <!-- Log Item 1 -->
                                         <div class="relative group">
-                                            <div class="timeline-dot"></div>
+                                            <div class="timeline-dot bg-[#3b82f6]"></div>
                                             <div class="flex flex-col gap-2">
                                                 <div class="flex items-center gap-3">
-                                                    <span class="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-[9px] font-black uppercase tracking-widest">Прайс • қосты</span>
-                                                    <span class="text-[10px] font-bold text-textMuted">2026-06-17 00:09</span>
+                                                    <span class="px-3 py-1 rounded-lg bg-green-900/20 text-[#22c55e] text-[9px] font-black uppercase tracking-widest">Прайс • қосты</span>
+                                                    <span class="text-[10px] font-medium text-textMuted">2026-06-17 00:09</span>
                                                 </div>
-                                                <p class="text-xs font-bold leading-relaxed">Әкімші: <span class="text-white italic">«AI-95» қосты — 295 ₸</span></p>
+                                                <p class="text-sm font-bold text-white tracking-tight">Әкімші: <span class="font-medium text-textMuted">«AI-95» қосты —</span> <span class="text-textMuted">295 ₸</span></p>
                                             </div>
                                         </div>
 
+                                        <!-- Log Item 2 -->
                                         <div class="relative group">
-                                            <div class="timeline-dot"></div>
+                                            <div class="timeline-dot bg-[#3b82f6]"></div>
                                             <div class="flex flex-col gap-2">
                                                 <div class="flex items-center gap-3">
-                                                    <span class="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-[9px] font-black uppercase tracking-widest">Прайс • қосты</span>
-                                                    <span class="text-[10px] font-bold text-textMuted">2026-06-17 00:08</span>
+                                                    <span class="px-3 py-1 rounded-lg bg-green-900/20 text-[#22c55e] text-[9px] font-black uppercase tracking-widest">Прайс • қосты</span>
+                                                    <span class="text-[10px] font-medium text-textMuted">2026-06-17 00:08</span>
                                                 </div>
-                                                <p class="text-xs font-bold leading-relaxed">Әкімші: <span class="text-white italic">«AI-92» қосты — 255 ₸</span></p>
+                                                <p class="text-sm font-bold text-white tracking-tight">Әкімші: <span class="font-medium text-textMuted">«AI-92» қосты —</span> <span class="text-textMuted">255 ₸</span></p>
                                             </div>
                                         </div>
 
+                                        <!-- Log Item 3 -->
                                         <div class="relative group">
-                                            <div class="timeline-dot bg-blue-500"></div>
+                                            <div class="timeline-dot bg-[#3b82f6]"></div>
                                             <div class="flex flex-col gap-2">
                                                 <div class="flex items-center gap-3">
-                                                    <span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-[9px] font-black uppercase tracking-widest">Жаңалық • қосты</span>
-                                                    <span class="text-[10px] font-bold text-textMuted">2026-06-17 00:07</span>
+                                                    <span class="px-3 py-1 rounded-lg bg-green-900/20 text-[#22c55e] text-[9px] font-black uppercase tracking-widest">Жаңалық • қосты</span>
+                                                    <span class="text-[10px] font-medium text-textMuted">2026-06-17 00:07</span>
                                                 </div>
-                                                <p class="text-xs font-bold leading-relaxed">Әкімші: <span class="text-white italic">«Dashboard» жаңартылды</span></p>
+                                                <p class="text-sm font-bold text-white tracking-tight">Әкімші: <span class="font-medium text-textMuted">«Dashboard» қосты</span></p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Log Item 4 (Matching the image "Client 1") -->
+                                        <div class="relative group">
+                                            <div class="timeline-dot bg-[#3b82f6]"></div>
+                                            <div class="flex flex-col gap-2">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="px-3 py-1 rounded-lg bg-blue-900/20 text-[#38bdf8] text-[9px] font-black uppercase tracking-widest">Профиль • өзгертті</span>
+                                                    <span class="text-[10px] font-medium text-textMuted">2026-06-17 00:04</span>
+                                                </div>
+                                                <p class="text-sm font-bold text-white tracking-tight">Клиент 1: <span class="font-medium text-textMuted">«Клиент 1» өзгертті</span></p>
                                             </div>
                                         </div>
                                     </div>
@@ -1015,6 +1115,107 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </section>
+
+                    <section id="admin-section-finance" class="hide space-y-12 animate-fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="bg-bgSurface p-8 rounded-[32px] border border-white/5">
+                                <span class="text-[10px] font-black text-textMuted uppercase tracking-widest block mb-4">Жалпы баланс</span>
+                                <span class="text-3xl font-black tracking-tighter">142,500,000 ₸</span>
+                            </div>
+                            <div class="bg-bgSurface p-8 rounded-[32px] border border-white/5">
+                                <span class="text-[10px] font-black text-textMuted uppercase tracking-widest block mb-4">Күтілетін төлемдер</span>
+                                <span class="text-3xl font-black tracking-tighter">12,400,000 ₸</span>
+                            </div>
+                            <div class="bg-bgSurface p-8 rounded-[32px] border border-white/5">
+                                <span class="text-[10px] font-black text-textMuted uppercase tracking-widest block mb-4">Айлық пайда</span>
+                                <span class="text-3xl font-black tracking-tighter text-green-500">+8.2%</span>
+                            </div>
+                        </div>
+                        <div class="bg-bgSurface rounded-[40px] border border-white/5 p-10">
+                            <h3 class="font-display font-black text-xl uppercase tracking-tighter italic mb-8">Соңғы транзакциялар</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-6 bg-bgDeep rounded-2xl border border-white/5">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center text-green-500">
+                                            <i data-lucide="arrow-down-left" class="w-6 h-6"></i>
+                                        </div>
+                                        <div>
+                                            <span class="block font-bold">ЖШС "Mercury"</span>
+                                            <span class="block text-[10px] text-textMuted uppercase tracking-widest">Төлем қабылданды</span>
+                                        </div>
+                                    </div>
+                                    <span class="font-black text-green-500">+2,450,000 ₸</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="admin-section-logs" class="hide space-y-12 animate-fade-in">
+                        <div class="bg-bgSurface rounded-[40px] border border-white/5 p-10">
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 class="font-display font-black text-xl uppercase tracking-tighter italic">Жүйелік оқиғалар</h3>
+                                <button class="text-[10px] font-black uppercase tracking-widest text-brandPrimary">Журналды тазалау</button>
+                            </div>
+                            <div class="font-mono text-xs text-textMuted space-y-2">
+                                <div class="p-2 border-b border-white/5"><span class="text-green-500">[2026-06-17 14:20:01]</span> INFO: API Request from 192.168.1.45 - /api/v2/prices</div>
+                                <div class="p-2 border-b border-white/5"><span class="text-blue-500">[2026-06-17 14:19:55]</span> DB: Connection pool optimized.</div>
+                                <div class="p-2 border-b border-white/5"><span class="text-amber-500">[2026-06-17 14:18:22]</span> WARN: High memory usage detected in worker-3.</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="admin-section-news" class="hide space-y-12 animate-fade-in">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display font-black text-xl uppercase tracking-tighter italic">Жаңалықтарды басқару</h3>
+                            <button class="bg-brandPrimary text-bgDeep px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest">Қосу</button>
+                        </div>
+                        <div class="bg-bgSurface rounded-[40px] border border-white/5 overflow-hidden">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-bgDeep/50 text-[10px] font-black uppercase text-textMuted tracking-widest">
+                                    <tr>
+                                        <th class="py-6 px-10">Тақырыбы</th>
+                                        <th class="py-6 px-10">Күні</th>
+                                        <th class="py-6 px-10">Статус</th>
+                                        <th class="py-6 px-10 text-right">Әрекет</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5">
+                                    <tr class="hover:bg-white/5 transition-colors">
+                                        <td class="py-6 px-10 font-bold">Өндіріс көлемі артты</td>
+                                        <td class="py-6 px-10 text-textMuted">15.06.2026</td>
+                                        <td class="py-6 px-10"><span class="px-2 py-1 bg-green-500/10 text-green-500 rounded text-[10px] font-bold">Жарияланды</span></td>
+                                        <td class="py-6 px-10 text-right"><button class="text-brandPrimary hover:underline">Өңдеу</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="admin-section-settings" class="hide space-y-12 animate-fade-in">
+                        <div class="max-w-2xl bg-bgSurface rounded-[40px] border border-white/5 p-10">
+                            <h3 class="font-display font-black text-xl uppercase tracking-tighter italic mb-10">Жалпы баптаулар</h3>
+                            <div class="space-y-8">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <span class="block font-bold">Техникалық жұмыс режимі</span>
+                                        <span class="block text-xs text-textMuted">Сайтқа кіруді шектеу</span>
+                                    </div>
+                                    <button class="w-14 h-8 bg-white/10 rounded-full relative transition-all">
+                                        <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full"></div>
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <span class="block font-bold">Email хабарламалар</span>
+                                        <span class="block text-xs text-textMuted">Жаңа тапсырыстар туралы</span>
+                                    </div>
+                                    <button class="w-14 h-8 bg-brandPrimary rounded-full relative transition-all">
+                                        <div class="absolute right-1 top-1 w-6 h-6 bg-bgDeep rounded-full"></div>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -1126,6 +1327,13 @@
                     const el = document.getElementById(p.id);
                     if (el) el.textContent = p.val.toFixed(2);
                 });
+
+                // Update system stats mock
+                const cpu = Math.floor(Math.random() * 15) + 10;
+                const cpuEl = document.getElementById('stat-cpu');
+                const cpuBar = document.getElementById('stat-cpu-bar');
+                if (cpuEl) cpuEl.textContent = cpu + '%';
+                if (cpuBar) cpuBar.style.width = cpu + '%';
             }, 3000);
         }
 
@@ -1249,7 +1457,15 @@
                 activeNav.classList.remove('text-textMuted', 'hover:bg-white/5');
             }
 
-            const titles = { overview: 'Шолу', pricing: 'Прайс-лист', users: 'Клиенттер' };
+            const titles = {
+                overview: 'Шолу',
+                pricing: 'Прайс-лист',
+                users: 'Клиенттер',
+                finance: 'Қаржы',
+                news: 'Жаңалықтар',
+                logs: 'Жүйе журналы',
+                settings: 'Баптаулар'
+            };
             document.getElementById('admin-title').textContent = titles[tabId] || 'Басқару';
         }
 
@@ -1266,7 +1482,7 @@
             activeNav.classList.add('sidebar-item-active');
             activeNav.classList.remove('text-textMuted');
 
-            const titles = { profile: 'Профиль', orders: 'Тапсырыс тарихы', argus: 'Argus Салыстыру' };
+            const titles = { profile: 'Профиль', orders: 'Тапсырыс тарихы', argus: 'Argus Салыстыру', security: 'Қауіпсіздік' };
             document.getElementById('cabinet-title').textContent = titles[tabId];
         }
 
