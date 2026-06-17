@@ -73,6 +73,9 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .toast-animate { animation: toastIn 0.3s ease-out forwards; }
+        @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body class="antialiased">
@@ -140,7 +143,7 @@
                         <div class="glass p-1 rounded-[40px] shadow-2xl overflow-hidden">
                             <div class="bg-bgSurface rounded-[36px] p-8 space-y-8">
                                 <div class="flex items-center justify-between">
-                                    <h3 class="font-display font-black text-xl uppercase tracking-tighter italic">Live Market</h3>
+                                    <h3 class="font-display font-black text-xl uppercase tracking-tighter italic">Нарық ағыны</h3>
                                     <span class="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
                                         <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                                         Тікелей эфир
@@ -148,41 +151,11 @@
                                 </div>
 
                                 <div class="space-y-6">
-                                    <div class="flex items-center justify-between p-6 rounded-3xl bg-bgDeep border border-white/5 hover:border-brandPrimary/30 transition-all cursor-pointer group">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 rounded-2xl bg-brandPrimary/10 flex items-center justify-center text-brandPrimary group-hover:scale-110 transition-transform">
-                                                <i data-lucide="droplet" class="w-6 h-6"></i>
-                                            </div>
-                                            <div>
-                                                <span class="block font-black text-lg">АИ-95</span>
-                                                <span class="block text-[10px] text-textMuted uppercase font-bold tracking-widest">Premium Plus</span>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <span id="price-95" class="block font-black text-2xl">275.00</span>
-                                            <span class="text-[10px] text-textMuted font-bold uppercase tracking-widest">Теңге/Л</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex items-center justify-between p-6 rounded-3xl bg-bgDeep border border-white/5 hover:border-brandPrimary/30 transition-all cursor-pointer group">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
-                                                <i data-lucide="truck" class="w-6 h-6"></i>
-                                            </div>
-                                            <div>
-                                                <span class="block font-black text-lg">Дизель</span>
-                                                <span class="block text-[10px] text-textMuted uppercase font-bold tracking-widest">Winter Grade</span>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <span id="price-diesel" class="block font-black text-2xl">320.00</span>
-                                            <span class="text-[10px] text-textMuted font-bold uppercase tracking-widest">Теңге/Л</span>
-                                        </div>
-                                    </div>
+                                    <!-- Dynamic Live Market -->
                                 </div>
 
                                 <div class="pt-4 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-textMuted">
-                                    <span>Жаңартылды: 12:45</span>
+                                    <span id="market-update-time">Жаңартылды: 12:45</span>
                                     <button onclick="showPage('prices')" class="text-brandPrimary hover:underline cursor-pointer">Барлық бағалар →</button>
                                 </div>
                             </div>
@@ -209,44 +182,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="group cursor-pointer">
-                        <div class="aspect-[4/3] rounded-[40px] overflow-hidden mb-8 relative">
-                            <img src="https://images.unsplash.com/photo-1541888941295-1e8762d46d3a?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="News">
-                            <div class="absolute inset-0 bg-gradient-to-t from-bgDeep via-transparent to-transparent opacity-60"></div>
-                            <div class="absolute top-8 left-8 px-4 py-2 rounded-2xl bg-bgDeep/90 backdrop-blur-md text-[10px] font-black text-brandPrimary uppercase tracking-widest">Нарық Талдау</div>
-                        </div>
-                        <div class="space-y-4 px-2">
-                            <span class="text-[10px] font-bold text-textMuted uppercase tracking-widest">15 Маусым, 2026</span>
-                            <h4 class="font-display text-2xl font-black leading-tight group-hover:text-brandPrimary transition-colors tracking-tighter">Мұнай өнімдерінің өндірісі 12%-ға артты</h4>
-                            <p class="text-textMuted text-sm line-clamp-2 leading-relaxed">Қазақстанның мұнай өңдеу зауыттары өндіріс көлемін арттыру бойынша жаңа стратегиялық көрсеткіштерге қол жеткізді...</p>
-                        </div>
-                    </div>
-
-                    <div class="group cursor-pointer">
-                        <div class="aspect-[4/3] rounded-[40px] overflow-hidden mb-8 relative">
-                            <img src="https://images.unsplash.com/photo-1518173946687-a4c8a9b746f4?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="News">
-                            <div class="absolute inset-0 bg-gradient-to-t from-bgDeep via-transparent to-transparent opacity-60"></div>
-                            <div class="absolute top-8 left-8 px-4 py-2 rounded-2xl bg-bgDeep/90 backdrop-blur-md text-[10px] font-black text-brandPrimary uppercase tracking-widest">Технология</div>
-                        </div>
-                        <div class="space-y-4 px-2">
-                            <span class="text-[10px] font-bold text-textMuted uppercase tracking-widest">14 Маусым, 2026</span>
-                            <h4 class="font-display text-2xl font-black leading-tight group-hover:text-brandPrimary transition-colors tracking-tighter">Цифрлы бақылау жүйесі енгізілді</h4>
-                            <p class="text-textMuted text-sm line-clamp-2 leading-relaxed">SME платформасы логистиканы қадағалаудың жаңа интеллектуалды модулін іске қосты...</p>
-                        </div>
-                    </div>
-
-                    <div class="group cursor-pointer">
-                        <div class="aspect-[4/3] rounded-[40px] overflow-hidden mb-8 relative">
-                            <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="News">
-                            <div class="absolute inset-0 bg-gradient-to-t from-bgDeep via-transparent to-transparent opacity-60"></div>
-                            <div class="absolute top-8 left-8 px-4 py-2 rounded-2xl bg-bgDeep/90 backdrop-blur-md text-[10px] font-black text-brandPrimary uppercase tracking-widest">Экономика</div>
-                        </div>
-                        <div class="space-y-4 px-2">
-                            <span class="text-[10px] font-bold text-textMuted uppercase tracking-widest">12 Маусым, 2026</span>
-                            <h4 class="font-display text-2xl font-black leading-tight group-hover:text-brandPrimary transition-colors tracking-tighter">Жанармай бағасының тұрақтылығы</h4>
-                            <p class="text-textMuted text-sm line-clamp-2 leading-relaxed">Сарапшылар алдағы тоқсанда ішкі нарықтағы баға конъюнктурасына болжам жасады...</p>
-                        </div>
-                    </div>
+                    <!-- Dynamic News -->
                 </div>
             </section>
 
@@ -345,8 +281,8 @@
                                     </div>
                                 </div>
                                 <div class="absolute bottom-8 left-8 p-6 glass rounded-3xl border border-white/10 max-w-xs">
-                                    <span class="block font-black text-sm mb-1 uppercase tracking-widest">SME Headquarters</span>
-                                    <span class="block text-[10px] text-textMuted">EXPO Business Center, Block C4.2</span>
+                                    <span class="block font-black text-sm mb-1 uppercase tracking-widest">SME Орталық кеңсесі</span>
+                                    <span class="block text-[10px] text-textMuted">EXPO Бизнес Орталығы, С4.2 блогы</span>
                                 </div>
                             </div>
                         </div>
@@ -427,71 +363,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 hover:border-brandPrimary/30 transition-all group">
-                        <div class="flex justify-between items-start mb-10">
-                            <div>
-                                <span class="text-[10px] font-black text-brandPrimary uppercase tracking-[0.2em] block mb-2">Алматы • SME</span>
-                                <h4 class="font-display font-black text-3xl text-white italic tracking-tighter">АИ-92</h4>
-                            </div>
-                            <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-brandPrimary group-hover:scale-110 transition-transform">
-                                <i data-lucide="fuel" class="w-7 h-7"></i>
-                            </div>
-                        </div>
-                        <div class="pt-8 border-t border-white/5">
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-4xl font-black text-white tracking-tighter">245.00</span>
-                                <span class="text-sm font-bold text-textMuted uppercase">₸/литр</span>
-                            </div>
-                            <p class="text-[10px] text-textMuted font-black uppercase mt-4 tracking-widest flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                                Қоймада бар
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 hover:border-brandPrimary/30 transition-all group">
-                        <div class="flex justify-between items-start mb-10">
-                            <div>
-                                <span class="text-[10px] font-black text-brandPrimary uppercase tracking-[0.2em] block mb-2">Алматы • SME</span>
-                                <h4 class="font-display font-black text-3xl text-white italic tracking-tighter">АИ-95</h4>
-                            </div>
-                            <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-brandPrimary group-hover:scale-110 transition-transform">
-                                <i data-lucide="droplets" class="w-7 h-7"></i>
-                            </div>
-                        </div>
-                        <div class="pt-8 border-t border-white/5">
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-4xl font-black text-white tracking-tighter">275.00</span>
-                                <span class="text-sm font-bold text-textMuted uppercase">₸/литр</span>
-                            </div>
-                            <p class="text-[10px] text-textMuted font-black uppercase mt-4 tracking-widest flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                                Қоймада бар
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 hover:border-brandPrimary/30 transition-all group">
-                        <div class="flex justify-between items-start mb-10">
-                            <div>
-                                <span class="text-[10px] font-black text-brandPrimary uppercase tracking-[0.2em] block mb-2">Алматы • SME</span>
-                                <h4 class="font-display font-black text-3xl text-white italic tracking-tighter">Дизель</h4>
-                            </div>
-                            <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-brandPrimary group-hover:scale-110 transition-transform">
-                                <i data-lucide="truck" class="w-7 h-7"></i>
-                            </div>
-                        </div>
-                        <div class="pt-8 border-t border-white/5">
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-4xl font-black text-white tracking-tighter">320.00</span>
-                                <span class="text-sm font-bold text-textMuted uppercase">₸/литр</span>
-                            </div>
-                            <p class="text-[10px] text-textMuted font-black uppercase mt-4 tracking-widest flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                Шектеулі мөлшер
-                            </p>
-                        </div>
-                    </div>
+                    <!-- Dynamic Prices -->
                 </div>
             </main>
         </section>
@@ -520,7 +392,7 @@
                             <div class="w-10 h-10 rounded-full border-2 border-bgSurface bg-amber-500/20"></div>
                             <div class="w-10 h-10 rounded-full border-2 border-bgSurface bg-sky-500/20"></div>
                         </div>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-textMuted">850+ активті компания</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-textMuted">850+ белсенді серіктес</span>
                     </div>
                 </div>
 
@@ -541,7 +413,7 @@
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
                                     <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Құпиясөз</label>
-                                    <button type="button" onclick="alert('Құпиясөзді қалпына келтіру сілтемесі поштаңызға жіберілді.')" class="text-[9px] font-black uppercase tracking-widest text-brandPrimary hover:underline">Ұмыттыңыз ба?</button>
+                                    <button type="button" onclick="showToast('Құпиясөзді қалпына келтіру сілтемесі поштаңызға жіберілді.', 'info')" class="text-[9px] font-black uppercase tracking-widest text-brandPrimary hover:underline">Ұмыттыңыз ба?</button>
                                 </div>
                                 <input type="password" id="login-password" required placeholder="••••••••" class="w-full auth-input rounded-2xl px-6 py-4.5 text-sm font-semibold">
                             </div>
@@ -633,7 +505,7 @@
                         <div class="flex items-center gap-4 border-r border-white/10 pr-8">
                             <div class="text-right">
                                 <span class="block text-xs font-black uppercase tracking-widest">ЖШС "Mercury"</span>
-                                <span class="block text-[9px] text-brandPrimary font-black uppercase tracking-widest">Client Account</span>
+                                <span class="block text-[9px] text-brandPrimary font-black uppercase tracking-widest">Клиенттік есептік жазба</span>
                             </div>
                             <div class="w-12 h-12 rounded-2xl bg-brandPrimary text-bgDeep flex items-center justify-center font-black shadow-xl">M</div>
                         </div>
@@ -652,6 +524,18 @@
                                 <h3 class="font-display font-black text-xl uppercase tracking-tighter italic">Компания деректері</h3>
                             </div>
 
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                                <div class="bg-bgDeep border border-white/5 p-6 rounded-3xl">
+                                    <span class="block text-[10px] text-textMuted uppercase font-black tracking-widest mb-2">Соңғы тапсырыс</span>
+                                    <span class="block font-black text-lg">#SME-10294</span>
+                                    <span class="block text-xs text-brandPrimary font-bold">Орындалды • 12.06.2026</span>
+                                </div>
+                                <div class="bg-bgDeep border border-white/5 p-6 rounded-3xl">
+                                    <span class="block text-[10px] text-textMuted uppercase font-black tracking-widest mb-2">Ағымдағы баланс</span>
+                                    <span class="block font-black text-lg">1,240,500 ₸</span>
+                                    <span class="block text-xs text-green-500 font-bold">Лимит: 5.0М ₸</span>
+                                </div>
+                            </div>
                             <div class="space-y-8">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div class="space-y-3">
@@ -667,9 +551,19 @@
                                     <label class="text-[10px] font-black uppercase tracking-[0.2em] text-textMuted">Заңды мекен-жайы</label>
                                     <input type="text" value="Астана қ., Мәңгілік Ел 55" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-brandPrimary outline-none transition-all">
                                 </div>
-                                <button onclick="saveProfile(event)" class="bg-brandPrimary hover:bg-white text-bgDeep px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-yellow-500/10">
-                                    Өзгерістерді сақтау
-                                </button>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <button onclick="saveProfile(event)" class="bg-brandPrimary hover:bg-white text-bgDeep px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-yellow-500/10">
+                                        Өзгерістерді сақтау
+                                    </button>
+                                    <button onclick="showOrderModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-blue-500/10 flex items-center justify-center gap-3">
+                                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                        Жаңа тапсырыс
+                                    </button>
+                                    <button onclick="showToast('Техникалық қолдау чаты ашылуда...', 'info')" class="bg-white/5 border border-white/10 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center gap-3">
+                                        <i data-lucide="message-circle" class="w-4 h-4 text-brandPrimary"></i>
+                                        Көмек алу
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -775,7 +669,7 @@
                         </div>
                         <div>
                             <span class="font-display font-black text-xl block text-white tracking-tighter italic">SME</span>
-                            <span class="text-[9px] text-brandPrimary font-black uppercase tracking-[0.2em]">Enterprise v2</span>
+                            <span class="text-[9px] text-brandPrimary font-black uppercase tracking-[0.2em]">Кәсіпорын v2</span>
                         </div>
                     </div>
                 </div>
@@ -796,6 +690,10 @@
                             <button onclick="switchAdminTab('users')" id="nav-admin-users" class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
                                 <i data-lucide="users" class="w-5 h-5"></i>
                                 Клиенттер
+                            </button>
+                            <button onclick="switchAdminTab('analytics')" id="nav-admin-analytics" class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
+                                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                                Аналитика
                             </button>
                             <button onclick="switchAdminTab('finance')" id="nav-admin-finance" class="w-full text-left px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-4 text-textMuted hover:bg-white/5 transition-all group">
                                 <i data-lucide="wallet" class="w-5 h-5"></i>
@@ -843,11 +741,15 @@
                         <div class="hidden xl:flex items-center gap-6 border-l border-white/10 pl-10">
                             <div class="flex items-center gap-3">
                                 <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
-                                <span class="text-[10px] font-black uppercase tracking-widest text-textMuted">System Online</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-textMuted">Жүйе белсенді</span>
                             </div>
                             <div class="flex items-center gap-3">
                                 <i data-lucide="activity" class="w-4 h-4 text-brandPrimary"></i>
-                                <span class="text-[10px] font-black uppercase tracking-widest text-white">42 Active Req.</span>
+                                        <span id="stat-req" class="text-[10px] font-black uppercase tracking-widest text-white">42 белсенді сұраныс</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="zap" class="w-4 h-4 text-amber-500"></i>
+                                <span id="stat-latency" class="text-[10px] font-black uppercase tracking-widest text-white">24ms Күту уақыты</span>
                             </div>
                             <div class="flex items-center gap-3 border-l border-white/10 pl-6">
                                 <i data-lucide="clock" class="w-4 h-4 text-textMuted"></i>
@@ -890,8 +792,8 @@
                         <!-- User Profile -->
                         <div class="flex items-center gap-4 pl-8 border-l border-white/10">
                             <div class="text-right">
-                                <span class="block text-xs font-black uppercase tracking-widest">Admin Control</span>
-                                <span class="block text-[9px] text-brandPrimary font-black uppercase tracking-widest">Superuser</span>
+                                <span class="block text-xs font-black uppercase tracking-widest">Әкімшілік басқару</span>
+                                <span class="block text-[9px] text-brandPrimary font-black uppercase tracking-widest">Суперпайдаланушы</span>
                             </div>
                             <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-brandPrimary to-yellow-600 flex items-center justify-center text-bgDeep font-black shadow-xl">
                                 AD
@@ -939,16 +841,44 @@
 
                         <!-- Charts and Activity -->
                         <div class="grid grid-cols-1 xl:grid-cols-12 gap-10">
-                            <!-- Main Chart -->
-                            <div class="xl:col-span-8 bg-bgSurface p-10 rounded-[40px] border border-white/5">
-                                <div class="flex items-center justify-between mb-10">
-                                    <h3 class="font-display font-black text-xl uppercase tracking-tighter italic">Сатылым Динамикасы</h3>
-                                    <select class="bg-bgDeep border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest outline-none">
-                                        <option>Соңғы 6 ай</option>
-                                        <option>Соңғы жыл</option>
-                                    </select>
+                            <!-- Main Chart & Quick Actions -->
+                            <div class="xl:col-span-8 space-y-10">
+                                <!-- Main Chart -->
+                                <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5">
+                                    <div class="flex items-center justify-between mb-10">
+                                        <h3 class="font-display font-black text-xl uppercase tracking-tighter italic">Сатылым Динамикасы</h3>
+                                        <select class="bg-bgDeep border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest outline-none">
+                                            <option>Соңғы 6 ай</option>
+                                            <option>Соңғы жыл</option>
+                                        </select>
+                                    </div>
+                                    <div class="h-[400px]"><canvas id="adminSalesChart"></canvas></div>
                                 </div>
-                                <div class="h-[400px]"><canvas id="adminSalesChart"></canvas></div>
+
+                                <!-- Quick Actions Panel -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <button onclick="switchAdminTab('pricing')" class="bg-brandPrimary/10 border border-brandPrimary/20 p-6 rounded-[32px] text-left hover:bg-brandPrimary/20 transition-all group">
+                                        <div class="w-10 h-10 rounded-xl bg-brandPrimary flex items-center justify-center text-bgDeep mb-4">
+                                            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                                        </div>
+                                        <span class="block font-black text-sm mb-1 uppercase tracking-tighter">Жаңа баға</span>
+                                        <span class="block text-[10px] text-textMuted uppercase font-bold tracking-widest">Прайс-листті жаңарту</span>
+                                    </button>
+                                    <button onclick="showAddNewsModal()" class="bg-blue-500/10 border border-blue-500/20 p-6 rounded-[32px] text-left hover:bg-blue-500/20 transition-all group">
+                                        <div class="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white mb-4">
+                                            <i data-lucide="send" class="w-5 h-5"></i>
+                                        </div>
+                                        <span class="block font-black text-sm mb-1 uppercase tracking-tighter">Жаңалық қосу</span>
+                                        <span class="block text-[10px] text-textMuted uppercase font-bold tracking-widest">Серіктестерге хабарлау</span>
+                                    </button>
+                                    <button class="bg-green-500/10 border border-green-500/20 p-6 rounded-[32px] text-left hover:bg-green-500/20 transition-all group">
+                                        <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center text-white mb-4">
+                                            <i data-lucide="file-text" class="w-5 h-5"></i>
+                                        </div>
+                                        <span class="block font-black text-sm mb-1 uppercase tracking-tighter">Есеп беру</span>
+                                        <span class="block text-[10px] text-textMuted uppercase font-bold tracking-widest">PDF форматында жүктеу</span>
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Right Column (Pie + Log) -->
@@ -1037,50 +967,7 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 hover:border-brandPrimary/30 transition-all">
-                                <div class="flex items-center justify-between mb-8">
-                                    <div class="w-12 h-12 rounded-2xl bg-brandPrimary/10 flex items-center justify-center text-brandPrimary">
-                                        <i data-lucide="fuel" class="w-6 h-6"></i>
-                                    </div>
-                                    <span class="text-[10px] font-black text-green-500 uppercase tracking-widest">Активті</span>
-                                </div>
-                                <h4 class="font-black text-xl mb-2">АИ-92</h4>
-                                <div class="relative mt-6">
-                                    <input type="number" value="245" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-2xl font-black text-brandPrimary outline-none focus:border-brandPrimary transition-all">
-                                    <span class="absolute right-6 top-1/2 -translate-y-1/2 text-textMuted font-bold uppercase text-xs">₸/Л</span>
-                                </div>
-                                <p class="text-[10px] text-textMuted font-bold mt-4 uppercase tracking-widest">Соңғы өзгеріс: Кеше</p>
-                            </div>
-
-                            <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 hover:border-brandPrimary/30 transition-all">
-                                <div class="flex items-center justify-between mb-8">
-                                    <div class="w-12 h-12 rounded-2xl bg-brandPrimary/10 flex items-center justify-center text-brandPrimary">
-                                        <i data-lucide="droplets" class="w-6 h-6"></i>
-                                    </div>
-                                    <span class="text-[10px] font-black text-green-500 uppercase tracking-widest">Активті</span>
-                                </div>
-                                <h4 class="font-black text-xl mb-2">АИ-95</h4>
-                                <div class="relative mt-6">
-                                    <input type="number" value="275" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-2xl font-black text-brandPrimary outline-none focus:border-brandPrimary transition-all">
-                                    <span class="absolute right-6 top-1/2 -translate-y-1/2 text-textMuted font-bold uppercase text-xs">₸/Л</span>
-                                </div>
-                                <p class="text-[10px] text-textMuted font-bold mt-4 uppercase tracking-widest">Соңғы өзгеріс: 2 сағ бұрын</p>
-                            </div>
-
-                            <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 hover:border-brandPrimary/30 transition-all">
-                                <div class="flex items-center justify-between mb-8">
-                                    <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                                        <i data-lucide="truck" class="w-6 h-6"></i>
-                                    </div>
-                                    <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Түзетуде</span>
-                                </div>
-                                <h4 class="font-black text-xl mb-2">Дизель</h4>
-                                <div class="relative mt-6">
-                                    <input type="number" value="320" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-2xl font-black text-brandPrimary outline-none focus:border-brandPrimary transition-all">
-                                    <span class="absolute right-6 top-1/2 -translate-y-1/2 text-textMuted font-bold uppercase text-xs">₸/Л</span>
-                                </div>
-                                <p class="text-[10px] text-textMuted font-bold mt-4 uppercase tracking-widest">Соңғы өзгеріс: 3 күн бұрын</p>
-                            </div>
+                            <!-- Dynamic Admin Pricing -->
                         </div>
 
                         <!-- Price History -->
@@ -1104,14 +991,14 @@
                                         <td class="py-6 px-10 font-bold">АИ-95</td>
                                         <td class="py-6 px-10 text-red-500">270 ₸</td>
                                         <td class="py-6 px-10 text-green-500 font-bold">275 ₸</td>
-                                        <td class="py-6 px-10">admin_01</td>
+                                        <td class="py-6 px-10">әкімші_01</td>
                                     </tr>
                                     <tr class="hover:bg-white/5 transition-colors">
                                         <td class="py-6 px-10 text-textMuted">16.06.2026 09:15</td>
                                         <td class="py-6 px-10 font-bold">АИ-92</td>
                                         <td class="py-6 px-10 text-red-500">242 ₸</td>
                                         <td class="py-6 px-10 text-green-500 font-bold">245 ₸</td>
-                                        <td class="py-6 px-10">admin_01</td>
+                                        <td class="py-6 px-10">әкімші_01</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1169,7 +1056,7 @@
                     <section id="admin-section-news" class="hide space-y-12 animate-fade-in">
                         <div class="flex items-center justify-between">
                             <h3 class="font-display font-black text-xl uppercase tracking-tighter italic">Жаңалықтарды басқару</h3>
-                            <button class="bg-brandPrimary text-bgDeep px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest">Қосу</button>
+                            <button onclick="showAddNewsModal()" class="bg-brandPrimary text-bgDeep px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest">Қосу</button>
                         </div>
                         <div class="bg-bgSurface rounded-[40px] border border-white/5 overflow-hidden">
                             <table class="w-full text-left text-sm">
@@ -1190,6 +1077,23 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </section>
+
+                    <section id="admin-section-analytics" class="hide space-y-12 animate-fade-in">
+                        <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5">
+                            <h3 class="font-display font-black text-xl uppercase tracking-tighter italic mb-10">Жүйелік белсенділік</h3>
+                            <div class="h-[400px]"><canvas id="adminTrafficChart"></canvas></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-bgSurface p-8 rounded-[32px] border border-white/5">
+                                <span class="text-[10px] font-black text-textMuted uppercase tracking-widest block mb-4">Орташа сессия уақыты</span>
+                                <span class="text-2xl font-black tracking-tighter">12м 45с</span>
+                            </div>
+                            <div class="bg-bgSurface p-8 rounded-[32px] border border-white/5">
+                                <span class="text-[10px] font-black text-textMuted uppercase tracking-widest block mb-4">Жаңа тіркелулер (Апта)</span>
+                                <span class="text-2xl font-black tracking-tighter text-blue-500">128</span>
+                            </div>
                         </div>
                     </section>
 
@@ -1244,50 +1148,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-white/5 text-sm">
-                                    <tr class="hover:bg-white/5 transition-colors group">
-                                        <td class="py-6 px-10">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-xl bg-brandPrimary/10 flex items-center justify-center text-brandPrimary font-black">M</div>
-                                                <div>
-                                                    <span class="block font-bold">ЖШС "Mercury"</span>
-                                                    <span class="block text-[10px] text-textMuted uppercase tracking-widest">Premium Partner</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="py-6 px-10 font-mono text-textMuted">123456789012</td>
-                                        <td class="py-6 px-10 font-medium">Алматы қ.</td>
-                                        <td class="py-6 px-10 font-black">120,000 <span class="text-[10px] text-textMuted">Л</span></td>
-                                        <td class="py-6 px-10">
-                                            <span class="px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-[9px] font-black uppercase tracking-widest">Белсенді</span>
-                                        </td>
-                                        <td class="py-6 px-10 text-right">
-                                            <button class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-brandPrimary hover:text-bgDeep transition-all ml-auto">
-                                                <i data-lucide="more-horizontal" class="w-5 h-5"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-white/5 transition-colors group">
-                                        <td class="py-6 px-10">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 font-black">E</div>
-                                                <div>
-                                                    <span class="block font-bold">ЖШС "Energy Systems"</span>
-                                                    <span class="block text-[10px] text-textMuted uppercase tracking-widest">Standard</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="py-6 px-10 font-mono text-textMuted">987654321098</td>
-                                        <td class="py-6 px-10 font-medium">Астана қ.</td>
-                                        <td class="py-6 px-10 font-black">45,500 <span class="text-[10px] text-textMuted">Л</span></td>
-                                        <td class="py-6 px-10">
-                                            <span class="px-3 py-1 bg-amber-500/10 text-brandPrimary rounded-full text-[9px] font-black uppercase tracking-widest">Тексерілуде</span>
-                                        </td>
-                                        <td class="py-6 px-10 text-right">
-                                            <button class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-brandPrimary hover:text-bgDeep transition-all ml-auto">
-                                                <i data-lucide="more-horizontal" class="w-5 h-5"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    <!-- Dynamic Admin Users -->
                                 </tbody>
                             </table>
                         </div>
@@ -1298,11 +1159,303 @@
 
     </div>
 
+    <!-- Modal Container -->
+    <div id="modal-backdrop" class="fixed inset-0 z-[2000] bg-bgDeep/80 backdrop-blur-sm hide flex items-center justify-center p-6">
+        <div id="modal-content" class="w-full max-w-2xl glass rounded-[40px] shadow-2xl overflow-hidden animate-fade-in relative">
+            <button onclick="closeModal()" class="absolute top-8 right-8 w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white hover:bg-red-500 transition-all z-10">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <div id="modal-body" class="p-10 md:p-16">
+                <!-- Dynamic Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-10 right-10 z-[1000] flex flex-col gap-4"></div>
+
     <!-- SCRIPTS -->
     <script>
+        // Helper: Simple XSS Escape
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Global App State
+        const state = {
+            prices: [
+                { id: 'ai-92', name: 'АИ-92', category: 'Стандарт', price: 245.00, region: 'Алматы', status: 'Активті', icon: 'fuel' },
+                { id: 'ai-95', name: 'АИ-95', category: 'Премиум Плюс', price: 275.00, region: 'Алматы', status: 'Активті', icon: 'droplet' },
+                { id: 'diesel', name: 'Дизель', category: 'Қысқы сұрып', price: 320.00, region: 'Алматы', status: 'Түзетуде', icon: 'truck' }
+            ],
+            finance: [
+                { id: 'TRX-9901', company: 'ЖШС "Mercury"', type: 'Төлем', amount: '+2,450,000 ₸', status: 'Сәтті', date: '17.06.2026', method: 'Банктік аударым' },
+                { id: 'TRX-9892', company: 'ЖШС "Energy Systems"', type: 'Төлем', amount: '+1,120,000 ₸', status: 'Сәтті', date: '16.06.2026', method: 'Банктік аударым' },
+                { id: 'TRX-9885', company: 'ЖШС "Mercury"', type: 'Қайтару', amount: '-150,000 ₸', status: 'Өңделуде', date: '15.06.2026', method: 'Карта' }
+            ],
+            news: [
+                { id: 1, title: 'Мұнай өнімдерінің өндірісі 12%-ға артты', date: '15.06.2026', category: 'Нарық Талдау', content: 'Қазақстанның мұнай өңдеу зауыттары өндіріс көлемін арттыру бойынша жаңа стратегиялық көрсеткіштерге қол жеткізді...', status: 'Жарияланды', img: 'https://images.unsplash.com/photo-1541888941295-1e8762d46d3a?auto=format&fit=crop&q=80&w=800' },
+                { id: 2, title: 'Цифрлы бақылау жүйесі енгізілді', date: '14.06.2026', category: 'Технология', content: 'SME платформасы логистиканы қадағалаудың жаңа интеллектуалды модулін іске қосты...', status: 'Жарияланды', img: 'https://images.unsplash.com/photo-1518173946687-a4c8a9b746f4?auto=format&fit=crop&q=80&w=800' },
+                { id: 3, title: 'Жанармай бағасының тұрақтылығы', date: '12.06.2026', category: 'Экономика', content: 'Сарапшылар алдағы тоқсанда ішкі нарықтағы баға конъюнктурасына болжам жасады...', status: 'Жарияланды', img: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=800' }
+            ],
+            users: [
+                { id: 1, name: 'ЖШС "Mercury"', bin: '123456789012', region: 'Алматы қ.', volume: '120,000', status: 'Белсенді', type: 'Премиум Серіктес', initial: 'M' },
+                { id: 2, name: 'ЖШС "Energy Systems"', bin: '987654321098', region: 'Астана қ.', volume: '45,500', status: 'Тексерілуде', type: 'Стандартты', initial: 'E' }
+            ],
+            orders: [
+                { id: '#SME-10294', date: '12.06.2026', product: 'АИ-95 Premium', volume: '25,000', total: '6,875,000 ₸', status: 'Орындалды' }
+            ],
+            logs: [
+                { id: 1, action: 'Прайс • қосты', time: '2026-06-17 00:09', detail: 'Әкімші: «АИ-95» қосты — 295 ₸', type: 'price', color: '#22c55e' },
+                { id: 2, action: 'Прайс • қосты', time: '2026-06-17 00:08', detail: 'Әкімші: «АИ-92» қосты — 255 ₸', type: 'price', color: '#22c55e' },
+                { id: 3, action: 'Жаңалық • қосты', time: '2026-06-17 00:07', detail: 'Әкімші: «Басқару панелі» қосты', type: 'news', color: '#22c55e' },
+                { id: 4, action: 'Профиль • өзгертті', time: '2026-06-17 00:04', detail: 'Клиент 1: «Клиент 1» өзгертті', type: 'profile', color: '#38bdf8' }
+            ]
+        };
+
+        // Custom Toast System
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'bg-brandPrimary text-bgDeep'
+            };
+
+            toast.className = `toast-animate px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm ${colors[type] || colors.info} flex items-center gap-3`;
+            toast.innerHTML = `
+                <i data-lucide="${type === 'success' ? 'check-circle' : 'info'}" class="w-5 h-5"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Centralized Rendering Logic
+        function renderAll() {
+            renderLiveMarket();
+            renderPricesPage();
+            renderNewsSection();
+            renderAdminPricing();
+            renderAdminNews();
+            renderAdminUsers();
+            renderAdminLogs();
+            renderAdminFinance();
+            renderClientOrders();
+            lucide.createIcons();
+        }
+
+        function renderLiveMarket() {
+            const container = document.querySelector('#page-landing .space-y-6');
+            if (!container) return;
+
+            // Only render first two for the widget
+            container.innerHTML = state.prices.slice(0, 2).map(p => `
+                <div class="flex items-center justify-between p-6 rounded-3xl bg-bgDeep border border-white/5 hover:border-brandPrimary/30 transition-all cursor-pointer group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-brandPrimary/10 flex items-center justify-center text-brandPrimary group-hover:bg-brandPrimary group-hover:text-bgDeep transition-all duration-500">
+                            <i data-lucide="${p.icon}" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="block font-black text-lg">${p.name}</span>
+                            <span class="block text-[10px] text-textMuted uppercase font-bold tracking-widest">${p.category}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span id="price-${p.id}" class="block font-black text-2xl">${p.price.toFixed(2)}</span>
+                        <span class="text-[10px] text-textMuted font-bold uppercase tracking-widest">₸/Л</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAdminFinance() {
+            const container = document.querySelector('#admin-section-finance .space-y-4');
+            if (!container) return;
+
+            container.innerHTML = state.finance.map(f => `
+                <div class="flex items-center justify-between p-6 bg-bgDeep rounded-3xl border border-white/5 hover:border-brandPrimary/30 transition-all group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl ${f.type === 'Төлем' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'} flex items-center justify-center">
+                            <i data-lucide="${f.type === 'Төлем' ? 'arrow-down-left' : 'arrow-up-right'}" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="block font-bold">${f.company}</span>
+                            <span class="block text-[10px] text-textMuted uppercase tracking-widest">${f.type} • ${f.method} • ${f.date}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="block font-black ${f.amount.startsWith('+') ? 'text-green-500' : 'text-red-500'} text-lg">${f.amount}</span>
+                        <span class="text-[9px] text-textMuted font-bold uppercase tracking-widest">${f.status}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPricesPage() {
+            const container = document.querySelector('#page-prices .grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3');
+            if (!container) return;
+
+            container.innerHTML = state.prices.map(p => `
+                <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 hover:border-brandPrimary/30 transition-all group">
+                    <div class="flex justify-between items-start mb-10">
+                        <div>
+                            <span class="text-[10px] font-black text-brandPrimary uppercase tracking-[0.2em] block mb-2">${p.region} • SME</span>
+                            <h4 class="font-display font-black text-3xl text-white italic tracking-tighter">${p.name}</h4>
+                        </div>
+                        <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-brandPrimary group-hover:scale-110 transition-transform">
+                            <i data-lucide="${p.icon}" class="w-7 h-7"></i>
+                        </div>
+                    </div>
+                    <div class="pt-8 border-t border-white/5">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-4xl font-black text-white tracking-tighter">${p.price.toFixed(2)}</span>
+                            <span class="text-sm font-bold text-textMuted uppercase">₸/литр</span>
+                        </div>
+                        <p class="text-[10px] text-textMuted font-black uppercase mt-4 tracking-widest flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full ${p.status === 'Активті' ? 'bg-green-500' : 'bg-amber-500'}"></span>
+                            ${p.status === 'Активті' ? 'Қоймада бар' : p.status}
+                        </p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderNewsSection() {
+            const container = document.querySelector('#news .grid-cols-1.md\\:grid-cols-3');
+            if (!container) return;
+
+            container.innerHTML = state.news.map(n => `
+                <div class="group cursor-pointer" onclick="showNewsDetail(${n.id})">
+                    <div class="aspect-[4/3] rounded-[40px] overflow-hidden mb-8 relative">
+                        <img src="${escapeHtml(n.img)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="News">
+                        <div class="absolute inset-0 bg-gradient-to-t from-bgDeep via-transparent to-transparent opacity-60"></div>
+                        <div class="absolute top-8 left-8 px-4 py-2 rounded-2xl bg-bgDeep/90 backdrop-blur-md text-[10px] font-black text-brandPrimary uppercase tracking-widest">${escapeHtml(n.category)}</div>
+                    </div>
+                    <div class="space-y-4 px-2">
+                        <span class="text-[10px] font-bold text-textMuted uppercase tracking-widest">${escapeHtml(n.date)}</span>
+                        <h4 class="font-display text-2xl font-black leading-tight group-hover:text-brandPrimary transition-colors tracking-tighter">${escapeHtml(n.title)}</h4>
+                        <p class="text-textMuted text-sm line-clamp-2 leading-relaxed">${escapeHtml(n.content)}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAdminPricing() {
+            const container = document.querySelector('#admin-section-pricing .grid-cols-1.md\\:grid-cols-3');
+            if (!container) return;
+
+            container.innerHTML = state.prices.map(p => `
+                <div class="bg-bgSurface p-10 rounded-[40px] border border-white/5 hover:border-brandPrimary/30 transition-all">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-12 h-12 rounded-2xl bg-brandPrimary/10 flex items-center justify-center text-brandPrimary">
+                            <i data-lucide="${p.icon}" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-[10px] font-black ${p.status === 'Активті' ? 'text-green-500' : 'text-amber-500'} uppercase tracking-widest">${p.status}</span>
+                    </div>
+                    <h4 class="font-black text-xl mb-2">${p.name}</h4>
+                    <div class="relative mt-6">
+                        <input type="number" id="admin-price-${p.id}" value="${p.price}" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-2xl font-black text-brandPrimary outline-none focus:border-brandPrimary transition-all">
+                        <span class="absolute right-6 top-1/2 -translate-y-1/2 text-textMuted font-bold uppercase text-xs">₸/Л</span>
+                    </div>
+                    <button onclick="updatePrice('${p.id}')" class="mt-4 w-full py-3 rounded-xl bg-brandPrimary text-bgDeep font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-all">Сақтау</button>
+                </div>
+            `).join('');
+        }
+
+        function renderAdminNews() {
+            const tbody = document.querySelector('#admin-section-news tbody');
+            if (!tbody) return;
+            tbody.innerHTML = state.news.map(n => `
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="py-6 px-10 font-bold">${escapeHtml(n.title)}</td>
+                    <td class="py-6 px-10 text-textMuted">${escapeHtml(n.date)}</td>
+                    <td class="py-6 px-10"><span class="px-2 py-1 bg-green-500/10 text-green-500 rounded text-[10px] font-bold">${escapeHtml(n.status)}</span></td>
+                    <td class="py-6 px-10 text-right"><button class="text-brandPrimary hover:underline">Өңдеу</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAdminUsers() {
+            const tbody = document.querySelector('#admin-section-users tbody');
+            if (!tbody) return;
+            tbody.innerHTML = state.users.map(u => `
+                <tr class="hover:bg-white/5 transition-colors group">
+                    <td class="py-6 px-10">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-brandPrimary/10 flex items-center justify-center text-brandPrimary font-black">${u.initial}</div>
+                            <div>
+                                <span class="block font-bold">${u.name}</span>
+                                <span class="block text-[10px] text-textMuted uppercase tracking-widest">${u.type}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-6 px-10 font-mono text-textMuted">${u.bin}</td>
+                    <td class="py-6 px-10 font-medium">${u.region}</td>
+                    <td class="py-6 px-10 font-black">${u.volume} <span class="text-[10px] text-textMuted">Л</span></td>
+                    <td class="py-6 px-10">
+                        <div class="flex flex-col gap-1">
+                            <span class="px-3 py-1 ${u.status === 'Белсенді' ? 'bg-green-500/10 text-green-500' : 'bg-amber-500/10 text-brandPrimary'} rounded-full text-[9px] font-black uppercase tracking-widest w-fit">${u.status}</span>
+                            ${u.status === 'Тексерілуде' ? `<button onclick="verifyUser(${u.id})" class="text-[8px] text-brandPrimary hover:underline font-bold text-left px-1 uppercase tracking-widest">Растау</button>` : ''}
+                        </div>
+                    </td>
+                    <td class="py-6 px-10 text-right">
+                        <button class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-brandPrimary hover:text-bgDeep transition-all ml-auto">
+                            <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAdminLogs() {
+            const container = document.querySelector('#admin-section-overview .flex-1.relative.pl-10.space-y-12');
+            if (!container) return;
+            container.innerHTML = `<div class="timeline-line"></div>` + state.logs.map(l => `
+                <div class="relative group">
+                    <div class="timeline-dot bg-[#3b82f6]"></div>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 rounded-lg bg-green-900/20 text-[#22c55e] text-[9px] font-black uppercase tracking-widest">${l.action}</span>
+                            <span class="text-[10px] font-medium text-textMuted">${l.time}</span>
+                        </div>
+                        <p class="text-sm font-bold text-white tracking-tight">${l.detail}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderClientOrders() {
+            const tbody = document.querySelector('#cabinet-section-orders tbody');
+            if (!tbody) return;
+            tbody.innerHTML = state.orders.map(o => `
+                <tr class="hover:bg-white/5 transition-colors group">
+                    <td class="py-6 px-10 font-black text-white group-hover:text-brandPrimary">${o.id}</td>
+                    <td class="py-6 px-10 text-textMuted font-medium">${o.date}</td>
+                    <td class="py-6 px-10 font-bold">${o.product}</td>
+                    <td class="py-6 px-10 font-black tracking-tighter text-lg">${o.volume} <span class="text-xs text-textMuted uppercase ml-1">Л</span></td>
+                    <td class="py-6 px-10 font-black text-lg">${o.total}</td>
+                    <td class="py-6 px-10 text-right">
+                        <span class="px-4 py-1.5 rounded-full bg-green-500/10 text-green-500 text-[10px] font-black uppercase tracking-widest">${o.status}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
         // Initialize Lucide and Dynamic Elements
         document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+            renderAll();
             startLiveMarket();
             setInterval(updateAdminClock, 1000);
         });
@@ -1312,20 +1465,29 @@
             const timeStr = now.toLocaleTimeString('kk-KZ', { hour12: false });
             const clockEl = document.getElementById('admin-clock');
             if (clockEl) clockEl.textContent = timeStr;
+
+            // Update market timestamp occasionally
+            const marketTime = document.getElementById('market-update-time');
+            if (marketTime && now.getSeconds() % 30 === 0) {
+                marketTime.textContent = `Жаңартылды: ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+            }
         }
 
         function startLiveMarket() {
-            const prices = [
-                { id: 'price-95', val: 275.00 },
-                { id: 'price-diesel', val: 320.00 }
-            ];
-
             setInterval(() => {
-                prices.forEach(p => {
+                state.prices.forEach(p => {
                     const change = (Math.random() * 0.1 - 0.05);
-                    p.val = Math.max(100, p.val + change);
-                    const el = document.getElementById(p.id);
-                    if (el) el.textContent = p.val.toFixed(2);
+                    p.price = Math.max(100, p.price + change);
+
+                    // Update Landing Page widget if present
+                    const el = document.getElementById(`price-${p.id}`);
+                    if (el) el.textContent = p.price.toFixed(2);
+
+                    // Update Admin inputs if present and not being edited
+                    const adminInput = document.getElementById(`admin-price-${p.id}`);
+                    if (adminInput && document.activeElement !== adminInput) {
+                        adminInput.value = p.price.toFixed(2);
+                    }
                 });
 
                 // Update system stats mock
@@ -1334,6 +1496,18 @@
                 const cpuBar = document.getElementById('stat-cpu-bar');
                 if (cpuEl) cpuEl.textContent = cpu + '%';
                 if (cpuBar) cpuBar.style.width = cpu + '%';
+
+                const reqEl = document.getElementById('stat-req');
+                if (reqEl) {
+                    const reqs = Math.floor(Math.random() * 50) + 20;
+                    reqEl.textContent = reqs + ' белсенді сұраныс';
+                }
+
+                const latEl = document.getElementById('stat-latency');
+                if (latEl) {
+                    const lat = Math.floor(Math.random() * 20) + 15;
+                    latEl.textContent = lat + 'ms Күту уақыты';
+                }
             }, 3000);
         }
 
@@ -1390,11 +1564,13 @@
                 if (type === 'login') {
                     if (email === 'admin@sme.kz') {
                         showPage('admin');
+                        showToast('Жүйеге әкімші ретінде сәтті кірдіңіз', 'success');
                     } else {
                         showPage('cabinet');
+                        showToast('Қош келдіңіз!', 'success');
                     }
                 } else {
-                    alert('Өтініміңіз жіберілді. Менеджер 24 сағат ішінде хабарласады.');
+                    showToast('Өтініміңіз жіберілді. Менеджер 24 сағат ішінде хабарласады.', 'info');
                     showPage('landing');
                 }
 
@@ -1411,19 +1587,13 @@
             const btn = e.target;
             const originalText = btn.innerText;
             btn.disabled = true;
-            btn.innerText = 'Сақталуда...';
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>`;
+            lucide.createIcons();
 
             setTimeout(() => {
-                btn.innerText = 'Сәтті сақталды!';
-                btn.style.backgroundColor = '#10b981';
-                btn.style.color = 'white';
-
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.innerText = originalText;
-                    btn.style.backgroundColor = '';
-                    btn.style.color = '';
-                }, 2000);
+                showToast('Деректер сәтті сақталды', 'success');
+                btn.disabled = false;
+                btn.innerText = originalText;
             }, 1000);
         }
 
@@ -1461,12 +1631,26 @@
                 overview: 'Шолу',
                 pricing: 'Прайс-лист',
                 users: 'Клиенттер',
+                analytics: 'Аналитика',
                 finance: 'Қаржы',
                 news: 'Жаңалықтар',
                 logs: 'Жүйе журналы',
                 settings: 'Баптаулар'
             };
             document.getElementById('admin-title').textContent = titles[tabId] || 'Басқару';
+
+            // Ensure charts re-render
+            if (tabId === 'overview') {
+                if (adminSalesChart) adminSalesChart.destroy();
+                if (adminPieChart) adminPieChart.destroy();
+                adminSalesChart = null;
+                adminPieChart = null;
+                initAdminCharts();
+            } else if (tabId === 'analytics') {
+                if (adminTrafficChart) adminTrafficChart.destroy();
+                adminTrafficChart = null;
+                initAdminCharts();
+            }
         }
 
         // DASHBOARD LOGIC (CABINET)
@@ -1486,9 +1670,241 @@
             document.getElementById('cabinet-title').textContent = titles[tabId];
         }
 
+        // STATE ACTIONS
+        function updatePrice(id) {
+            const input = document.getElementById(`admin-price-${id}`);
+            const newPrice = parseFloat(input.value);
+            const product = state.prices.find(p => p.id === id);
+
+            if (product) {
+                const oldPrice = product.price;
+                product.price = newPrice;
+
+                // Add log
+                state.logs.unshift({
+                    id: Date.now(),
+                    action: 'Прайс • өзгертті',
+                    time: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                    detail: `Әкімші: «${product.name}» бағасын өзгертті: ${oldPrice} ₸ → ${newPrice} ₸`,
+                    type: 'price',
+                    color: '#22c55e'
+                });
+
+                renderAll();
+                showToast(`${product.name} бағасы сәтті жаңартылды`, 'success');
+            }
+        }
+
+        function verifyUser(userId) {
+            const user = state.users.find(u => u.id === userId);
+            if (user) {
+                user.status = 'Белсенді';
+                showToast(`${user.name} статусы расталды`, 'success');
+                renderAdminUsers();
+            }
+        }
+
+        // Modal Logic
+        function openModal(contentHtml) {
+            const backdrop = document.getElementById('modal-backdrop');
+            const body = document.getElementById('modal-body');
+            body.innerHTML = contentHtml;
+            backdrop.classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            const backdrop = document.getElementById('modal-backdrop');
+            backdrop.classList.add('hide');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-backdrop') closeModal();
+        });
+
+        function showNewsDetail(newsId) {
+            const news = state.news.find(n => n.id === newsId);
+            if (news) {
+                openModal(`
+                    <div class="space-y-8">
+                        <div class="aspect-video rounded-[32px] overflow-hidden">
+                            <img src="${escapeHtml(news.img)}" class="w-full h-full object-cover" alt="News">
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="px-4 py-1.5 rounded-full bg-brandPrimary/10 text-brandPrimary text-[10px] font-black uppercase tracking-widest">${escapeHtml(news.category)}</span>
+                                <span class="text-[10px] font-bold text-textMuted uppercase tracking-widest">${escapeHtml(news.date)}</span>
+                            </div>
+                            <h2 class="font-display text-3xl font-black tracking-tighter italic leading-tight">${escapeHtml(news.title)}</h2>
+                            <p class="text-textMuted leading-relaxed">${escapeHtml(news.content)}</p>
+                            <p class="text-textMuted leading-relaxed">Салалық сарапшылардың пікірінше, бұл қадам нарықтағы ашықтықты арттырып, серіктестеріміз үшін қосымша мүмкіндіктер ашады. Smart Mercury Energy әрқашан инновациялардың алдыңғы шебінде болуға ұмтылады.</p>
+                        </div>
+                        <div class="pt-8 border-t border-white/5">
+                            <button onclick="closeModal()" class="w-full py-5 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all">Жабу</button>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+
+        function showOrderModal() {
+            const productsHtml = state.prices.map(p => `<option value="${p.id}">${p.name} (${p.price} ₸)</option>`).join('');
+            openModal(`
+                <div class="space-y-8">
+                    <h3 class="font-display text-3xl font-black tracking-tighter italic">Жаңа тапсырыс беру</h3>
+                    <form onsubmit="handlePlaceOrder(event)" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Өнімді таңдаңыз</label>
+                            <select id="order-product-id" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-brandPrimary outline-none appearance-none">
+                                ${productsHtml}
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Көлемі (Литр)</label>
+                            <input type="number" id="order-volume" required min="1000" step="100" placeholder="Мысалы: 5000" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-brandPrimary outline-none transition-all">
+                        </div>
+                        <div id="order-summary" class="p-6 bg-brandPrimary/5 rounded-2xl border border-brandPrimary/20 space-y-2">
+                            <div class="flex justify-between text-xs font-bold uppercase tracking-widest text-textMuted">
+                                <span>Бағасы:</span>
+                                <span id="summary-price">0 ₸</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-black uppercase tracking-tighter italic">
+                                <span>Жалпы сомасы:</span>
+                                <span id="summary-total" class="text-brandPrimary">0 ₸</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-5 rounded-2xl bg-brandPrimary text-bgDeep font-black text-xs uppercase tracking-widest hover:bg-white transition-all shadow-xl shadow-yellow-500/20">Тапсырысты растау</button>
+                    </form>
+                </div>
+            `);
+
+            const prodSelect = document.getElementById('order-product-id');
+            const volInput = document.getElementById('order-volume');
+            const updateSummary = () => {
+                const product = state.prices.find(p => p.id === prodSelect.value);
+                const volume = parseFloat(volInput.value) || 0;
+                const total = product.price * volume;
+                document.getElementById('summary-price').textContent = `${product.price.toFixed(2)} ₸`;
+                document.getElementById('summary-total').textContent = `${total.toLocaleString('kk-KZ')} ₸`;
+            };
+
+            prodSelect.addEventListener('change', updateSummary);
+            volInput.addEventListener('input', updateSummary);
+            updateSummary();
+        }
+
+        function handlePlaceOrder(e) {
+            e.preventDefault();
+            const prodId = document.getElementById('order-product-id').value;
+            const volume = parseFloat(document.getElementById('order-volume').value);
+            const product = state.prices.find(p => p.id === prodId);
+            const total = product.price * volume;
+
+            const newOrder = {
+                id: `#SME-${Math.floor(Math.random() * 90000) + 10000}`,
+                date: new Date().toLocaleDateString('kk-KZ'),
+                product: product.name,
+                volume: volume.toLocaleString('kk-KZ'),
+                total: `${total.toLocaleString('kk-KZ')} ₸`,
+                status: 'Өңделуде'
+            };
+
+            state.orders.unshift(newOrder);
+
+            // Add system log
+            state.logs.unshift({
+                id: Date.now(),
+                action: 'Жаңа тапсырыс',
+                time: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                detail: `Клиент 1: Жаңа тапсырыс берді ${newOrder.id} (${newOrder.product}, ${newOrder.volume} Л)`,
+                type: 'order',
+                color: '#38bdf8'
+            });
+
+            closeModal();
+            renderAll();
+            showToast('Тапсырыс сәтті қабылданды!', 'success');
+        }
+
+        function showAddNewsModal() {
+            openModal(`
+                <div class="space-y-8">
+                    <h3 class="font-display text-3xl font-black tracking-tighter italic">Жаңалық қосу</h3>
+                    <form onsubmit="handleAddNews(event)" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Тақырыбы</label>
+                            <input type="text" id="news-title" required placeholder="Жаңалық тақырыбын енгізіңіз" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-brandPrimary outline-none transition-all">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Санат</label>
+                                <select id="news-category" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold outline-none appearance-none bg-bgSurface">
+                                    <option value="Нарық Талдау">Нарық Талдау</option>
+                                    <option value="Технология">Технология</option>
+                                    <option value="Экономика">Экономика</option>
+                                    <option value="Компания">Компания</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Күні</label>
+                                <input type="text" id="news-date" value="${new Date().toLocaleDateString('kk-KZ')}" readonly class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold opacity-50">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Мәтін</label>
+                            <textarea id="news-content" required rows="4" placeholder="Жаңалықтың толық мәтіні..." class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-brandPrimary outline-none transition-all"></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-textMuted">Сурет URL (Unsplash)</label>
+                            <input type="url" id="news-img" value="https://images.unsplash.com/photo-1518173946687-a4c8a9b746f4?auto=format&fit=crop&q=80&w=800" class="w-full bg-bgDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-brandPrimary outline-none transition-all">
+                        </div>
+                        <button type="submit" class="w-full py-5 rounded-2xl bg-brandPrimary text-bgDeep font-black text-xs uppercase tracking-widest hover:bg-white transition-all shadow-xl shadow-yellow-500/20">Жариялау</button>
+                    </form>
+                </div>
+            `);
+        }
+
+        function handleAddNews(e) {
+            e.preventDefault();
+            const title = document.getElementById('news-title').value;
+            const category = document.getElementById('news-category').value;
+            const content = document.getElementById('news-content').value;
+            const img = document.getElementById('news-img').value;
+
+            const newNews = {
+                id: state.news.length + 1,
+                title,
+                date: new Date().toLocaleDateString('kk-KZ'),
+                category,
+                content,
+                status: 'Жарияланды',
+                img
+            };
+
+            state.news.unshift(newNews);
+
+            // Add system log
+            state.logs.unshift({
+                id: Date.now(),
+                action: 'Жаңалық • қосты',
+                time: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                detail: `Әкімші: «${title}» жаңалығын қосты`,
+                type: 'news',
+                color: '#22c55e'
+            });
+
+            closeModal();
+            renderAll();
+            showToast('Жаңалық сәтті жарияланды!', 'success');
+        }
+
         // CHARTS
         let adminSalesChart = null;
         let adminPieChart = null;
+        let adminTrafficChart = null;
         let argusChart = null;
 
         function initAdminCharts() {
@@ -1532,6 +1948,26 @@
                     maintainAspectRatio: false,
                     cutout: '80%',
                     plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { weight: 'bold' } } } }
+                }
+            });
+
+            const ctxTraffic = document.getElementById('adminTrafficChart').getContext('2d');
+            adminTrafficChart = new Chart(ctxTraffic, {
+                type: 'bar',
+                data: {
+                    labels: ['Дүй', 'Сей', 'Сәр', 'Бей', 'Жұм', 'Сен', 'Жек'],
+                    datasets: [{
+                        label: 'Қолданушылар',
+                        data: [420, 380, 450, 490, 510, 320, 280],
+                        backgroundColor: '#38bdf8',
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { weight: 'bold' } } } }
                 }
             });
         }
