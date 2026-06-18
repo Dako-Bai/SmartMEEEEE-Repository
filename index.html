@@ -148,6 +148,42 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo, useCallback } = React;
 
+        // --- Helper Logic ---
+        const escapeHtml = (text) => {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        };
+
+        const showToast = (message, type = 'info') => {
+            let container = document.getElementById('toast-root');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-root';
+                container.className = 'fixed top-10 right-10 z-[1000] space-y-4 pointer-events-none';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = `glass p-4 rounded-2xl border-l-4 shadow-2xl animate-fade-in flex items-center gap-3 min-w-[300px] pointer-events-auto ${
+                type === 'success' ? 'border-emerald-500 text-emerald-100' :
+                type === 'error' ? 'border-red-500 text-red-100' : 'border-blue-500 text-blue-100'
+            }`;
+            toast.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                    <i data-lucide="${type === 'error' ? 'alert-circle' : (type === 'success' ? 'check-circle' : 'info')}" class="w-4 h-4"></i>
+                </div>
+                <span class="text-xs font-bold uppercase tracking-tight">${message}</span>
+            `;
+            container.appendChild(toast);
+            if (window.lucide) lucide.createIcons();
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                toast.style.transition = 'all 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        };
+
         // --- Translations ---
         const translations = {
             kk: {
@@ -158,6 +194,7 @@
                 stations: "Жанармай бекеттері",
                 admin: "Әкімшілік",
                 prices: "Бағалар",
+                requests: "Тіркелу өтінімдері",
                 audit: "Аудит журналы",
                 settings: "Баптаулар",
                 oilDepot: "НБ (Мұнай базасы)",
@@ -195,6 +232,7 @@
                 stations: "Автозаправочные станции",
                 admin: "Администрирование",
                 prices: "Цены",
+                requests: "Заявки на регистрацию",
                 audit: "Журнал аудита",
                 settings: "Настройки",
                 oilDepot: "НБ (Нефтебаза)",
@@ -232,6 +270,7 @@
                 stations: "Fuel Stations",
                 admin: "Administration",
                 prices: "Prices",
+                requests: "Registration Requests",
                 audit: "Audit Log",
                 settings: "Settings",
                 oilDepot: "Oil Depot (NB)",
@@ -377,11 +416,12 @@
             );
         };
 
-        const Sidebar = ({ currentTab, setTab, t }) => {
+            const Sidebar = ({ currentTab, setTab, t, role }) => {
             const items = [
                 { id: 'monitoring', icon: 'activity', label: t.monitoring },
                 { id: 'prices', icon: 'tags', label: t.prices },
                 { id: 'admin', icon: 'shield-check', label: t.admin },
+                    { id: 'requests', icon: 'user-plus', label: t.requests, adminOnly: true },
                 { id: 'audit', icon: 'clipboard-list', label: t.audit },
             ];
 
@@ -395,7 +435,7 @@
                     </div>
 
                     <nav className="flex-1 mt-10 px-4 space-y-2">
-                        {items.map(item => (
+                        {items.filter(i => !i.adminOnly || role === 'admin').map(item => (
                             <button
                                 key={item.id}
                                 onClick={() => setTab(item.id)}
@@ -426,8 +466,11 @@
 
         const App = () => {
             const [lang, setLang] = useState('kk');
-            const [currentTab, setCurrentTab] = useState('monitoring');
             const [t, setT] = useState(translations.kk);
+            const [user, setUser] = useState(null); // { name, role }
+            const [authMode, setAuthMode] = useState('login'); // 'login' | 'register'
+            const [currentTab, setCurrentTab] = useState('monitoring');
+            const [notifications, setNotifications] = useState([]);
 
             // Core States with LocalStorage
             const [depotTanks, setDepotState] = useState(() => {
@@ -446,12 +489,78 @@
                 const saved = localStorage.getItem('sme_audit');
                 return saved ? JSON.parse(saved) : [{ id: 1, action: 'Система инициализирована', time: new Date().toLocaleString(), user: 'System' }];
             });
+            const [userRequests, setUserRequests] = useState(() => {
+                const saved = localStorage.getItem('sme_requests');
+                return saved ? JSON.parse(saved) : [
+                    { id: 101, name: 'OilTrans LLP', email: 'manager@oiltrans.kz', date: '16.06.2026', bin: '123456789012' },
+                    { id: 102, name: 'Aviation Group', email: 'ops@avg.com', date: '17.06.2026', bin: '987654321098' }
+                ];
+            });
+            const [registeredUsers, setRegisteredUsers] = useState(() => {
+                const saved = localStorage.getItem('sme_users');
+                return saved ? JSON.parse(saved) : [
+                    { id: 1, name: 'Admin Hub', role: 'admin', email: 'admin@sme.kz' },
+                    { id: 2, name: 'Operator_Almaty', role: 'operator', email: 'alm@sme.kz' }
+                ];
+            });
 
             useEffect(() => {
                 setT(translations[lang]);
             }, [lang]);
 
-            const logAction = useCallback((action, user = "Admin") => {
+            // Simulation of live data changes and alerts
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    setDepotState(prev => prev.map(tank => {
+                        const change = (Math.random() - 0.5) * 20;
+                        const newCurrent = Math.max(0, Math.min(tank.capacity, tank.current + change));
+
+                        // Alert Logic
+                        if (newCurrent < tank.capacity * 0.1 && tank.current >= tank.capacity * 0.1) {
+                            addNotification(`Критикалық деңгей: ${tank.name} отыны таусылуда!`, 'error');
+                        }
+
+                        return { ...tank, current: Math.round(newCurrent) };
+                    }));
+                }, 5000);
+                return () => clearInterval(interval);
+            }, []);
+
+            const addNotification = (message, type = 'info') => {
+                const newNotif = { id: Date.now(), message, type, time: new Date().toLocaleTimeString() };
+                setNotifications(prev => [newNotif, ...prev].slice(0, 5));
+            };
+
+            const handleLogin = (e) => {
+                e.preventDefault();
+                if (authMode === 'register') {
+                    const name = e.target.companyName.value;
+                    const email = e.target.email.value;
+                    const bin = e.target.bin.value;
+                    const newRequest = { id: Date.now(), name, email, bin, date: new Date().toLocaleDateString() };
+                    setUserRequests(prev => [newRequest, ...prev]);
+                    logAction(`Новая заявка на регистрацию от ${name}`, 'Guest');
+                    showToast('Өтінім жіберілді. Менеджер жауабын күтіңіз.', 'success');
+                    setAuthMode('login');
+                    return;
+                }
+                const email = e.target.email.value;
+                if (email === 'admin@sme.kz') {
+                    setUser({ name: 'Super Admin', role: 'admin' });
+                    logAction('Вход в систему (Админ)', 'Super Admin');
+                } else {
+                    setUser({ name: email.split('@')[0], role: 'client' });
+                    logAction('Вход в систему (Клиент)', email);
+                }
+            };
+
+            const handleLogout = () => {
+                logAction('Выход из системы', user?.name);
+                setUser(null);
+                setCurrentTab('monitoring');
+            };
+
+            const logAction = useCallback((action, userName = "Admin") => {
                 const newLog = {
                     id: Date.now(),
                     action,
@@ -469,9 +578,23 @@
                 localStorage.setItem('sme_depot', JSON.stringify(depotTanks));
                 localStorage.setItem('sme_stations', JSON.stringify(stations));
                 localStorage.setItem('sme_prices', JSON.stringify(prices));
-            }, [depotTanks, stations, prices]);
+                localStorage.setItem('sme_requests', JSON.stringify(userRequests));
+                localStorage.setItem('sme_users', JSON.stringify(registeredUsers));
+            }, [depotTanks, stations, prices, userRequests, registeredUsers]);
 
             // --- Components ---
+            const NotificationToast = ({ notif, onClose }) => (
+                <div className={`flex items-center justify-between p-4 mb-3 rounded-2xl border glass animate-fade-in ${
+                    notif.type === 'error' ? 'border-red-500/50 text-red-200' : 'border-blue-500/50 text-blue-200'
+                }`}>
+                    <div className="flex items-center gap-3">
+                        <LucideIcon name={notif.type === 'error' ? 'alert-triangle' : 'info'} className="w-5 h-5" />
+                        <p className="text-xs font-bold">{notif.message}</p>
+                    </div>
+                    <button onClick={onClose} className="ml-4 opacity-50 hover:opacity-100"><LucideIcon name="x" className="w-4 h-4" /></button>
+                </div>
+            );
+
             const InventoryChart = ({ t }) => {
                 const canvasRef = React.useRef(null);
 
@@ -654,15 +777,15 @@
                                     <div className="flex items-center gap-6">
                                         <input
                                             type="number"
-                                            value={priceObj[lang]}
+                                            value={priceObj.kk}
                                             onChange={(e) => {
                                                 const newVal = e.target.value;
                                                 setPrices(prev => ({
                                                     ...prev,
-                                                    [type]: { ...prev[type], [lang]: newVal }
+                                                    [type]: { kk: newVal, ru: newVal, en: newVal }
                                                 }));
                                             }}
-                                            className="w-32 bg-cosmicDeep border border-white/10 rounded-xl px-4 py-3 text-2xl font-display font-black text-mercuryGold text-right outline-none focus:border-amber-400/50 transition-all"
+                                            className="w-32 bg-cosmicDeep border border-white/10 rounded-2xl px-4 py-3 text-2xl font-display font-black text-mercuryGold text-right outline-none focus:border-mercuryGold/50 transition-all"
                                         />
                                         <span className="text-xl font-black text-slate-600">₸/L</span>
                                     </div>
@@ -747,6 +870,63 @@
                 </div>
             );
 
+            const UserRequests = () => (
+                <div className="glass rounded-[40px] overflow-hidden animate-fade-in">
+                    <div className="p-8 border-b border-white/5 flex items-center justify-between">
+                        <h2 className="text-2xl font-display font-black uppercase italic tracking-tighter">{t.requests}</h2>
+                        <span className="px-4 py-1.5 bg-royalBlue/20 text-royalBlue rounded-full text-[10px] font-black uppercase tracking-widest">{userRequests.length} Жаңа</span>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead className="bg-white/5 text-slate-500 uppercase text-[10px] font-black tracking-widest">
+                                <tr>
+                                    <th className="px-8 py-6">Компания / БИН</th>
+                                    <th className="px-8 py-6">Email</th>
+                                    <th className="px-8 py-6">Дата</th>
+                                    <th className="px-8 py-6 text-right">Шешім</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/5 font-medium">
+                                {userRequests.map(req => (
+                                    <tr key={req.id} className="hover:bg-white/5 transition-colors">
+                                        <td className="px-8 py-5">
+                                            <p className="text-sm font-bold text-white">{req.name}</p>
+                                            <p className="text-[10px] font-mono text-slate-500">{req.bin}</p>
+                                        </td>
+                                        <td className="px-8 py-5 text-sm text-slate-300">{req.email}</td>
+                                        <td className="px-8 py-5 text-sm text-slate-500">{req.date}</td>
+                                        <td className="px-8 py-5 text-right space-x-2">
+                                            <button
+                                                onClick={() => {
+                                                    const newUser = { id: Date.now(), name: req.name, role: 'client', email: req.email };
+                                                    setRegisteredUsers([...registeredUsers, newUser]);
+                                                    setUserRequests(userRequests.filter(r => r.id !== req.id));
+                                                    logAction(`Одобрена регистрация ${req.name}`);
+                                                    showToast(`Пайдаланушы ${req.name} расталды`, 'success');
+                                                }}
+                                                className="px-4 py-2 bg-emerald-500/10 text-emerald-500 rounded-xl text-[10px] font-black uppercase hover:bg-emerald-500 hover:text-white transition-all"
+                                            >
+                                                Растау
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setUserRequests(userRequests.filter(r => r.id !== req.id));
+                                                    logAction(`Отклонена регистрация ${req.name}`);
+                                                    showToast(`Өтінім бас тартылды`, 'error');
+                                                }}
+                                                className="px-4 py-2 bg-red-500/10 text-red-500 rounded-xl text-[10px] font-black uppercase hover:bg-red-500 hover:text-white transition-all"
+                                            >
+                                                Бас тарту
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+
             const AuditLogs = () => (
                 <div className="glass rounded-[40px] overflow-hidden animate-fade-in">
                     <div className="p-8 border-b border-white/5 flex items-center justify-between">
@@ -780,9 +960,94 @@
                 </div>
             );
 
+            if (!user) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+                        <div className="absolute inset-0 z-0">
+                            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-royalBlue/20 rounded-full blur-[120px]"></div>
+                            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-mercuryGold/10 rounded-full blur-[120px]"></div>
+                        </div>
+
+                        <div className="w-full max-w-md glass p-10 rounded-[40px] shadow-2xl relative z-10 animate-fade-in">
+                            <div className="flex flex-col items-center mb-10">
+                                <div className="w-16 h-16 bg-mercuryGold rounded-2xl flex items-center justify-center text-cosmicDeep shadow-2xl shadow-amber-400/20 mb-6">
+                                    <LucideIcon name="zap" className="w-10 h-10 fill-current" />
+                                </div>
+                                <h1 className="text-2xl font-display font-black uppercase tracking-tighter italic">Smart Mercury Energy</h1>
+                                <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-2">Enterprise Solutions v3.5</p>
+                            </div>
+
+                            <div className="flex bg-white/5 p-1 rounded-2xl mb-8">
+                                <button
+                                    onClick={() => setAuthMode('login')}
+                                    className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'login' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
+                                >
+                                    Кіру
+                                </button>
+                                <button
+                                    onClick={() => setAuthMode('register')}
+                                    className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'register' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
+                                >
+                                    Тіркелу
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleLogin} className="space-y-6">
+                                {authMode === 'register' && (
+                                    <div className="space-y-4 animate-fade-in">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Компания атауы</label>
+                                            <input name="companyName" type="text" required className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">БИН</label>
+                                            <input name="bin" type="text" required maxLength="12" placeholder="123456789012" className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none" />
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Email</label>
+                                    <input
+                                        name="email"
+                                        type="email"
+                                        required
+                                        placeholder={authMode === 'login' ? "admin@sme.kz" : "info@company.kz"}
+                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Құпиясөз</label>
+                                    <input
+                                        name="password"
+                                        type="password"
+                                        required
+                                        placeholder="••••••••"
+                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
+                                    />
+                                </div>
+                                <button className="w-full bg-mercuryGold text-cosmicDeep py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-400/10 hover:bg-white transition-all transform active:scale-95">
+                                    {authMode === 'login' ? 'Жүйеге кіру' : 'Өтінім жіберу'}
+                                </button>
+                            </form>
+
+                            <div className="mt-8 text-center">
+                                <a href="#" className="text-[10px] font-bold text-slate-600 uppercase tracking-widest hover:text-white transition-colors">Құпиясөзді ұмыттыңыз ба?</a>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
             return (
                 <div className="min-h-screen">
-                    <Sidebar currentTab={currentTab} setTab={setCurrentTab} t={t} />
+                    <Sidebar currentTab={currentTab} setTab={setCurrentTab} t={t} role={user.role} />
+
+                    {/* Floating Notifications */}
+                    <div className="fixed bottom-10 right-10 z-[100] w-80">
+                        {notifications.map(n => (
+                            <NotificationToast key={n.id} notif={n} onClose={() => setNotifications(prev => prev.filter(x => x.id !== n.id))} />
+                        ))}
+                    </div>
 
                     <main className="pl-20 lg:ml-64 transition-all duration-300">
                         {/* Header */}
@@ -815,10 +1080,15 @@
 
                                 <div className="flex items-center gap-4 pl-6 border-l border-white/10">
                                     <div className="text-right hidden sm:block">
-                                        <p className="text-sm font-black text-white italic tracking-tight">Admin SME</p>
-                                        <p className="text-[10px] font-bold text-mercuryGold uppercase tracking-widest opacity-70">Chief Hub Controller</p>
+                                <p className="text-sm font-black text-white italic tracking-tight">{user.name}</p>
+                                <p className="text-[10px] font-bold text-mercuryGold uppercase tracking-widest opacity-70">{user.role === 'admin' ? 'Chief Hub Controller' : 'Client Access'}</p>
                                     </div>
-                                    <div className="w-12 h-12 bg-mercuryGold rounded-2xl shadow-xl shadow-amber-400/10 flex items-center justify-center font-black text-cosmicDeep italic">AD</div>
+                            <button
+                                onClick={handleLogout}
+                                className="w-12 h-12 bg-mercuryGold rounded-2xl shadow-xl shadow-amber-400/10 flex items-center justify-center font-black text-cosmicDeep italic hover:bg-white transition-all"
+                            >
+                                <LucideIcon name="log-out" className="w-5 h-5" />
+                            </button>
                                 </div>
                             </div>
                         </header>
@@ -828,6 +1098,7 @@
                             {currentTab === 'monitoring' && <MonitoringHub />}
                             {currentTab === 'prices' && <PriceManagement />}
                             {currentTab === 'admin' && <AdminPanel />}
+                            {currentTab === 'requests' && <UserRequests />}
                             {currentTab === 'audit' && <AuditLogs />}
                         </div>
                     </main>
