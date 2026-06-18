@@ -1,1404 +1,576 @@
 <!DOCTYPE html>
 <html lang="kk" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navarro Trade · Көтерме отын жеткізу</title>
-    <meta name="description" content="Navarro Trade — Қазақстандағы мұнай өнімдерін көтерме жеткізуші">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Mercury Energy - Management Hub</title>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- CSS & Icon Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- Google Fonts: Inter & SF Pro (approx) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navarro: {
-                            bg: '#0A0E14',
-                            card: 'rgba(255, 255, 255, 0.06)',
-                            border: 'rgba(255, 255, 255, 0.08)',
-                            primary: '#3B7DD8', // oklch(0.62 0.14 250)
-                            accent: '#3A3A8C',  // oklch(0.38 0.12 260)
-                            destructive: '#E5484D',
-                            text: '#FAFAFA',
-                            dim: '#A1A1AA'
-                        }
-                    },
-                    borderRadius: {
-                        '2xl': '1rem',
-                        '3xl': '2rem',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    }
-                }
+  <!-- Tailwind Configuration -->
+  <script>
+    window.tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            cosmic: {
+              deep: '#0b1329',
+              slate: '#121f3d',
+              gold: '#fbbf24',
+              royal: '#2563eb',
+              emerald: '#34d399',
+              danger: '#f87171',
             }
+          }
         }
-    </script>
+      }
+    }
+  </script>
 
-    <style type="text/css">
-        :root {
-            --bg-color: #0A0E14;
-            --primary-color: #3B7DD8;
-            --accent-color: #3A3A8C;
-            --card-bg: rgba(255, 255, 255, 0.06);
-            --card-border: rgba(255, 255, 255, 0.08);
-        }
+  <!-- Core Libraries -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-        body {
-            background-color: var(--bg-color);
-            color: #FAFAFA;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            overflow-x: hidden;
-        }
+  <style>
+    body {
+      background-color: #0b1329;
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    .glass {
+      background: rgba(18, 31, 61, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-        }
-
-        .glass-strong {
-            background: rgba(10, 14, 20, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-        }
-
-        .hero-glow {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% -20%, rgba(59, 125, 216, 0.15) 0%, rgba(58, 58, 140, 0.05) 40%, transparent 70%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .glow-blue {
-            box-shadow: 0 0 40px -10px rgba(59, 125, 216, 0.5);
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.6s ease-out forwards;
-        }
-
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-color);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Nav active state */
-        .nav-link.active {
-            color: var(--primary-color);
-        }
-
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary-color);
-            border-radius: 2px;
-        }
-
-        /* News Carousel */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+    .barrel {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #0f172a;
+        border-radius: 10% / 50%;
+        overflow: hidden;
+        border: 2px solid rgba(255,255,255,0.1);
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    }
+    .barrel-fill {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+    }
+  </style>
 </head>
-<body class="selection:bg-primary/30">
-    <div class="hero-glow"></div>
+<body class="bg-[#0b1329] text-slate-100 min-h-screen">
+  <div id="root"></div>
 
-    <div id="app" class="min-h-screen flex flex-col">
-        <!-- Fixed Header -->
-        <header class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 glass-strong rounded-2xl px-6 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Chevron_Logo.svg" alt="Navarro Logo" class="w-8 h-8">
+  <script type="text/babel">
+    const { useState, useEffect, createContext, useContext, useMemo, useRef } = React;
+
+    const dictionary = {
+      KZ: {
+        home: "Басты бет",
+        monitoring: "Мониторинг",
+        prices: "Бағалар",
+        contacts: "Компания",
+        admin: "Басқару",
+        calculator: "Мұнайбаза калькуляторы",
+        calculate: "Есептеу",
+        spotRates: "Ұшқыр спот бағалары",
+        logout: "Шығу",
+        login: "Кіру",
+        auditLogs: "Аудит журналы",
+        results: "Нәтиже",
+        all: "Барлығы",
+        autoFuel: "Автомобиль отыны",
+        aviaFuel: "Авиациялық отын",
+        fuelType: "Отын түрі",
+        volume: "Көлем",
+        totalPrice: "Жалпы құны",
+        withVAT: "ҚҚС-пен",
+        withoutVAT: "ҚҚС-сыз",
+        region: "Аймақ",
+        depotStorage: "13 Резервуар паркі",
+        directors: "Директорлар кеңесі",
+        logistics: "ЖД Тұйығы мен Логистика",
+        feedback: "Кері байланыс",
+        waterLevel: "Су деңгейі",
+        temp: "Температура",
+        gasStations: "Бекеттер",
+        users: "Пайдаланушылар",
+        save: "Сақтау",
+        edit: "Өңдеу",
+        delete: "Өшіру",
+        bannerCMS: "Баннер CMS",
+        clearLogs: "Тазарту",
+        search: "Іздеу",
+        action: "Әрекет",
+        user: "Пайдаланушы",
+        time: "Уақыт",
+        role: "Рөлі",
+        spotCMS: "Спот-бағалар",
+        regionalCMS: "Тарифтер",
+        imageURL: "Сурет URL",
+        desc: "Сипаттама",
+        name: "Аты-жөні",
+        send: "Жіберу",
+        message: "Хабарлама"
+      },
+      RU: {
+        home: "Главная",
+        monitoring: "Мониторинг",
+        prices: "Цены",
+        contacts: "О компании",
+        admin: "Управление",
+        calculator: "Калькулятор нефтебазы",
+        calculate: "Рассчитать",
+        spotRates: "Спот цены",
+        logout: "Выход",
+        login: "Вход",
+        auditLogs: "Журнал аудита",
+        results: "Результат",
+        all: "Все",
+        autoFuel: "Автомобильное топливо",
+        aviaFuel: "Авиационное топливо",
+        fuelType: "Тип топлива",
+        volume: "Объем",
+        totalPrice: "Общая стоимость",
+        withVAT: "с НДС",
+        withoutVAT: "без НДС",
+        region: "Регион",
+        depotStorage: "Парк из 13 резервуаров",
+        directors: "Совет директоров",
+        logistics: "ЖД Тупик и Логистика",
+        feedback: "Обратная связь",
+        waterLevel: "Уровень воды",
+        temp: "Температура",
+        gasStations: "Станции",
+        users: "Пользователи",
+        save: "Сохранить",
+        edit: "Правка",
+        delete: "Удалить",
+        bannerCMS: "Баннер CMS",
+        clearLogs: "Очистить",
+        search: "Поиск",
+        action: "Действие",
+        user: "Пользователь",
+        time: "Время",
+        role: "Роль",
+        spotCMS: "Спот-цены",
+        regionalCMS: "Тарифы",
+        imageURL: "URL изображения",
+        desc: "Описание",
+        name: "ФИО",
+        send: "Отправить",
+        message: "Сообщение"
+      },
+      EN: {
+        home: "Home",
+        monitoring: "Monitoring",
+        prices: "Prices",
+        contacts: "Company",
+        admin: "Admin",
+        calculator: "Depot Calculator",
+        calculate: "Calculate",
+        spotRates: "Spot Rates",
+        logout: "Logout",
+        login: "Login",
+        auditLogs: "Audit Logs",
+        results: "Result",
+        all: "All",
+        autoFuel: "Automotive Fuel",
+        aviaFuel: "Aviation Fuel",
+        fuelType: "Fuel Type",
+        volume: "Volume",
+        totalPrice: "Total Price",
+        withVAT: "incl. VAT",
+        withoutVAT: "excl. VAT",
+        region: "Region",
+        depotStorage: "13 Reservoir Park",
+        directors: "Board of Directors",
+        logistics: "Railway & Logistics",
+        feedback: "Feedback",
+        waterLevel: "Water Level",
+        temp: "Temperature",
+        gasStations: "Stations",
+        users: "Users",
+        save: "Save",
+        edit: "Edit",
+        delete: "Delete",
+        bannerCMS: "Banner CMS",
+        clearLogs: "Clear",
+        search: "Search",
+        action: "Action",
+        user: "User",
+        time: "Time",
+        role: "Role",
+        spotCMS: "Spot Prices",
+        regionalCMS: "Rates",
+        imageURL: "Image URL",
+        desc: "Description",
+        name: "Name",
+        send: "Send",
+        message: "Message"
+      }
+    };
+
+    const AppContext = createContext();
+
+    function AppProvider({ children }) {
+      const [state, setState] = useState(() => {
+        const saved = localStorage.getItem('sme_master_state_v2');
+        return saved ? JSON.parse(saved) : {
+          user: null,
+          language: 'KZ',
+          currentPath: '/home',
+          banner: {
+            url: "https://images.unsplash.com/photo-1542060748-10c28b629f6f?auto=format&fit=crop&q=80&w=1200",
+            title: { KZ: "Smart Mercury Energy - Басқару Хабы", RU: "Smart Mercury Energy - Хаб Управления", EN: "Smart Mercury Energy - Management Hub" },
+            desc: { KZ: "Мұнай өнімдері мен авиаотынды басқарудың кешенді жүйесі.", RU: "Комплексная система управления нефтепродуктами и авиатопливом.", EN: "Integrated petroleum and aviation fuel management system." }
+          },
+          spotPrices: [
+            { id: 1, name: "АИ-92", standard: "EURO-5", price: 245, trend: 1.5, status: "up" },
+            { id: 2, name: "АИ-95", standard: "EURO-5", price: 285, trend: 0.8, status: "up" },
+            { id: 3, name: "ТС-1", standard: "JIG-2", price: 410, trend: -0.4, status: "down" },
+            { id: 4, name: "JET A-1", standard: "JIG-2", price: 425, trend: 2.1, status: "up" },
+          ],
+          regionalRates: [
+            { id: 1, region: "Алматы", fuel: "АИ-95", price: 275000, cat: "auto" },
+            { id: 2, region: "Астана", fuel: "ДТ (Лето)", price: 295000, cat: "auto" },
+            { id: 3, region: "Шымкент", fuel: "JET A-1", price: 380000, cat: "avia" },
+            { id: 4, region: "Атырау", fuel: "ТС-1", price: 375000, cat: "avia" },
+          ],
+          reservoirs: Array.from({ length: 13 }, (_, i) => ({
+            id: i + 1,
+            name: `RES-${String(i + 1).padStart(2, '0')}`,
+            volume: 40 + Math.floor(Math.random() * 50),
+            water: 1.2 + Math.random(),
+            temp: 14 + Math.floor(Math.random() * 8),
+            fuelType: i < 5 ? "Авиаотын" : i < 9 ? "Керосин" : "Автоотын"
+          })),
+          stations: [
+            { id: 1, code: "ALA-04", volume: 12000, limit: 20000 },
+            { id: 2, code: "AST-12", volume: 8500, limit: 15000 },
+            { id: 3, code: "SHY-02", volume: 14000, limit: 20000 },
+          ],
+          users: [
+            { id: 1, name: "Arman Admin", email: "admin@sme.kz", role: "Admin" },
+            { id: 2, name: "Public User", email: "user@sme.kz", role: "User" }
+          ],
+          directors: [
+            { id: 1, name: "Ерсұлтан Ахметов", role: "CEO", img: "https://i.pravatar.cc/150?u=ersultan" },
+            { id: 2, name: "Марат Сәдібеков", role: "COO", img: "https://i.pravatar.cc/150?u=marat" },
+          ],
+          auditLogs: []
+        };
+      });
+
+      useEffect(() => {
+        localStorage.setItem('sme_master_state_v2', JSON.stringify(state));
+      }, [state]);
+
+      useEffect(() => {
+        const handleHash = () => setState(s => ({ ...s, currentPath: window.location.hash.replace('#', '') || '/home' }));
+        window.addEventListener('hashchange', handleHash);
+        handleHash();
+        return () => window.removeEventListener('hashchange', handleHash);
+      }, []);
+
+      const t = (key) => dictionary[state.language][key] || key;
+
+      const log = (action) => {
+        const newLog = { id: Date.now(), user: state.user?.name || "System", action, time: new Date().toLocaleTimeString() };
+        setState(s => ({ ...s, auditLogs: [newLog, ...s.auditLogs].slice(0, 50) }));
+      };
+
+      return <AppContext.Provider value={{ state, setState, t, log }}>{children}</AppContext.Provider>;
+    }
+
+    const HomeView = () => {
+      const { state, t } = useContext(AppContext);
+      const [calc, setCalc] = useState({ id: state.regionalRates[0].id, vol: 1000 });
+      const rate = state.regionalRates.find(r => r.id == calc.id);
+      const total = (rate?.price || 0) * (calc.vol / 1000);
+
+      return (
+        <div className="fade-in space-y-16">
+          <div className="relative h-[500px] rounded-[40px] overflow-hidden group shadow-2xl">
+            <img src={state.banner.url} className="w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0b1329] via-transparent to-transparent flex flex-col justify-center px-12">
+              <h1 className="text-6xl font-black mb-6 max-w-4xl leading-tight text-white">{state.banner.title[state.language]}</h1>
+              <p className="text-xl text-slate-300 max-w-2xl font-medium">{state.banner.desc[state.language]}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {state.spotPrices.map(p => (
+              <div key={p.id} className="glass p-8 rounded-3xl border-t-4 border-amber-400 hover:scale-[1.02] transition-transform">
+                <div className="flex justify-between mb-4">
+                  <span className="text-[10px] font-black text-slate-500 uppercase">{p.standard}</span>
+                  <span className={`text-[10px] font-black ${p.status==='up'?'text-emerald-400':'text-danger'}`}>{p.status==='up'?'▲':'▼'} {p.trend}%</span>
+                </div>
+                <h4 className="text-2xl font-black text-white">{p.name}</h4>
+                <p className="text-3xl font-black text-amber-300 mt-2">{p.price} <span className="text-xs text-slate-500">KZT/L</span></p>
+              </div>
+            ))}
+          </div>
+
+          <div className="glass p-12 rounded-[40px] grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h3 className="text-3xl font-black mb-8">{t('calculator')}</h3>
+              <div className="space-y-6">
+                <div>
+                  <label className="text-xs font-black text-slate-500 uppercase mb-2 block">{t('fuelType')}</label>
+                  <select value={calc.id} onChange={e=>setCalc({...calc,id:e.target.value})} className="w-full bg-[#0b1329] border border-white/10 p-4 rounded-2xl text-white outline-none">
+                    {state.regionalRates.map(r=><option key={r.id} value={r.id}>{r.region} - {r.fuel}</option>)}
+                  </select>
                 </div>
                 <div>
-                    <h1 class="text-white font-bold text-lg leading-tight">Navarro Energy</h1>
-                    <p class="text-[10px] text-navarro-dim tracking-[0.2em] uppercase">Navarro Trade · KZ</p>
+                  <label className="text-xs font-black text-slate-500 uppercase mb-2 block">{t('volume')} (L)</label>
+                  <input type="number" value={calc.vol} onChange={e=>setCalc({...calc,vol:e.target.value})} className="w-full bg-[#0b1329] border border-white/10 p-4 rounded-2xl text-white outline-none" />
                 </div>
+              </div>
             </div>
-
-            <!-- Desktop Nav -->
-            <nav class="hidden lg:flex items-center gap-8">
-                <a href="#/" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/">Басты бет</a>
-                <a href="#/prices" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/prices">Прайс-лист</a>
-                <a href="#/products" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/products">Өнімдер</a>
-                <a href="#/about" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/about">Компания</a>
-                <a href="#/contact" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/contact">Байланыс</a>
-
-                <!-- Protected Links (Hidden by default) -->
-                <div id="protected-links" class="hidden flex items-center gap-8">
-                    <a href="#/lab" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/lab">Зертхана</a>
-                    <a href="#/nb" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/nb">Нефтебаза</a>
-                    <a href="#/azk" class="nav-link text-sm font-medium hover:text-navarro-primary transition-colors relative" data-route="/azk">АЗК</a>
-                </div>
-            </nav>
-
-            <div class="flex items-center gap-4">
-                <div id="auth-buttons">
-                    <a href="#/auth" class="bg-navarro-primary hover:bg-blue-600 text-white text-sm font-semibold px-6 py-2 rounded-xl transition-all shadow-lg shadow-blue-500/20">
-                        Кіру
-                    </a>
-                </div>
-                <div id="user-menu" class="hidden flex items-center gap-4">
-                    <a href="#/cabinet" class="text-sm font-medium hover:text-navarro-primary transition-colors" data-route="/cabinet">Кабинет</a>
-                    <div id="admin-link-container" class="hidden">
-                        <a href="#/admin" class="bg-gradient-to-r from-navarro-primary to-navarro-accent text-white text-sm font-semibold px-5 py-2 rounded-xl flex items-center gap-2 transition-all">
-                            <i data-lucide="shield" class="w-4 h-4"></i>
-                            Admin
-                        </a>
-                    </div>
-                </div>
-                <!-- Mobile Toggle -->
-                <button id="mobile-toggle" class="lg:hidden p-2 text-white">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
-                </button>
+            <div className="bg-blue-600/10 border border-blue-600/20 p-10 rounded-[40px] text-center">
+              <p className="text-xs font-black text-blue-400 uppercase mb-4">{t('results')}</p>
+              <div className="space-y-4">
+                <p className="text-sm text-slate-400">{t('withoutVAT')}: <span className="text-xl font-black text-white">{total.toLocaleString()} KZT</span></p>
+                <p className="text-sm text-slate-400">{t('withVAT')} (12%): <span className="text-4xl font-black text-amber-300">{(total*1.12).toLocaleString()} KZT</span></p>
+              </div>
             </div>
-        </header>
-
-        <!-- Main Content Area -->
-        <main id="view-container" class="flex-grow pt-28 pb-12">
-            <!-- Views will be injected here -->
-        </main>
-
-        <!-- Footer -->
-        <footer class="border-t border-navarro-border py-12 px-6">
-            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div>
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-8 h-8 bg-white rounded flex items-center justify-center p-1">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Chevron_Logo.svg" alt="Navarro Logo" class="w-6 h-6">
-                        </div>
-                        <h2 class="text-white font-bold text-xl">Navarro Trade</h2>
-                    </div>
-                    <p class="text-navarro-dim text-sm leading-relaxed mb-6">
-                        Қазақстанның энергетикалық қауіпсіздігіне үлес қосатын сенімді отын серіктесі. Жоғары сапа, жедел жеткізу, ашық баға.
-                    </p>
-                    <p class="text-white text-sm font-semibold">Алматы, Байзақова 280</p>
-                </div>
-                <div class="grid grid-cols-2 gap-8">
-                    <div>
-                        <h4 class="text-white font-bold mb-4">Бөлімдер</h4>
-                        <ul class="space-y-2 text-sm text-navarro-dim">
-                            <li><a href="#/" class="hover:text-white transition-colors">Басты бет</a></li>
-                            <li><a href="#/prices" class="hover:text-white transition-colors">Прайс-лист</a></li>
-                            <li><a href="#/products" class="hover:text-white transition-colors">Өнімдер</a></li>
-                            <li><a href="#/about" class="hover:text-white transition-colors">Компания</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-bold mb-4">Қолдау</h4>
-                        <ul class="space-y-2 text-sm text-navarro-dim">
-                            <li><a href="#/contact" class="hover:text-white transition-colors">Байланыс</a></li>
-                            <li><a href="#/auth" class="hover:text-white transition-colors">Кіру</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Сұрақ-жауап</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4">Жазылым</h4>
-                    <p class="text-navarro-dim text-sm mb-4">Бағалардың өзгеруі туралы жедел ақпарат алыңыз.</p>
-                    <div class="flex gap-2">
-                        <input type="email" placeholder="Email" class="bg-navarro-card border border-navarro-border rounded-xl px-4 py-2 text-sm w-full outline-none focus:border-navarro-primary transition-colors">
-                        <button class="bg-navarro-primary p-2 rounded-xl text-white">
-                            <i data-lucide="send" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-navarro-border flex flex-col md:row items-center justify-between gap-4 text-xs text-navarro-dim">
-                <p>© 2026 Navarro Energy / Navarro Trade. Барлық құқықтар қорғалған.</p>
-                <div class="flex gap-6">
-                    <a href="#" class="hover:text-white transition-colors">Құпиялылық саясаты</a>
-                    <a href="#" class="hover:text-white transition-colors">Қолдану шарттары</a>
-                </div>
-            </div>
-        </footer>
-
-        <!-- Mobile Menu Overlay -->
-        <div id="mobile-menu" class="fixed inset-0 z-[60] glass-strong translate-x-full transition-transform duration-300 lg:hidden flex flex-col p-8">
-            <div class="flex items-center justify-between mb-12">
-                <h2 class="text-white font-bold text-2xl">Мәзір</h2>
-                <button id="mobile-close" class="p-2 text-white">
-                    <i data-lucide="x" class="w-8 h-8"></i>
-                </button>
-            </div>
-            <nav class="flex flex-col gap-6 text-xl font-medium">
-                <a href="#/" class="mobile-nav-link text-white">Басты бет</a>
-                <a href="#/prices" class="mobile-nav-link text-white">Прайс-лист</a>
-                <a href="#/products" class="mobile-nav-link text-white">Өнімдер</a>
-                <a href="#/about" class="mobile-nav-link text-white">Компания</a>
-                <a href="#/contact" class="mobile-nav-link text-white">Байланыс</a>
-                <div id="protected-links-mobile" class="hidden flex flex-col gap-6">
-                    <div class="h-px bg-navarro-border my-2"></div>
-                    <a href="#/lab" class="mobile-nav-link text-white">Зертхана</a>
-                    <a href="#/nb" class="mobile-nav-link text-white">Нефтебаза</a>
-                    <a href="#/azk" class="mobile-nav-link text-white">АЗК</a>
-                </div>
-            </nav>
-            <div class="mt-auto pt-12">
-                <a href="#/auth" class="block w-full bg-navarro-primary text-white text-center py-4 rounded-2xl font-bold">Кіру</a>
-            </div>
+          </div>
         </div>
-    </div>
+      );
+    };
 
-    <!-- SPA Router and State Logic -->
-    <script>
-        // Store
-        const state = {
-            user: JSON.parse(localStorage.getItem('navarro_user')) || null,
-            prices: JSON.parse(localStorage.getItem('navarro_prices')) || [
-                { id: 1, name: 'АИ-92', price: 245, unit: 'литр', trend: '+1.5', status: 'up', source: 'Argus', cat: 'auto', density: 0.730 },
-                { id: 2, name: 'АИ-95', price: 280, unit: 'литр', trend: '+0.8', status: 'up', source: 'Argus', cat: 'auto', density: 0.745 },
-                { id: 3, name: 'Дизель (Жаз)', price: 315, unit: 'литр', trend: '-0.4', status: 'down', source: 'Argus', cat: 'auto', density: 0.840 },
-                { id: 4, name: 'Дизель (Қыс)', price: 450, unit: 'литр', trend: '0.0', status: 'neutral', source: 'Argus', cat: 'auto', density: 0.830 },
-                { id: 5, name: 'JET A-1', price: 420, unit: 'литр', trend: '+2.1', status: 'up', source: 'Argus', cat: 'avia', density: 0.800 },
-                { id: 6, name: 'РТ (Керосин)', price: 410, unit: 'литр', trend: '-1.2', status: 'down', source: 'Argus', cat: 'avia', density: 0.780 }
-            ],
-            logs: JSON.parse(localStorage.getItem('navarro_logs')) || []
-        };
-
-        const routes = {
-            '/': { title: 'Басты бет', protected: false },
-            '/prices': { title: 'Прайс-лист', protected: false },
-            '/products': { title: 'Өнімдер', protected: false },
-            '/about': { title: 'Компания', protected: false },
-            '/contact': { title: 'Байланыс', protected: false },
-            '/auth': { title: 'Кіру', protected: false },
-            '/lab': { title: 'Зертхана', protected: true },
-            '/nb': { title: 'Нефтебаза', protected: true },
-            '/azk': { title: 'АЗК', protected: true },
-            '/cabinet': { title: 'Кабинет', protected: true },
-            '/admin': { title: 'Admin', protected: true, role: 'admin' }
-        };
-
-        // Router
-        function navigate() {
-            const hash = window.location.hash || '#/';
-            const path = hash.slice(1);
-            const route = routes[path] || routes['/'];
-
-            // Protection
-            if (route.protected && !state.user) {
-                window.location.hash = '#/auth';
-                return;
-            }
-            if (route.role === 'admin' && state.user?.role !== 'admin') {
-                window.location.hash = '#/';
-                return;
-            }
-
-            document.title = `${route.title} | Navarro Energy`;
-            renderView(path);
-            updateNav(path);
-            lucide.createIcons();
-        }
-
-        function renderView(path) {
-            const container = document.getElementById('view-container');
-            container.innerHTML = `<div class="animate-fade-in px-6 max-w-7xl mx-auto" id="view-content">
-                <p class="text-navarro-dim">Жүктелуде...</p>
-            </div>`;
-
-            const viewContent = document.getElementById('view-content');
-
-            switch(path) {
-                case '/': renderHome(viewContent); break;
-                case '/prices': renderPrices(viewContent); break;
-                case '/products': renderProducts(viewContent); break;
-                case '/about': renderAbout(viewContent); break;
-                case '/contact': renderContact(viewContent); break;
-                case '/auth': renderAuth(viewContent); break;
-                case '/cabinet': renderCabinet(viewContent); break;
-                case '/admin': renderAdmin(viewContent); break;
-                case '/lab': renderLab(viewContent); break;
-                case '/nb': renderNB(viewContent); break;
-                case '/azk': renderAZK(viewContent); break;
-                default: viewContent.innerHTML = `<div class="p-12 text-center"><h1 class="text-4xl font-bold mb-4">404</h1><p>Бет табылмады</p></div>`;
-            }
-            lucide.createIcons();
-        }
-
-        function updateNav(path) {
-            // Update active state in nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.toggle('active', link.getAttribute('data-route') === path);
-            });
-
-            // Update Header visibility based on user
-            const authButtons = document.getElementById('auth-buttons');
-            const userMenu = document.getElementById('user-menu');
-            const protectedLinks = document.getElementById('protected-links');
-            const protectedLinksMobile = document.getElementById('protected-links-mobile');
-            const adminLink = document.getElementById('admin-link-container');
-
-            if (state.user) {
-                authButtons.classList.add('hidden');
-                userMenu.classList.remove('hidden');
-                protectedLinks.classList.remove('hidden');
-                protectedLinksMobile.classList.remove('hidden');
-                adminLink.classList.toggle('hidden', state.user.role !== 'admin');
-            } else {
-                authButtons.classList.remove('hidden');
-                userMenu.classList.add('hidden');
-                protectedLinks.classList.add('hidden');
-                protectedLinksMobile.classList.add('hidden');
-            }
-        }
-
-        // Event Listeners
-        window.addEventListener('hashchange', navigate);
-        window.addEventListener('load', () => {
-            navigate();
-            lucide.createIcons();
-        });
-
-        // Mobile Menu
-        const mobileToggle = document.getElementById('mobile-toggle');
-        const mobileClose = document.getElementById('mobile-close');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileToggle.onclick = () => mobileMenu.classList.remove('translate-x-full');
-        mobileClose.onclick = () => mobileMenu.classList.add('translate-x-full');
-        document.querySelectorAll('.mobile-nav-link').forEach(link => {
-            link.onclick = () => mobileMenu.classList.add('translate-x-full');
-        });
-
-        // Public Views
-        function renderHome(target) {
-            const news = [
-                { id: 1, title: 'Жаңа мұнай базасы іске қосылды', date: '12.06.2026', img: 'https://images.unsplash.com/photo-1542060748-10c28b629f6f?auto=format&fit=crop&q=80&w=500', content: 'Алматы облысында сыйымдылығы 24 000 тонна болатын жаңа мұнай базасы пайдалануға берілді.' },
-                { id: 2, title: 'JET A-1 жеткізу көлемі артты', date: '10.06.2026', img: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=500', content: 'Халықаралық әуежайларға авиаотын жеткізу бойынша жаңа келісімшарттар жасалды.' },
-                { id: 3, title: 'Argus индексі бойынша талдау', date: '08.06.2026', img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=500', content: 'Маусым айындағы бағалар динамикасы және нарық болжамы.' }
-            ];
-
-            const html = `
-                <div class="space-y-24">
-                    <!-- Hero Section -->
-                    <section class="flex flex-col lg:flex-row items-center gap-16 py-12">
-                        <div class="lg:w-3/5">
-                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-navarro-border bg-navarro-card text-xs font-bold text-navarro-primary mb-8 uppercase tracking-widest">
-                                <span class="w-2 h-2 rounded-full bg-navarro-primary animate-pulse"></span>
-                                Алматы · Байзақова 280 · 2026
-                            </div>
-                            <h1 class="text-6xl lg:text-8xl font-black tracking-tighter leading-[0.9] mb-8">
-                                Navarro <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-navarro-primary to-blue-300">Trade</span>
-                            </h1>
-                            <p class="text-lg text-navarro-dim max-w-xl mb-12 leading-relaxed">
-                                Қазақстанның көтерме отын нарығындағы көшбасшы. <span class="text-white font-medium">АИ-92, АИ-95, ДТ</span> және <span class="text-white font-medium">JET A-1</span> өнімдерін тікелей зауыттан жеткіземіз.
-                            </p>
-                            <div class="flex flex-wrap gap-4">
-                                <a href="#/prices" class="bg-navarro-primary hover:bg-blue-600 text-white font-bold px-8 py-4 rounded-2xl transition-all flex items-center gap-2">
-                                    Бағаларды көру
-                                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                                </a>
-                                <a href="#/about" class="glass hover:bg-white/10 text-white font-bold px-8 py-4 rounded-2xl transition-all">
-                                    Компания туралы
-                                </a>
-                            </div>
-                        </div>
-                        <div class="lg:w-2/5 w-full">
-                            <div class="glass p-8 rounded-[2.5rem] relative overflow-hidden">
-                                <div class="flex items-center justify-between mb-8">
-                                    <h3 class="font-bold text-xl">Тірі бағалар</h3>
-                                    <span class="text-[10px] bg-green-500/10 text-green-500 px-2 py-1 rounded font-black uppercase tracking-widest">Live · Argus</span>
-                                </div>
-                                <div class="space-y-6">
-                                    ${state.prices.slice(0, 4).map(p => `
-                                        <div class="flex items-center justify-between border-b border-navarro-border pb-4 last:border-0 last:pb-0">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary">
-                                                    <i data-lucide="${p.cat === 'auto' ? 'fuel' : 'plane'}" class="w-5 h-5"></i>
-                                                </div>
-                                                <div>
-                                                    <p class="font-bold text-sm">${p.name}</p>
-                                                    <p class="text-[10px] text-navarro-dim uppercase">Көтерме</p>
-                                                </div>
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="font-black text-lg">${p.price}.00 <span class="text-[10px] text-navarro-dim">тг/л</span></p>
-                                                <p class="text-[10px] font-bold ${p.status === 'up' ? 'text-green-500' : p.status === 'down' ? 'text-red-500' : 'text-navarro-dim'}">
-                                                    ${p.status === 'up' ? '↑' : p.status === 'down' ? '↓' : '•'} ${p.trend}%
-                                                </p>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Bento Advantages -->
-                    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="glass p-8 rounded-3xl col-span-1 md:col-span-2 flex flex-col justify-between h-64 border-l-4 border-l-navarro-primary">
-                            <div>
-                                <i data-lucide="check-circle" class="w-8 h-8 text-navarro-primary mb-4"></i>
-                                <h3 class="text-2xl font-bold mb-2">Сапа кепілдігі</h3>
-                                <p class="text-navarro-dim text-sm max-w-md">Әрбір жеткізілім халықаралық стандарттар мен ГОСТ-қа сәйкес келеді. Зертханалық тексеруден өткен.</p>
-                            </div>
-                        </div>
-                        <div class="glass p-8 rounded-3xl flex flex-col justify-between h-64">
-                            <div>
-                                <i data-lucide="truck" class="w-8 h-8 text-navarro-primary mb-4"></i>
-                                <h3 class="text-2xl font-bold mb-2">Жедел жеткізу</h3>
-                                <p class="text-navarro-dim text-sm">Жеке логистикалық желі арқылы Қазақстанның кез келген нүктесіне жеткізу.</p>
-                            </div>
-                        </div>
-                        <div class="glass p-8 rounded-3xl flex flex-col justify-between h-64">
-                            <div>
-                                <i data-lucide="bar-chart-3" class="w-8 h-8 text-navarro-primary mb-4"></i>
-                                <h3 class="text-2xl font-bold mb-2">Ашық баға</h3>
-                                <p class="text-navarro-dim text-sm">Argus индексіне негізделген әділ және тұрақты баға саясаты.</p>
-                            </div>
-                        </div>
-                        <div class="glass p-8 rounded-3xl col-span-1 md:col-span-2 flex flex-col justify-between h-64 border-r-4 border-r-navarro-accent">
-                            <div>
-                                <i data-lucide="globe" class="w-8 h-8 text-navarro-primary mb-4"></i>
-                                <h3 class="text-2xl font-bold mb-2">Ауқымды желі</h3>
-                                <p class="text-navarro-dim text-sm max-w-md">Біздің мұнай базалары мен АЗК желілері елдің маңызды транзиттік дәліздерінде орналасқан.</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- News Carousel -->
-                    <section>
-                        <div class="flex items-center justify-between mb-12">
-                            <h2 class="text-4xl font-bold">Жаңалықтар</h2>
-                            <div class="flex gap-2">
-                                <button class="p-2 glass rounded-full hover:bg-white/10 transition-colors"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
-                                <button class="p-2 glass rounded-full hover:bg-white/10 transition-colors"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
-                            </div>
-                        </div>
-                        <div class="flex gap-6 overflow-x-auto no-scrollbar pb-6">
-                            ${news.map(n => `
-                                <div class="min-w-[350px] glass rounded-3xl overflow-hidden group cursor-pointer" onclick="openNewsModal(${n.id})">
-                                    <div class="h-48 overflow-hidden">
-                                        <img src="${n.img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="${n.title}">
-                                    </div>
-                                    <div class="p-6">
-                                        <p class="text-[10px] text-navarro-dim font-bold mb-2 uppercase">${n.date}</p>
-                                        <h3 class="text-xl font-bold mb-4 line-clamp-2">${n.title}</h3>
-                                        <p class="text-navarro-dim text-sm line-clamp-3 mb-6">${n.content}</p>
-                                        <span class="text-navarro-primary font-bold text-sm flex items-center gap-2">
-                                            Толығырақ <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </section>
+    const MonitoringView = () => {
+      const { state, t } = useContext(AppContext);
+      const [sel, setSel] = useState(null);
+      return (
+        <div className="fade-in space-y-12">
+          <h2 className="text-4xl font-black">{t('depotStorage')}</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
+            {state.reservoirs.map(r => (
+              <div key={r.id} onClick={()=>setSel(r)} className={`glass p-4 rounded-3xl cursor-pointer transition-all ${sel?.id===r.id?'ring-2 ring-amber-400':''}`}>
+                <div className="barrel h-32 mb-4">
+                  <div className={`barrel-fill ${r.volume<30?'bg-danger':r.volume<60?'bg-amber-400':'bg-emerald-400'}`} style={{height:`${r.volume}%`}}></div>
                 </div>
+                <p className="text-center text-xs font-black">{r.name}</p>
+                <p className="text-center text-[10px] text-slate-500 uppercase">{r.fuelType}</p>
+              </div>
+            ))}
+          </div>
+          {sel && (
+            <div className="glass p-10 rounded-[40px] grid md:grid-cols-4 gap-8 text-center animate-fade-in border-amber-400/20">
+              <div><p className="text-[10px] font-black text-slate-500 uppercase">{t('volume')}</p><p className="text-2xl font-black text-white">{sel.volume}%</p></div>
+              <div><p className="text-[10px] font-black text-slate-500 uppercase">{t('waterLevel')}</p><p className="text-2xl font-black text-blue-400">{sel.water.toFixed(2)} cm</p></div>
+              <div><p className="text-[10px] font-black text-slate-500 uppercase">{t('temp')}</p><p className="text-2xl font-black text-emerald-400">{sel.temp}°C</p></div>
+              <div><p className="text-[10px] font-black text-slate-500 uppercase">Status</p><p className="text-2xl font-black text-emerald-400">Normal</p></div>
+            </div>
+          )}
+        </div>
+      );
+    };
 
-                <!-- News Modal -->
-                <div id="news-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
-                    <div class="absolute inset-0 bg-black/60 backdrop-blur-md" onclick="closeNewsModal()"></div>
-                    <div class="glass-strong rounded-[2.5rem] max-w-2xl w-full p-8 relative animate-fade-in overflow-y-auto max-h-[90vh]">
-                        <button onclick="closeNewsModal()" class="absolute top-6 right-6 p-2 glass rounded-full text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
-                        <div id="modal-content"></div>
-                    </div>
+    const PricesView = () => {
+      const { state, t } = useContext(AppContext);
+      const [cat, setCat] = useState('all');
+      const filtered = state.regionalRates.filter(r => cat === 'all' || r.cat === cat);
+
+      return (
+        <div className="fade-in space-y-12">
+          <header className="flex justify-between items-end">
+            <div><h2 className="text-4xl font-black mb-4">{t('prices')}</h2><p className="text-slate-500">{t('regionalCMS')}</p></div>
+            <div className="flex bg-white/5 p-1 rounded-xl">
+              {['all','auto','avia'].map(x => <button key={x} onClick={()=>setCat(x)} className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${cat===x?'bg-amber-400 text-black':'text-slate-500 hover:text-white'}`}>{t(x)}</button>)}
+            </div>
+          </header>
+          <div className="glass rounded-[32px] overflow-hidden">
+            <table className="w-full text-left">
+              <thead className="bg-white/5 border-b border-white/10">
+                <tr>
+                  <th className="px-8 py-6 text-[10px] font-black uppercase text-slate-500">{t('region')}</th>
+                  <th className="px-8 py-6 text-[10px] font-black uppercase text-slate-500">{t('fuelType')}</th>
+                  <th className="px-8 py-6 text-[10px] font-black uppercase text-slate-500 text-right">{t('totalPrice')} (T/Tonne)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {filtered.map(r => (
+                  <tr key={r.id} className="hover:bg-white/[0.02]">
+                    <td className="px-8 py-6 font-bold">{r.region}</td>
+                    <td className="px-8 py-6"><span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${r.cat==='auto'?'bg-blue-600/10 text-blue-400':'bg-amber-400/10 text-amber-400'}`}>{r.fuel}</span></td>
+                    <td className="px-8 py-6 text-right font-black text-xl text-white">{r.price.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    };
+
+    const ContactsView = () => {
+      const { state, t } = useContext(AppContext);
+      return (
+        <div className="fade-in space-y-24">
+          <section>
+            <h2 className="text-4xl font-black mb-12 text-center">{t('directors')}</h2>
+            <div className="grid md:grid-cols-2 gap-12">
+              {state.directors.map(d => (
+                <div key={d.id} className="glass p-8 rounded-[40px] flex items-center gap-8 border-white/5 hover:border-amber-400/20 transition-all">
+                  <img src={d.img} className="w-32 h-32 rounded-[32px] object-cover ring-4 ring-white/5" />
+                  <div><h3 className="text-2xl font-black">{d.name}</h3><p className="text-amber-400 font-bold uppercase text-xs tracking-widest">{d.role}</p></div>
                 </div>
-            `;
-            target.innerHTML = html;
-        }
+              ))}
+            </div>
+          </section>
+          <section className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h3 className="text-3xl font-black mb-6">{t('logistics')}</h3>
+              <p className="text-slate-400 text-lg leading-relaxed mb-8">Smart Mercury Energy facilities are strategic hubs located 6km from the airport terminal, offering superior rail and road logistics.</p>
+              <div className="glass p-8 rounded-3xl flex items-center gap-6"><div className="w-16 h-16 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-400"><i data-lucide="map-pin"></i></div><div><p className="font-black">Airport Hub Zone</p><p className="text-slate-500 text-xs font-black uppercase">6 KM Range</p></div></div>
+            </div>
+            <div className="glass p-8 rounded-[40px] space-y-6">
+              <h3 className="text-xl font-black">{t('feedback')}</h3>
+              <div className="space-y-4">
+                <input placeholder={t('name')} className="w-full bg-[#0b1329] p-4 rounded-xl outline-none" />
+                <textarea placeholder={t('message')} className="w-full bg-[#0b1329] p-4 rounded-xl outline-none h-32" />
+                <button className="w-full bg-amber-400 text-black font-black py-4 rounded-xl">{t('send')}</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      );
+    };
 
-        function openNewsModal(id) {
-            const news = {
-                1: { title: 'Жаңа мұнай базасы іске қосылды', date: '12.06.2026', img: 'https://images.unsplash.com/photo-1542060748-10c28b629f6f?auto=format&fit=crop&q=80&w=800', content: 'Алматы облысында сыйымдылығы 24 000 тонна болатын жаңа мұнай базасы пайдалануға берілді. Бұл кешен ең заманауи автоматтандырылған басқару жүйелерімен және өрт қауіпсіздігі құрылғыларымен жабдықталған. Жаңа база өңірдегі отын тапшылығын жоюға және баға тұрақтылығын сақтауға көмектеседі.' },
-                2: { title: 'JET A-1 жеткізу көлемі артты', date: '10.06.2026', img: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=800', content: 'Халықаралық әуежайларға авиаотын жеткізу бойынша жаңа келісімшарттар жасалды. Navarro Trade авиациялық отын нарығындағы үлесін 15%-ға дейін арттырды. Біз жеткізетін JET A-1 отыны JIG 2 стандартына толық сәйкес келеді.' },
-                3: { title: 'Argus индексі бойынша талдау', date: '08.06.2026', img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=800', content: 'Маусым айындағы бағалар динамикасы және нарық болжамы. Халықаралық Argus агенттігінің мәліметтері бойынша, жазғы маусымда дизель отынына сұраныс артады. Біздің сарапшылар бағаның 2-3%-ға өсуін болжап отыр.' }
-            };
-            const n = news[id];
-            document.getElementById('modal-content').innerHTML = `
-                <img src="${n.img}" class="w-full h-64 object-cover rounded-3xl mb-8">
-                <p class="text-xs text-navarro-primary font-bold uppercase mb-2">${n.date}</p>
-                <h2 class="text-3xl font-bold mb-6">${n.title}</h2>
-                <p class="text-navarro-dim leading-relaxed mb-8">${n.content}</p>
-                <div class="h-px bg-navarro-border mb-8"></div>
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-navarro-primary flex items-center justify-center text-white font-bold">N</div>
-                    <div>
-                        <p class="text-white font-bold">Navarro Editorial</p>
-                        <p class="text-xs text-navarro-dim">Нарық сарапшысы</p>
-                    </div>
+    const AdminView = () => {
+      const { state, setState, t, log } = useContext(AppContext);
+      const [tab, setTab] = useState('banner');
+      const [s, setS] = useState('');
+      const filteredLogs = state.auditLogs.filter(l => l.action.toLowerCase().includes(s.toLowerCase()));
+
+      return (
+        <div className="fade-in flex flex-col lg:flex-row gap-12 min-h-[600px]">
+          <aside className="lg:w-64 space-y-2">
+            {['banner','spot','rates','stations','users','logs'].map(x => (
+              <button key={x} onClick={()=>setTab(x)} className={`w-full text-left px-8 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${tab===x?'bg-blue-600 shadow-xl text-white':'hover:bg-white/5 text-slate-500'}`}>
+                {t(x==='banner'?'bannerCMS':x==='spot'?'spotCMS':x==='rates'?'regionalCMS':x==='stations'?'gasStations':x==='users'?'users':'auditLogs')}
+              </button>
+            ))}
+          </aside>
+          <div className="flex-1 glass p-12 rounded-[40px]">
+            {tab === 'banner' && (
+              <div className="space-y-8 animate-fade-in">
+                <h3 className="text-3xl font-black">{t('bannerCMS')}</h3>
+                <div className="grid gap-6">
+                  <div><label className="text-[10px] font-black text-slate-500 uppercase">Image URL</label><input value={state.banner.url} onChange={e=>setState({...state,banner:{...state.banner,url:e.target.value}})} className="w-full bg-[#0b1329] p-4 rounded-xl mt-2 outline-none" /></div>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {['KZ','RU','EN'].map(l => <div key={l}><label className="text-[10px] font-black text-slate-500 uppercase">Title ({l})</label><input value={state.banner.title[l]} onChange={e=>{const b={...state.banner};b.title[l]=e.target.value;setState({...state,banner:b});}} className="w-full bg-[#0b1329] p-4 rounded-xl mt-2 outline-none" /></div>)}
+                  </div>
                 </div>
-            `;
-            document.getElementById('news-modal').classList.remove('hidden');
-            lucide.createIcons();
-        }
-
-        function closeNewsModal() {
-            document.getElementById('news-modal').classList.add('hidden');
-        }
-
-        function renderPrices(target) {
-            const html = `
-                <div class="space-y-12">
-                    <header>
-                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Прайс-лист</h1>
-                        <p class="text-navarro-dim max-w-2xl">Ағымдағы бағалар Argus индексіне негізделген. Соңғы жаңарту: ${new Date().toLocaleDateString()}</p>
-                    </header>
-
-                    <!-- Fuel Calculator -->
-                    <section class="glass p-8 rounded-[2.5rem]">
-                        <div class="flex items-center gap-3 mb-8">
-                            <i data-lucide="calculator" class="w-6 h-6 text-navarro-primary"></i>
-                            <h3 class="font-bold text-xl">Отын калькуляторы</h3>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            <div>
-                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Отын түрі</label>
-                                <select id="calc-fuel" onchange="updateCalcDensity()" class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
-                                    ${state.prices.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Көлем (литр)</label>
-                                <input type="number" id="calc-vol" oninput="calculateMass()" placeholder="0" class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Тығыздық (кг/м³)</label>
-                                <input type="number" id="calc-dens" step="0.001" oninput="calculateMass()" placeholder="0.000" class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
-                            </div>
-                            <div class="bg-navarro-primary/10 border border-navarro-primary/20 rounded-2xl p-4 flex flex-col justify-center">
-                                <p class="text-[10px] text-navarro-primary font-bold uppercase mb-1">Жалпы Масса / Құны</p>
-                                <div class="flex items-baseline justify-between">
-                                    <span id="calc-res-mass" class="text-xl font-black">0 <span class="text-[10px]">кг</span></span>
-                                    <span id="calc-res-total" class="text-xl font-black text-navarro-primary">0 <span class="text-[10px]">тг</span></span>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Prices Table -->
-                    <div class="overflow-x-auto glass rounded-3xl">
-                        <table class="w-full text-left">
-                            <thead class="bg-white/5 border-b border-navarro-border">
-                                <tr>
-                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Отын түрі</th>
-                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Өлшем бірлігі</th>
-                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Баға (теңге)</th>
-                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Өзгеріс</th>
-                                    <th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-navarro-dim">Дереккөз</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-navarro-border">
-                                ${state.prices.map(p => `
-                                    <tr class="hover:bg-white/[0.02] transition-colors">
-                                        <td class="px-8 py-6 font-bold">${p.name}</td>
-                                        <td class="px-8 py-6 text-navarro-dim">${p.unit}</td>
-                                        <td class="px-8 py-6 font-black text-xl">${p.price}.00</td>
-                                        <td class="px-8 py-6">
-                                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${p.status === 'up' ? 'bg-green-500/10 text-green-500' : p.status === 'down' ? 'bg-red-500/10 text-red-500' : 'bg-gray-500/10 text-gray-500'}">
-                                                ${p.status === 'up' ? '↑' : p.status === 'down' ? '↓' : '•'} ${p.trend}%
-                                            </span>
-                                        </td>
-                                        <td class="px-8 py-6">
-                                            <div class="flex items-center gap-2">
-                                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                                <span class="text-xs font-bold">${p.source}</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
+                <button onClick={()=>log("Updated Banner")} className="bg-amber-400 text-black font-black px-10 py-4 rounded-xl">SAVE</button>
+              </div>
+            )}
+            {tab === 'spot' && (
+              <div className="space-y-8 animate-fade-in">
+                <h3 className="text-3xl font-black">{t('spotCMS')}</h3>
+                <div className="space-y-4">
+                  {state.spotPrices.map(p => (
+                    <div key={p.id} className="flex items-center gap-4 bg-white/5 p-4 rounded-xl">
+                      <span className="w-20 font-black">{p.name}</span>
+                      <input type="number" value={p.price} onChange={e=>{const list=[...state.spotPrices];list.find(x=>x.id===p.id).price=e.target.value;setState({...state,spotPrices:list});}} className="bg-[#0b1329] p-2 rounded-lg w-24 outline-none" />
+                      <button onClick={()=>log(`Updated ${p.name} price`)} className="text-[10px] font-black text-blue-400">{t('save')}</button>
                     </div>
+                  ))}
                 </div>
-            `;
-            target.innerHTML = html;
-            updateCalcDensity();
-        }
+              </div>
+            )}
+            {tab === 'logs' && (
+              <div className="space-y-8 animate-fade-in">
+                <div className="flex justify-between items-center"><h3 className="text-3xl font-black">{t('auditLogs')}</h3><button onClick={()=>setState({...state,auditLogs:[]})} className="text-danger text-xs font-black">{t('clearLogs')}</button></div>
+                <input placeholder={t('search')} value={s} onChange={e=>setS(e.target.value)} className="w-full bg-[#0b1329] p-4 rounded-xl outline-none" />
+                <div className="space-y-3">{filteredLogs.map(l => <div key={l.id} className="p-4 bg-white/5 rounded-2xl flex justify-between text-xs"><span><b className="text-amber-400">{l.user}:</b> {l.action}</span><span className="text-slate-500">{l.time}</span></div>)}</div>
+              </div>
+            )}
+            {tab === 'users' && (
+               <div className="space-y-8 animate-fade-in">
+                  <h3 className="text-3xl font-black">{t('users')}</h3>
+                  <div className="glass rounded-2xl overflow-hidden">
+                    <table className="w-full text-left">
+                      <thead className="bg-white/5"><tr><th className="p-4 text-[10px] uppercase text-slate-500">{t('user')}</th><th className="p-4 text-[10px] uppercase text-slate-500">{t('role')}</th></tr></thead>
+                      <tbody>{state.users.map(u=>(<tr key={u.id} className="border-t border-white/5"><td className="p-4">{u.name}</td><td className="p-4"><select value={u.role} onChange={e=>{const us=[...state.users];us.find(x=>x.id===u.id).role=e.target.value;setState({...state,users:us});log(`Role change for ${u.name}`);}} className="bg-transparent text-amber-400 font-bold"><option value="User">User</option><option value="Admin">Admin</option></select></td></tr>))}</tbody>
+                    </table>
+                  </div>
+               </div>
+            )}
+          </div>
+        </div>
+      );
+    };
 
-        function updateCalcDensity() {
-            const fuelId = document.getElementById('calc-fuel').value;
-            const fuel = state.prices.find(p => p.id == fuelId);
-            if (fuel) {
-                document.getElementById('calc-dens').value = fuel.density;
-                calculateMass();
-            }
-        }
+    const App = () => {
+      const { state, setState, t } = useContext(AppContext);
+      useEffect(() => { if (window.lucide) window.lucide.createIcons(); });
 
-        function calculateMass() {
-            const vol = parseFloat(document.getElementById('calc-vol').value) || 0;
-            const dens = parseFloat(document.getElementById('calc-dens').value) || 0;
-            const fuelId = document.getElementById('calc-fuel').value;
-            const fuel = state.prices.find(p => p.id == fuelId);
+      const Nav = () => (
+        <nav className="fixed top-0 w-full z-50 glass px-12 py-5 flex justify-between items-center shadow-2xl">
+          <div className="flex items-center gap-4 cursor-pointer" onClick={()=>window.location.hash='#/home'}>
+            <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center shadow-lg shadow-amber-400/20"><i data-lucide="zap" className="text-[#0b1329]"></i></div>
+            <span className="text-2xl font-black uppercase tracking-tighter">Smart <span className="text-amber-400">Mercury</span></span>
+          </div>
+          <div className="hidden lg:flex gap-10 text-[10px] font-black uppercase tracking-widest">
+            {['home','monitoring','prices','contacts'].map(x=>(
+              <a key={x} href={`#/${x}`} className={`transition-all hover:text-amber-400 ${state.currentPath==='/'+x?'text-amber-400 border-b-2 border-amber-400 pb-1':''}`}>{t(x)}</a>
+            ))}
+          </div>
+          <div className="flex items-center gap-6">
+            <select value={state.language} onChange={e=>setState({...state,language:e.target.value})} className="bg-transparent text-white font-black outline-none"><option value="KZ">KZ</option><option value="RU">RU</option><option value="EN">EN</option></select>
+            {state.user ? (
+              <div className="flex items-center gap-4 border-l border-white/10 pl-6">
+                <span className="text-[10px] font-black uppercase text-amber-400">{state.user.role}</span>
+                {state.user.role==='Admin' && <a href="#/admin" className={`text-[10px] font-black transition-all ${state.currentPath==='/admin'?'text-blue-400':'text-slate-500'}`}>ADMIN</a>}
+                <button onClick={()=>setState({...state,user:null})} className="text-slate-500"><i data-lucide="log-out" className="w-4 h-4"></i></button>
+              </div>
+            ) : (
+              <button onClick={()=>setState({...state,user:state.users[0]})} className="bg-blue-600 px-6 py-2 rounded-xl text-[10px] font-black shadow-lg shadow-blue-600/20">LOGIN</button>
+            )}
+          </div>
+        </nav>
+      );
 
-            const mass = vol * dens;
-            const total = vol * (fuel ? fuel.price : 0);
+      const View = () => {
+        if (state.currentPath === '/admin' && state.user?.role === 'Admin') return <AdminView />;
+        if (state.currentPath === '/monitoring') return <MonitoringView />;
+        if (state.currentPath === '/prices') return <PricesView />;
+        if (state.currentPath === '/contacts') return <ContactsView />;
+        return <HomeView />;
+      };
 
-            document.getElementById('calc-res-mass').innerHTML = `${mass.toFixed(1)} <span class="text-[10px]">кг</span>`;
-            document.getElementById('calc-res-total').innerHTML = `${total.toLocaleString()} <span class="text-[10px]">тг</span>`;
-        }
+      return (
+        <div className="min-h-screen flex flex-col">
+          <Nav />
+          <main className="flex-grow pt-32 px-12 max-w-7xl mx-auto w-full pb-20"><View /></main>
+          <footer className="py-12 border-t border-white/5 text-center text-[10px] text-slate-500 font-black uppercase tracking-[0.5em]">© 2026 Smart Mercury Energy Hub</footer>
+        </div>
+      );
+    };
 
-        function renderProducts(target) {
-            const products = [
-                { name: 'АИ-92 Автобензин', gost: 'ГОСТ 32513-2013', desc: 'Детонацияға төзімділігі жоғары, күнделікті қолданысқа арналған отын.', specs: ['Октан саны: 92+', 'Күкірт мөлшері: <10 мг/кг', 'Тікелей жеткізу'] },
-                { name: 'АИ-95 Автобензин', gost: 'ГОСТ 32513-2013', desc: 'Премиум санаттағы қозғалтқыштарға арналған жоғары сапалы отын.', specs: ['Октан саны: 95+', 'Экологиялық класс: К5', 'Қозғалтқыш қорғанысы'] },
-                { name: 'Дизель отыны (ДТ)', gost: 'СТ РК 1528-2006', desc: 'Жазғы және қысқы дизель отыны. Цетан саны жоғары.', specs: ['Цетан саны: 51+', 'Тығыздығы: 820-845 кг/м³', 'Сүзгіштік шегі: -35°C (қысқы)'] },
-                { name: 'JET A-1 Авиаотын', gost: 'ASTM D1655 / JIG 2', desc: 'Халықаралық стандарттарға сай авиациялық керосин.', specs: ['Қату температурасы: -47°C', 'Жылу сыйымдылығы: жоғары', 'Сертификатталған'] }
-            ];
-
-            const html = `
-                <div class="space-y-12">
-                    <header>
-                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Өнімдер</h1>
-                        <p class="text-navarro-dim max-w-2xl">Біз ұсынатын өнімдердің барлығы сапа сертификаттарымен қамтамасыз етілген және мемлекеттік стандарттарға толық сәйкес келеді.</p>
-                    </header>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        ${products.map(p => `
-                            <div class="glass p-8 rounded-[2.5rem] border-t border-white/5 hover:border-navarro-primary transition-all group">
-                                <div class="flex justify-between items-start mb-8">
-                                    <div>
-                                        <h3 class="text-2xl font-bold mb-2">${p.name}</h3>
-                                        <span class="text-[10px] bg-navarro-primary/20 text-navarro-primary px-2 py-1 rounded font-black">${p.gost}</span>
-                                    </div>
-                                    <div class="w-12 h-12 rounded-2xl glass flex items-center justify-center text-navarro-dim group-hover:text-navarro-primary transition-colors">
-                                        <i data-lucide="package" class="w-6 h-6"></i>
-                                    </div>
-                                </div>
-                                <p class="text-navarro-dim text-sm mb-8 leading-relaxed">${p.desc}</p>
-                                <ul class="space-y-3">
-                                    ${p.specs.map(s => `
-                                        <li class="flex items-center gap-3 text-xs font-medium">
-                                            <i data-lucide="check" class="w-4 h-4 text-navarro-primary"></i>
-                                            ${s}
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                                <button class="w-full mt-10 py-4 rounded-2xl glass font-bold hover:bg-white/10 transition-all flex items-center justify-center gap-2">
-                                    Сертификатты жүктеу
-                                    <i data-lucide="download" class="w-4 h-4"></i>
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-            target.innerHTML = html;
-        }
-
-        function renderAbout(target) {
-            const html = `
-                <div class="space-y-24">
-                    <section class="flex flex-col lg:flex-row gap-16 items-center">
-                        <div class="lg:w-1/2">
-                            <h1 class="text-6xl font-black mb-8 leading-tight">Энергия — <br>біздің <span class="text-navarro-primary">мамандығымыз</span></h1>
-                            <p class="text-navarro-dim text-lg leading-relaxed mb-8">
-                                Navarro Trade — 2012 жылдан бері Қазақстанның мұнай өнімдері нарығында табысты жұмыс істеп келе жатқан динамикалық компания. Біздің басты мақсатымыз — тұтынушыларды сапалы отынмен үздіксіз қамтамасыз ету.
-                            </p>
-                            <div class="grid grid-cols-2 gap-8">
-                                <div>
-                                    <p class="text-4xl font-black text-white mb-2">14+</p>
-                                    <p class="text-xs text-navarro-dim uppercase font-bold tracking-widest">Жыл нарықта</p>
-                                </div>
-                                <div>
-                                    <p class="text-4xl font-black text-white mb-2">500+</p>
-                                    <p class="text-xs text-navarro-dim uppercase font-bold tracking-widest">Тұрақты клиенттер</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="lg:w-1/2 w-full">
-                            <div class="relative">
-                                <div class="absolute -inset-4 bg-navarro-primary/20 blur-3xl rounded-full"></div>
-                                <img src="https://images.unsplash.com/photo-1454165833767-027ff33027ef?auto=format&fit=crop&q=80&w=800" class="relative rounded-[3rem] border border-white/10 shadow-2xl">
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="glass p-10 rounded-[2.5rem]">
-                            <h3 class="text-xl font-bold mb-6 text-navarro-primary italic">Миссия</h3>
-                            <p class="text-navarro-dim text-sm leading-relaxed">Нарықтағы ең озық технологияларды қолдана отырып, отын жеткізу процесін қарапайым, ашық және сенімді ету.</p>
-                        </div>
-                        <div class="glass p-10 rounded-[2.5rem]">
-                            <h3 class="text-xl font-bold mb-6 text-navarro-primary italic">Құндылықтар</h3>
-                            <p class="text-navarro-dim text-sm leading-relaxed">Біз үшін серіктестеріміздің сенімі мен өнім сапасы кез келген пайдадан жоғары тұрады.</p>
-                        </div>
-                        <div class="glass p-10 rounded-[2.5rem]">
-                            <h3 class="text-xl font-bold mb-6 text-navarro-primary italic">Болашақ</h3>
-                            <p class="text-navarro-dim text-sm leading-relaxed">2030 жылға қарай Орталық Азиядағы ең цифрланған энергетикалық хабқа айналу.</p>
-                        </div>
-                    </section>
-                </div>
-            `;
-            target.innerHTML = html;
-        }
-
-        function renderContact(target) {
-            const html = `
-                <div class="space-y-12">
-                    <header>
-                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Байланыс</h1>
-                        <p class="text-navarro-dim max-w-2xl">Бізбен кез келген ыңғайлы жолмен хабарласыңыз. Біздің мамандар сізге көмектесуге дайын.</p>
-                    </header>
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                        <div class="lg:col-span-5 space-y-8">
-                            <div class="glass p-8 rounded-3xl flex gap-6">
-                                <div class="w-12 h-12 rounded-2xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary shrink-0">
-                                    <i data-lucide="map-pin" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold mb-2">Мекенжай</h4>
-                                    <p class="text-navarro-dim text-sm italic">Алматы қаласы, Байзақова көшесі, 280, "Almaty Towers" БО</p>
-                                </div>
-                            </div>
-                            <div class="glass p-8 rounded-3xl flex gap-6">
-                                <div class="w-12 h-12 rounded-2xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary shrink-0">
-                                    <i data-lucide="phone" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold mb-2">Телефон</h4>
-                                    <p class="text-navarro-dim text-sm">+7 (771) 492-95-37</p>
-                                    <p class="text-navarro-dim text-sm">+7 (727) 344-22-11</p>
-                                </div>
-                            </div>
-                            <div class="glass p-8 rounded-3xl flex gap-6">
-                                <div class="w-12 h-12 rounded-2xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary shrink-0">
-                                    <i data-lucide="mail" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold mb-2">Email</h4>
-                                    <p class="text-navarro-dim text-sm">info@navarro.kz</p>
-                                    <p class="text-navarro-dim text-sm">sales@navarro.kz</p>
-                                </div>
-                            </div>
-                            <div class="glass p-8 rounded-3xl flex gap-6">
-                                <div class="w-12 h-12 rounded-2xl bg-navarro-primary/10 flex items-center justify-center text-navarro-primary shrink-0">
-                                    <i data-lucide="clock" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold mb-2">Жұмыс уақыты</h4>
-                                    <p class="text-navarro-dim text-sm italic">Дүйсенбі - Жұма: 09:00 - 18:00</p>
-                                    <p class="text-navarro-dim text-sm italic">Сенбі - Жексенбі: Демалыс</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-7 h-[600px] glass rounded-[2.5rem] overflow-hidden relative border border-white/5">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2906.7701764654316!2d76.9073173!3d43.2352528!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836ec7d87d4653%3A0xf635193907a9807b!2z0YPQuy4g0JHQsNC50LfQsNC60L7QstCwIDI4MCwg0JDQu9C80LDRgtGLIDA1MDAwMA!5e0!3m2!1sru!2skz!4v1718451234567!5m2!1sru!2skz" width="100%" height="100%" style="border:0; filter: invert(90%) hue-rotate(180deg) contrast(90%);" allowfullscreen="" loading="lazy"></iframe>
-                            <div class="absolute bottom-8 right-8">
-                                <a href="https://wa.me/77714929537" target="_blank" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl flex items-center gap-3 transition-all">
-                                    <i data-lucide="message-circle" class="w-6 h-6"></i>
-                                    <span class="font-bold">WhatsApp жазу</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            target.innerHTML = html;
-        }
-
-        // Auth Views
-        function renderAuth(target) {
-            const html = `
-                <div class="max-w-md mx-auto py-12">
-                    <div class="glass p-10 rounded-[2.5rem]">
-                        <h2 class="text-3xl font-bold mb-2">Қош келдіңіз</h2>
-                        <p class="text-navarro-dim text-sm mb-8">Жүйеге кіру үшін деректеріңізді енгізіңіз</p>
-
-                        <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-6">
-                            <div>
-                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Email</label>
-                                <input type="email" id="auth-email" required class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Құпия сөз</label>
-                                <input type="password" id="auth-password" required class="w-full bg-navarro-bg border border-navarro-border rounded-xl px-4 py-3 outline-none focus:border-navarro-primary text-white">
-                            </div>
-                            <button type="submit" class="w-full bg-navarro-primary hover:bg-blue-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-500/20">
-                                Кіру
-                            </button>
-                        </form>
-
-                        <div class="relative my-8">
-                            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-navarro-border"></div></div>
-                            <div class="relative flex justify-center text-xs uppercase"><span class="bg-navarro-card px-2 text-navarro-dim">Немесе</span></div>
-                        </div>
-
-                        <button onclick="handleGoogleLogin()" class="w-full glass hover:bg-white/10 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-3">
-                            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5">
-                            Google арқылы кіру
-                        </button>
-
-                        <p class="mt-8 text-center text-sm text-navarro-dim">
-                            Аккаунтыңыз жоқ па? <a href="#" class="text-navarro-primary font-bold">Тіркелу</a>
-                        </p>
-
-                        <div class="mt-8 p-4 bg-white/5 rounded-2xl border border-white/5">
-                            <p class="text-[10px] text-navarro-dim font-bold uppercase mb-2">Демо аккаунттар:</p>
-                            <p class="text-[10px] text-navarro-dim italic">admin@navarro.kz / admin123</p>
-                            <p class="text-[10px] text-navarro-dim italic">user1@navarro.kz / user123</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            target.innerHTML = html;
-        }
-
-        const demoUsers = [
-            { email: 'admin@navarro.kz', password: 'admin123', name: 'Admin Navarro', role: 'admin', company: 'Navarro Trade' },
-            { email: 'user1@navarro.kz', password: 'user123', name: 'Асхат Серіков', role: 'user', company: 'Oil Trans LLP' },
-            { email: 'user2@navarro.kz', password: 'user456', name: 'Жанна Мұрат', role: 'user', company: 'Azk Gold' }
-        ];
-
-        function handleAuth(e) {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const pass = document.getElementById('auth-password').value;
-
-            const user = demoUsers.find(u => u.email === email && u.password === pass);
-
-            if (user) {
-                state.user = { ...user, avatar: 'https://i.pravatar.cc/150?u=' + email };
-                localStorage.setItem('navarro_user', JSON.stringify(state.user));
-                logAction('Жүйеге кіру', `Пайдаланушы ${user.name} жүйеге кірді`);
-                window.location.hash = user.role === 'admin' ? '#/admin' : '#/cabinet';
-            } else {
-                alert('Қате email немесе құпия сөз');
-            }
-        }
-
-        function handleGoogleLogin() {
-            const user = demoUsers[1]; // Mock user1
-            state.user = { ...user, avatar: 'https://i.pravatar.cc/150?u=' + user.email };
-            localStorage.setItem('navarro_user', JSON.stringify(state.user));
-            logAction('Google арқылы кіру', `Пайдаланушы ${user.name} Google арқылы кірді`);
-            window.location.hash = '#/cabinet';
-        }
-
-        function logout() {
-            logAction('Жүйеден шығу', `Пайдаланушы ${state.user.name} жүйеден шықты`);
-            state.user = null;
-            localStorage.removeItem('navarro_user');
-            window.location.hash = '#/auth';
-        }
-
-        function logAction(type, desc) {
-            const log = {
-                id: Date.now(),
-                user: state.user ? state.user.name : 'Қонақ',
-                email: state.user ? state.user.email : 'guest',
-                type,
-                desc,
-                date: new Date().toLocaleString()
-            };
-            state.logs.unshift(log);
-            localStorage.setItem('navarro_logs', JSON.stringify(state.logs.slice(0, 100)));
-
-            // Trigger notification for admin
-            if (state.user && state.user.role !== 'admin') {
-                const notifications = JSON.parse(localStorage.getItem('navarro_notifications')) || [];
-                notifications.unshift({ ...log, read: false });
-                localStorage.setItem('navarro_notifications', JSON.stringify(notifications.slice(0, 20)));
-                updateAdminBadge();
-            }
-        }
-
-        // Protected Views
-        function renderCabinet(target) {
-            const userLogs = state.logs.filter(l => l.email === state.user.email);
-            const html = `
-                <div class="space-y-12">
-                    <header class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-4xl font-black mb-2">Жеке кабинет</h1>
-                            <p class="text-navarro-dim">Сәлеметсіз бе, ${state.user.name}!</p>
-                        </div>
-                        <button onclick="logout()" class="glass px-6 py-3 rounded-xl text-navarro-destructive font-bold flex items-center gap-2 hover:bg-white/10 transition-all">
-                            <i data-lucide="log-out" class="w-5 h-5"></i>
-                            Шығу
-                        </button>
-                    </header>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        <div class="lg:col-span-4 space-y-8">
-                            <div class="glass p-8 rounded-[2.5rem] text-center">
-                                <div class="relative inline-block mb-6">
-                                    <img src="${state.user.avatar}" class="w-32 h-32 rounded-full border-4 border-navarro-primary p-1">
-                                    <button class="absolute bottom-0 right-0 p-2 bg-navarro-primary rounded-full text-white border-4 border-navarro-bg">
-                                        <i data-lucide="camera" class="w-4 h-4"></i>
-                                    </button>
-                                </div>
-                                <h3 class="text-xl font-bold mb-1">${state.user.name}</h3>
-                                <p class="text-xs text-navarro-dim uppercase font-black mb-6">${state.user.role}</p>
-                                <div class="space-y-4 text-left">
-                                    <div class="flex items-center gap-4 text-sm">
-                                        <i data-lucide="mail" class="w-4 h-4 text-navarro-dim"></i>
-                                        <span>${state.user.email}</span>
-                                    </div>
-                                    <div class="flex items-center gap-4 text-sm">
-                                        <i data-lucide="briefcase" class="w-4 h-4 text-navarro-dim"></i>
-                                        <span>${state.user.company}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="lg:col-span-8">
-                            <div class="glass p-8 rounded-[2.5rem]">
-                                <h3 class="text-xl font-bold mb-8 flex items-center gap-3">
-                                    <i data-lucide="activity" class="w-6 h-6 text-navarro-primary"></i>
-                                    Әрекеттер тарихы
-                                </h3>
-                                <div class="space-y-8 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-px before:bg-navarro-border">
-                                    ${userLogs.length > 0 ? userLogs.map(l => `
-                                        <div class="relative pl-10">
-                                            <div class="absolute left-0 top-1 w-[24px] h-[24px] rounded-full bg-navarro-bg border-4 border-navarro-primary"></div>
-                                            <div class="flex items-center justify-between mb-1">
-                                                <p class="font-bold text-sm">${l.type}</p>
-                                                <span class="text-[10px] text-navarro-dim">${l.date}</span>
-                                            </div>
-                                            <p class="text-sm text-navarro-dim">${l.desc}</p>
-                                        </div>
-                                    `).join('') : '<p class="text-center text-navarro-dim py-12">Әрекеттер табылмады</p>'}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            target.innerHTML = html;
-        }
-
-        function renderAdmin(target) {
-            const notifications = JSON.parse(localStorage.getItem('navarro_notifications')) || [];
-            const html = `
-                <div class="space-y-12">
-                    <header class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-4xl font-black mb-2">Admin Dashboard</h1>
-                            <p class="text-navarro-dim">Жүйені басқару және мониторинг</p>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="relative">
-                                <button onclick="toggleNotifications()" class="glass p-3 rounded-xl hover:bg-white/10 transition-all relative">
-                                    <i data-lucide="bell" class="w-6 h-6"></i>
-                                    <span id="notif-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-navarro-destructive rounded-full text-[10px] flex items-center justify-center font-bold">
-                                        ${notifications.filter(n => !n.read).length}
-                                    </span>
-                                </button>
-                                <div id="notif-panel" class="hidden absolute right-0 mt-4 w-80 glass-strong rounded-2xl p-4 z-50 border border-white/10 shadow-2xl">
-                                    <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
-                                        <span class="font-bold">Хабарламалар</span>
-                                        <button onclick="markAllRead()" class="text-[10px] text-navarro-primary font-bold">Бәрін оқылды деп белгілеу</button>
-                                    </div>
-                                    <div class="max-h-64 overflow-y-auto space-y-4">
-                                        ${notifications.length > 0 ? notifications.map(n => `
-                                            <div class="text-xs p-2 rounded-lg ${n.read ? '' : 'bg-white/5 border-l-2 border-navarro-primary'}">
-                                                <p class="font-bold mb-1">${n.type}</p>
-                                                <p class="text-navarro-dim">${n.desc}</p>
-                                                <p class="text-[8px] mt-1 opacity-50">${n.date}</p>
-                                            </div>
-                                        `).join('') : '<p class="text-center text-navarro-dim py-4">Жаңа хабарлама жоқ</p>'}
-                                    </div>
-                                </div>
-                            </div>
-                            <button onclick="logout()" class="glass p-3 rounded-xl text-navarro-destructive hover:bg-white/10 transition-all">
-                                <i data-lucide="log-out" class="w-6 h-6"></i>
-                            </button>
-                        </div>
-                    </header>
-
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div class="glass p-6 rounded-3xl">
-                            <p class="text-xs text-navarro-dim font-bold uppercase mb-2">Орташа баға</p>
-                            <p class="text-3xl font-black">285 <span class="text-sm">тг/л</span></p>
-                            <p class="text-[10px] text-green-500 mt-2 font-bold flex items-center gap-1">
-                                <i data-lucide="arrow-up" class="w-3 h-3"></i> +1.2% өткен аптадан
-                            </p>
-                        </div>
-                        <div class="glass p-6 rounded-3xl">
-                            <p class="text-xs text-navarro-dim font-bold uppercase mb-2">Пайдаланушылар</p>
-                            <p class="text-3xl font-black">124</p>
-                            <p class="text-[10px] text-navarro-primary mt-2 font-bold flex items-center gap-1">
-                                <i data-lucide="users" class="w-3 h-3"></i> 5 белсенді қазір
-                            </p>
-                        </div>
-                        <div class="glass p-6 rounded-3xl">
-                            <p class="text-xs text-navarro-dim font-bold uppercase mb-2">Тапсырыстар</p>
-                            <p class="text-3xl font-black">48</p>
-                            <p class="text-[10px] text-navarro-dim mt-2 font-bold">Бүгінгі таңда</p>
-                        </div>
-                        <div class="glass p-6 rounded-3xl">
-                            <p class="text-xs text-navarro-dim font-bold uppercase mb-2">Жүйе статусы</p>
-                            <p class="text-3xl font-black text-green-500">Active</p>
-                            <p class="text-[10px] text-navarro-dim mt-2 font-bold">99.9% Uptime</p>
-                        </div>
-                    </div>
-
-                    <!-- CRUD Prices -->
-                    <div class="glass p-8 rounded-[2.5rem]">
-                        <div class="flex items-center justify-between mb-8">
-                            <h3 class="text-xl font-bold flex items-center gap-3">
-                                <i data-lucide="edit" class="w-6 h-6 text-navarro-primary"></i>
-                                Прайс-листті басқару
-                            </h3>
-                            <button onclick="showPriceModal()" class="bg-navarro-primary px-6 py-2 rounded-xl text-white text-sm font-bold shadow-lg shadow-blue-500/20">
-                                Баға қосу
-                            </button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="border-b border-navarro-border">
-                                    <tr>
-                                        <th class="py-4 font-bold text-navarro-dim">Отын түрі</th>
-                                        <th class="py-4 font-bold text-navarro-dim">Баға</th>
-                                        <th class="py-4 font-bold text-navarro-dim">Тренд %</th>
-                                        <th class="py-4 font-bold text-navarro-dim">Әрекет</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${state.prices.map(p => `
-                                        <tr class="border-b border-white/5">
-                                            <td class="py-4 font-bold">${p.name}</td>
-                                            <td class="py-4 font-black">${p.price}</td>
-                                            <td class="py-4 font-bold ${p.status === 'up' ? 'text-green-500' : 'text-red-500'}">${p.trend}%</td>
-                                            <td class="py-4">
-                                                <div class="flex gap-2">
-                                                    <button onclick="editPrice(${p.id})" class="p-2 hover:text-navarro-primary transition-colors"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-                                                    <button onclick="deletePrice(${p.id})" class="p-2 hover:text-navarro-destructive transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- All Logs -->
-                    <div class="glass p-8 rounded-[2.5rem]">
-                        <h3 class="text-xl font-bold mb-8">Жалпы журнал</h3>
-                        <div class="space-y-4">
-                            ${state.logs.slice(0, 10).map(l => `
-                                <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded-full bg-navarro-primary/20 flex items-center justify-center text-navarro-primary font-bold">
-                                            ${l.user.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <p class="font-bold text-sm">${l.user}</p>
-                                            <p class="text-xs text-navarro-dim">${l.desc}</p>
-                                        </div>
-                                    </div>
-                                    <p class="text-[10px] text-navarro-dim">${l.date}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-            target.innerHTML = html;
-        }
-
-        // Lab Simulation (Heatmap)
-        function renderLab(target) {
-            const html = `
-                <div class="space-y-12">
-                    <header>
-                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Физикалық зертхана</h1>
-                        <p class="text-navarro-dim">Мұнай өнімдерінің жылу таралу симуляциясы (Heatmap Simulation)</p>
-                    </header>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        <div class="lg:col-span-8">
-                            <div class="glass p-4 rounded-[2.5rem] flex items-center justify-center bg-black/40">
-                                <canvas id="heat-canvas" width="600" height="400" class="w-full h-auto rounded-2xl cursor-crosshair"></canvas>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-4 space-y-6">
-                            <div class="glass p-8 rounded-[2.5rem]">
-                                <h3 class="font-bold mb-6">Параметрлер</h3>
-                                <div class="space-y-6">
-                                    <div>
-                                        <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Температура (°C)</label>
-                                        <input type="range" id="heat-temp" min="0" max="100" value="50" class="w-full accent-navarro-primary">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-navarro-dim uppercase mb-2">Тұтқырлық</label>
-                                        <input type="range" id="heat-viscosity" min="1" max="10" value="5" class="w-full accent-navarro-primary">
-                                    </div>
-                                    <button onclick="resetHeatmap()" class="w-full bg-navarro-primary text-white font-bold py-4 rounded-xl">Қалпына келтіру</button>
-                                </div>
-                            </div>
-                            <div class="glass p-8 rounded-[2.5rem]">
-                                <h3 class="font-bold mb-4">Талдау нәтижесі</h3>
-                                <div class="space-y-2 text-sm">
-                                    <p class="flex justify-between"><span class="text-navarro-dim">Макс. температура:</span> <span id="max-temp">50°C</span></p>
-                                    <p class="flex justify-between"><span class="text-navarro-dim">Таралу жылдамдығы:</span> <span id="spread-speed">2.4 м/с</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            target.innerHTML = html;
-            initHeatmap();
-        }
-
-        let heatMapPoints = [];
-        function initHeatmap() {
-            const canvas = document.getElementById('heat-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-
-            function draw() {
-                ctx.fillStyle = '#05070B';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                heatMapPoints.forEach(p => {
-                    const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-                    gradient.addColorStop(0, `rgba(229, 72, 77, ${p.intensity})`);
-                    gradient.addColorStop(0.5, `rgba(245, 158, 11, ${p.intensity/2})`);
-                    gradient.addColorStop(1, 'rgba(59, 125, 216, 0)');
-
-                    ctx.fillStyle = gradient;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    p.radius += 0.5;
-                    p.intensity -= 0.005;
-                });
-
-                heatMapPoints = heatMapPoints.filter(p => p.intensity > 0);
-                requestAnimationFrame(draw);
-            }
-
-            canvas.onmousemove = (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const x = (e.clientX - rect.left) * (canvas.width / rect.width);
-                const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-                heatMapPoints.push({ x, y, radius: 10, intensity: 0.6 });
-            };
-
-            draw();
-        }
-
-        function resetHeatmap() { heatMapPoints = []; }
-
-        // Dashboards
-        function renderNB(target) {
-            const html = `
-                <div class="space-y-12">
-                    <header>
-                        <h1 class="text-4xl lg:text-6xl font-black mb-4">Нефтебаза аналитикасы</h1>
-                        <p class="text-navarro-dim">Резервуарлар деңгейі және қор мониторингі</p>
-                    </header>
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        <div class="lg:col-span-8 glass p-8 rounded-[2.5rem]">
-                            <canvas id="nb-chart" height="300"></canvas>
-                        </div>
-                        <div class="lg:col-span-4 space-y-6">
-                            ${[1,2,3].map(i => `
-                                <div class="glass p-6 rounded-3xl">
-                                    <div class="flex justify-between mb-4">
-                                        <span class="font-bold text-sm text-navarro-dim uppercase">Резервуар №${i}</span>
-                                        <span class="text-navarro-primary font-black">${80 - i*10}%</span>
-                                    </div>
-                                    <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                                        <div class="bg-navarro-primary h-full" style="width: ${80 - i*10}%"></div>
-                                    </div>
-                                    <p class="text-[10px] text-navarro-dim mt-4">Отын түрі: ${state.prices[i].name}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-            target.innerHTML = html;
-            setTimeout(() => initChart('nb-chart', 'Резервуарлар қоры (тонна)', [5000, 4200, 6800, 3100, 5900, 4800]), 100);
-        }
-
-        function renderAZK(target) {
-            const html = `
-                <div class="space-y-12">
-                    <header>
-                        <h1 class="text-4xl lg:text-6xl font-black mb-4">АЗК аналитикасы</h1>
-                        <p class="text-navarro-dim">Жанармай бекеттері бойынша сату көрсеткіштері</p>
-                    </header>
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        <div class="lg:col-span-8 glass p-8 rounded-[2.5rem]">
-                            <canvas id="azk-chart" height="300"></canvas>
-                        </div>
-                        <div class="lg:col-span-4 space-y-6">
-                            <div class="glass p-8 rounded-3xl text-center">
-                                <p class="text-navarro-dim uppercase font-bold text-xs mb-4">Жалпы сату (24с)</p>
-                                <p class="text-5xl font-black text-white">12.4М</p>
-                                <p class="text-xs text-green-500 font-bold mt-4">+8% кешегі күнмен салыстырғанда</p>
-                            </div>
-                            <div class="glass p-6 rounded-3xl">
-                                <h4 class="font-bold mb-4">Ең көп сатылған</h4>
-                                <div class="space-y-4 text-sm">
-                                    <div class="flex justify-between"><span>АИ-92</span> <span>45%</span></div>
-                                    <div class="flex justify-between"><span>Дизель</span> <span>30%</span></div>
-                                    <div class="flex justify-between"><span>АИ-95</span> <span>25%</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            target.innerHTML = html;
-            setTimeout(() => initChart('azk-chart', 'Күндік сату көлемі (мың теңге)', [1200, 1500, 1100, 1800, 2200, 1900, 2500]), 100);
-        }
-
-        function initChart(id, label, data) {
-            const ctx = document.getElementById(id);
-            if (!ctx) return;
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Ду', 'Се', 'Сә', 'Бе', 'Жұ', 'Се', 'Же'],
-                    datasets: [{
-                        label: label,
-                        data: data,
-                        borderColor: '#3B7DD8',
-                        backgroundColor: 'rgba(59, 125, 216, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointBackgroundColor: '#fff',
-                        pointBorderColor: '#3B7DD8',
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#A1A1AA' } },
-                        x: { grid: { display: false }, ticks: { color: '#A1A1AA' } }
-                    }
-                }
-            });
-        }
-
-        // Admin Helpers
-        function toggleNotifications() {
-            document.getElementById('notif-panel').classList.toggle('hidden');
-        }
-
-        function markAllRead() {
-            const notifications = JSON.parse(localStorage.getItem('navarro_notifications')) || [];
-            notifications.forEach(n => n.read = true);
-            localStorage.setItem('navarro_notifications', JSON.stringify(notifications));
-            renderAdmin();
-        }
-
-        function updateAdminBadge() {
-             const notifications = JSON.parse(localStorage.getItem('navarro_notifications')) || [];
-             const badge = document.getElementById('notif-badge');
-             if (badge) {
-                 badge.innerText = notifications.filter(n => !n.read).length;
-             }
-        }
-
-        function deletePrice(id) {
-            if (confirm('Бағаны жоюға сенімдісіз бе?')) {
-                state.prices = state.prices.filter(p => p.id !== id);
-                localStorage.setItem('navarro_prices', JSON.stringify(state.prices));
-                logAction('Бағаны жою', `ID: ${id} өшірілді`);
-                renderAdmin();
-            }
-        }
-
-        function editPrice(id) {
-            const p = state.prices.find(x => x.id === id);
-            const newPrice = prompt(`${p.name} үшін жаңа баға енгізіңіз:`, p.price);
-            if (newPrice && !isNaN(newPrice)) {
-                p.price = parseFloat(newPrice);
-                localStorage.setItem('navarro_prices', JSON.stringify(state.prices));
-                logAction('Бағаны өзгерту', `${p.name} бағасы ${newPrice} болып өзгерді`);
-                renderAdmin();
-                
-                // Mock email trigger
-                sendAdminEmail(state.user.name, `Прайс өзгерді: ${p.name} -> ${newPrice}тг`);
-            }
-        }
-
-        function showPriceModal() {
-             alert('Жаңа баға қосу терезесі (Demo)');
-        }
-
-        function sendAdminEmail(user, action) {
-            console.log(`Email sending to admin@navarro.kz: User ${user} performed ${action}`);
-
-            // Mock EmailJS call configuration
-            const emailConfig = {
-                serviceId: 'service_navarro',
-                templateId: 'template_alert',
-                publicKey: 'YOUR_PUBLIC_KEY'
-            };
-
-            const templateParams = {
-                to_name: 'Admin',
-                from_name: user,
-                message: action,
-                time: new Date().toLocaleString()
-            };
-
-            // In a real scenario, we would call:
-            // emailjs.send(emailConfig.serviceId, emailConfig.templateId, templateParams, emailConfig.publicKey)
-            //     .then(() => console.log('Email sent successfully'))
-            //     .catch(err => console.error('Email failed', err));
-        }
-
-        // Real-time notification poller mockup
-        setInterval(() => {
-            if (state.user && state.user.role === 'admin') {
-                updateAdminBadge();
-            }
-        }, 5000);
-
-
-    </script>
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<AppProvider><App /></AppProvider>);
+  </script>
 </body>
 </html>
