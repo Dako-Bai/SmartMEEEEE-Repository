@@ -141,6 +141,20 @@
 
         .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Marquee Animation */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 30s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
     </style>
 </head>
 <body>
@@ -230,7 +244,14 @@
                 orderForm: "Тапсырыс беру",
                 analytics: "Аналитика",
                 calculator: "Калькулятор",
-                downloadHub: "Жүктеу орталығы"
+                downloadHub: "Жүктеу орталығы",
+                faq: "Жиі қойылатын сұрақтар",
+                partners: "Біздің серіктестер",
+                security: "Қауіпсіздік",
+                profile: "Профиль",
+                finance: "Қаржы",
+                news: "Жаңалықтар",
+                overview: "Шолу"
             },
             ru: {
                 title: "Smart Mercury Energy",
@@ -273,7 +294,14 @@
                 orderForm: "Заказать топливо",
                 analytics: "Аналитика",
                 calculator: "Калькулятор",
-                downloadHub: "Центр загрузок"
+                downloadHub: "Центр загрузок",
+                faq: "Часто задаваемые вопросы",
+                partners: "Наши партнеры",
+                security: "Безопасность",
+                profile: "Профиль",
+                finance: "Финансы",
+                news: "Новости",
+                overview: "Обзор"
             },
             en: {
                 title: "Smart Mercury Energy",
@@ -316,7 +344,14 @@
                 orderForm: "Order Fuel",
                 analytics: "Analytics",
                 calculator: "Calculator",
-                downloadHub: "Download Hub"
+                downloadHub: "Download Hub",
+                faq: "FAQ",
+                partners: "Our Partners",
+                security: "Security",
+                profile: "Profile",
+                finance: "Finance",
+                news: "News",
+                overview: "Overview"
             }
         };
 
@@ -1211,6 +1246,128 @@
             );
         };
 
+        const NewsManagement = ({ t }) => (
+            <div className="space-y-8 animate-fade-in">
+                <div className="glass p-10 rounded-[40px]">
+                    <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-8">{t.news}</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {[
+                            { title: "Жаңа мұнай терминалы іске қосылды", date: "24.06.2026", cat: "Корпоративтік" },
+                            { title: "Шілде айына арналған лимиттер", date: "20.06.2026", cat: "Хабарландыру" }
+                        ].map((n, i) => (
+                            <div key={i} className="p-6 bg-white/5 rounded-3xl border border-white/5">
+                                <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">{n.cat}</span>
+                                <h4 className="text-lg font-bold text-white mt-2">{n.title}</h4>
+                                <p className="text-xs text-slate-500 mt-1">{n.date}</p>
+                                <button className="mt-4 text-xs font-black text-royalBlue uppercase">Өңдеу →</button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+
+        const FinanceModule = ({ t }) => (
+            <div className="space-y-8 animate-fade-in">
+                <div className="glass p-10 rounded-[40px]">
+                    <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-8">{t.finance}</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="p-8 bg-emerald-500/10 rounded-3xl border border-emerald-500/20">
+                            <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Айналымдағы қаржы</p>
+                            <h4 className="text-3xl font-display font-black text-white mt-2 italic">142,500,000 ₸</h4>
+                        </div>
+                        <div className="p-8 bg-royalBlue/10 rounded-3xl border border-royalBlue/20">
+                            <p className="text-[10px] font-black text-royalBlue uppercase tracking-widest">Күтілетін төлемдер</p>
+                            <h4 className="text-3xl font-display font-black text-white mt-2 italic">12,800,000 ₸</h4>
+                        </div>
+                        <div className="p-8 bg-amber-400/10 rounded-3xl border border-amber-400/20">
+                            <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest">Дебиторлық берешек</p>
+                            <h4 className="text-3xl font-display font-black text-white mt-2 italic">4,200,000 ₸</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const AdminOverview = ({ t }) => {
+            const metrics = [
+                { label: "CPU Load", value: "24%", trend: "-2%", icon: "cpu", color: "text-blue-400" },
+                { label: "RAM Usage", value: "4.2 GB", trend: "+0.5GB", icon: "hard-drive", color: "text-emerald-400" },
+                { label: "API Latency", value: "18ms", trend: "-4ms", icon: "zap", color: "text-amber-400" },
+                { label: "Active Sessions", value: "142", trend: "+12", icon: "users", color: "text-purple-400" }
+            ];
+
+            return (
+                <div className="space-y-8 animate-fade-in">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {metrics.map((m, i) => (
+                            <div key={i} className="glass p-6 rounded-[30px] border border-white/5 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                                <div className="relative z-10">
+                                    <div className={`w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-4 ${m.color}`}>
+                                        <LucideIcon name={m.icon} />
+                                    </div>
+                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{m.label}</p>
+                                    <div className="flex items-baseline gap-3 mt-1">
+                                        <h4 className="text-2xl font-display font-black text-white italic">{m.value}</h4>
+                                        <span className={`text-[10px] font-bold ${m.trend.startsWith('-') ? 'text-emerald-400' : 'text-red-400'}`}>
+                                            {m.trend}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="lg:col-span-2 glass p-8 rounded-[40px] border border-white/5">
+                            <h3 className="text-xl font-display font-black uppercase italic tracking-tighter mb-6 text-white">Жүйелік белсенділік</h3>
+                            <div className="h-64 flex items-end gap-2 px-2">
+                                {[40, 65, 30, 85, 45, 90, 55, 70, 40, 60, 75, 50].map((h, i) => (
+                                    <div key={i} className="flex-1 bg-royalBlue/20 rounded-t-lg relative group transition-all hover:bg-royalBlue/40" style={{ height: `${h}%` }}>
+                                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-cosmicDeep px-2 py-1 rounded text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                            {h}% Load
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="flex justify-between mt-4 text-[10px] font-black text-slate-600 uppercase tracking-widest px-2">
+                                <span>00:00</span>
+                                <span>06:00</span>
+                                <span>12:00</span>
+                                <span>18:00</span>
+                                <span>23:59</span>
+                            </div>
+                        </div>
+
+                        <div className="glass p-8 rounded-[40px] border border-white/5 space-y-6">
+                            <h3 className="text-xl font-display font-black uppercase italic tracking-tighter mb-4 text-white">Қызметтер күйі</h3>
+                            <div className="space-y-4">
+                                {[
+                                    { name: "Auth Server", status: "Healthy", p: 99.9 },
+                                    { name: "Database Cluster", status: "Healthy", p: 99.9 },
+                                    { name: "Storage Engine", status: "Warning", p: 85.4 },
+                                    { name: "API Gateway", status: "Healthy", p: 98.2 }
+                                ].map((s, i) => (
+                                    <div key={i} className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="text-xs font-bold text-white">{s.name}</span>
+                                            <span className={`text-[10px] font-black uppercase ${s.status === 'Healthy' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                                                {s.status}
+                                            </span>
+                                        </div>
+                                        <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                            <div className={`h-full rounded-full ${s.status === 'Healthy' ? 'bg-emerald-500' : 'bg-amber-500'}`} style={{ width: `${s.p}%` }}></div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         const AdminPanel = ({ t, stations, setStations, logAction }) => (
             <div className="space-y-8 animate-fade-in">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1375,6 +1532,238 @@
             </div>
         );
 
+        const LandingPage = ({ t, onLoginClick, prices, lang }) => {
+            const [activeFaq, setActiveFaq] = useState(null);
+
+            const faqData = [
+                { q: "Smart Mercury Energy қандай қызметтер ұсынады?", a: "Біз мұнай өнімдерін көтерме саудада сату, сақтау және жеткізу қызметтерін толық циклде орындаймыз." },
+                { q: "Тапсырыс беру үшін тіркелу міндетті ме?", a: "Иә, B2B серіктестер үшін бағаларды көру және тапсырыс беру тек тіркелгеннен кейін қолжетімді." },
+                { q: "Жеткізу аймақтары қандай?", a: "Біз бүкіл Қазақстан бойынша, соның ішінде Алматы, Астана, Шымкент және басқа да ірі қалаларға жеткіземіз." }
+            ];
+
+            const partners = ["KazMunayGas", "SinoOil", "Helios", "PetroKazakhstan", "GasEnergy", "QazaqOil"];
+
+            return (
+                <div className="animate-fade-in space-y-20 pb-20">
+                    {/* Hero Banner */}
+                    <section className="relative h-[600px] rounded-[50px] overflow-hidden group">
+                        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516939884455-1445c8652f83?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center transition-transform duration-1000 group-hover:scale-105"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-cosmicDeep via-cosmicDeep/80 to-transparent"></div>
+                        <div className="relative h-full flex flex-col justify-center px-16 max-w-3xl space-y-8">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-mercuryGold/10 border border-mercuryGold/20 rounded-full text-mercuryGold text-xs font-black uppercase tracking-widest">
+                                <LucideIcon name="zap" className="w-4 h-4 fill-current" />
+                                Инновациялық Энергия Шешімдері
+                            </div>
+                            <h1 className="text-6xl font-display font-black text-white leading-tight uppercase italic tracking-tighter">
+                                Энергияның <br/> <span className="text-mercuryGold">Жаңа Өлшемі</span>
+                            </h1>
+                            <p className="text-lg text-slate-300 font-medium leading-relaxed">
+                                Smart Mercury Energy — мұнай өнімдерін басқару мен жеткізудің цифрлық экожүйесі. Біз ашықтық пен тиімділікті ту етіп ұстаймыз.
+                            </p>
+                            <div className="flex gap-6">
+                                <button onClick={onLoginClick} className="px-10 py-5 bg-mercuryGold text-cosmicDeep rounded-2xl font-black uppercase tracking-widest hover:bg-white hover:scale-105 transition-all shadow-2xl shadow-amber-400/20">
+                                    Жүйеге кіру
+                                </button>
+                                <button className="px-10 py-5 glass text-white rounded-2xl font-black uppercase tracking-widest hover:bg-white/10 transition-all">
+                                    Толығырақ
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Spot Rates Ticker */}
+                    <section className="glass py-8 rounded-[40px] overflow-hidden border-y border-white/5">
+                        <div className="flex items-center px-10 mb-6 gap-3">
+                            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 italic">Нарықтағы ағымдағы бағалар</h3>
+                        </div>
+                        <div className="flex gap-12 px-10 animate-marquee">
+                            {[...Array(2)].map((_, i) => (
+                                <div key={i} className="flex gap-12">
+                                    {Object.entries(prices).map(([type, p]) => (
+                                        <div key={type} className="flex items-center gap-6 min-w-[250px] p-4 bg-white/5 rounded-2xl border border-white/5">
+                                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                                                <LucideIcon name="fuel" className="w-5 h-5 text-mercuryGold" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black text-slate-500 uppercase">{t[type]}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xl font-display font-black text-white italic">{p[lang] || p.kk} ₸</span>
+                                                    <div className="flex items-center text-emerald-400 text-[10px] font-bold">
+                                                        <LucideIcon name="trending-up" className="w-3 h-3" />
+                                                        <span>1.2%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Partners Marquee */}
+                    <section className="space-y-10">
+                        <div className="text-center">
+                            <h3 className="text-xl font-display font-black uppercase italic tracking-tighter text-white">{t.partners}</h3>
+                        </div>
+                        <div className="flex overflow-hidden grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-700 py-10">
+                            <div className="flex gap-20 animate-marquee whitespace-nowrap">
+                                {[...partners, ...partners].map((p, i) => (
+                                    <span key={i} className="text-3xl font-display font-black text-slate-500 uppercase tracking-tighter italic px-4 border-r border-white/10">
+                                        {p}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* FAQ Section */}
+                    <section className="max-w-4xl mx-auto space-y-12">
+                        <div className="text-center">
+                            <h3 className="text-3xl font-display font-black uppercase italic tracking-tighter text-white">{t.faq}</h3>
+                        </div>
+                        <div className="space-y-4">
+                            {faqData.map((item, idx) => (
+                                <div key={idx} className="glass rounded-3xl overflow-hidden border border-white/5">
+                                    <button
+                                        onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
+                                        className="w-full px-8 py-6 flex items-center justify-between hover:bg-white/5 transition-all text-left"
+                                    >
+                                        <span className="font-bold text-slate-200">{item.q}</span>
+                                        <LucideIcon name={activeFaq === idx ? "minus" : "plus"} className="w-5 h-5 text-mercuryGold" />
+                                    </button>
+                                    <div className={`px-8 transition-all duration-500 ease-in-out ${activeFaq === idx ? "max-h-40 py-6 border-t border-white/5" : "max-h-0"}`}>
+                                        <p className="text-sm text-slate-400 leading-relaxed font-medium">{item.a}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
+        const SecurityTab = ({ t }) => (
+            <div className="max-w-4xl space-y-8 animate-fade-in">
+                <div className="glass p-10 rounded-[40px] border border-white/5">
+                    <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-8">{t.security}</h2>
+                    <div className="space-y-6">
+                        <div className="p-6 bg-white/5 rounded-3xl flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-amber-400/20 rounded-2xl flex items-center justify-center text-amber-400">
+                                    <LucideIcon name="shield-check" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white">Екі факторлы аутентификация (2FA)</h4>
+                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Қауіпсіздіктің қосымша деңгейі</p>
+                                </div>
+                            </div>
+                            <div className="w-14 h-8 bg-royalBlue rounded-full relative cursor-pointer p-1">
+                                <div className="w-6 h-6 bg-white rounded-full absolute right-1"></div>
+                            </div>
+                        </div>
+
+                        <div className="p-6 bg-white/5 rounded-3xl flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-royalBlue/20 rounded-2xl flex items-center justify-center text-royalBlue">
+                                    <LucideIcon name="key" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white">Құпиясөзді өзгерту</h4>
+                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Соңғы рет 3 ай бұрын өзгертілді</p>
+                                </div>
+                            </div>
+                            <button className="px-6 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Өзгерту</button>
+                        </div>
+
+                        <div className="p-6 bg-white/5 rounded-3xl flex items-center justify-between border border-emerald-500/20">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-emerald-400/20 rounded-2xl flex items-center justify-center text-emerald-400">
+                                    <LucideIcon name="smartphone" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white">Сенімді құрылғылар</h4>
+                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">2 белсенді сессия</p>
+                                </div>
+                            </div>
+                            <button className="px-6 py-2 bg-emerald-500/10 text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-400 hover:text-cosmicDeep transition-all">Басқару</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const ProfileView = ({ t, user, b2bOrders }) => {
+            const userOrders = b2bOrders.filter(o => o.company.toLowerCase().includes(user.name.toLowerCase()));
+            const lastOrder = userOrders[0];
+
+            return (
+                <div className="max-w-5xl space-y-8 animate-fade-in">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="lg:col-span-1 glass p-10 rounded-[40px] border border-white/5 flex flex-col items-center text-center">
+                            <div className="w-32 h-32 bg-royalBlue/20 rounded-[40px] flex items-center justify-center text-royalBlue font-display font-black text-4xl mb-6 border border-royalBlue/30">
+                                {user.name.substring(0, 2).toUpperCase()}
+                            </div>
+                            <h3 className="text-2xl font-display font-black text-white uppercase italic tracking-tighter">{user.name}</h3>
+                            <p className="text-[10px] font-bold text-mercuryGold uppercase tracking-[0.2em] mt-2 italic">{user.role === 'admin' ? 'System Administrator' : 'Verified Partner'}</p>
+
+                            <div className="w-full mt-10 space-y-4">
+                                <div className="flex justify-between text-[10px] font-black text-slate-500 uppercase tracking-widest py-3 border-b border-white/5">
+                                    <span>ID:</span>
+                                    <span className="text-white">#USR-8821</span>
+                                </div>
+                                <div className="flex justify-between text-[10px] font-black text-slate-500 uppercase tracking-widest py-3 border-b border-white/5">
+                                    <span>Тіркелді:</span>
+                                    <span className="text-white">12.01.2026</span>
+                                </div>
+                                <div className="flex justify-between text-[10px] font-black text-slate-500 uppercase tracking-widest py-3">
+                                    <span>Теңгерім:</span>
+                                    <span className="text-mercuryGold">1,250,000 ₸</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="lg:col-span-2 space-y-8">
+                            <div className="glass p-8 rounded-[40px] border border-white/5">
+                                <h3 className="text-xl font-display font-black uppercase italic tracking-tighter mb-6 text-white">Соңғы тапсырыс мәртебесі</h3>
+                                {lastOrder ? (
+                                    <div className="p-6 bg-white/5 rounded-3xl border-l-4 border-amber-400">
+                                        <div className="flex justify-between mb-4">
+                                            <div>
+                                                <h4 className="font-bold text-white uppercase text-sm">{t[lastOrder.fuelType]}</h4>
+                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{lastOrder.date}</p>
+                                            </div>
+                                            <span className="px-3 py-1 bg-amber-400/10 text-amber-400 rounded-full text-[10px] font-black uppercase">{lastOrder.status}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-2xl font-display font-black text-white italic">{lastOrder.volume.toLocaleString()} Литр</span>
+                                            <button className="text-[10px] font-black text-royalBlue uppercase tracking-widest hover:text-white transition-colors">Толық ақпарат →</button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p className="text-xs text-slate-500 font-bold uppercase italic py-4">Тапсырыстар тарихы бос</p>
+                                )}
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="glass p-6 rounded-3xl border border-white/5 group hover:bg-white/5 cursor-pointer transition-all">
+                                    <LucideIcon name="help-circle" className="w-6 h-6 text-amber-400 mb-4" />
+                                    <h4 className="text-sm font-bold text-white uppercase tracking-tighter">Көмек орталығы</h4>
+                                    <p className="text-[10px] font-medium text-slate-500 mt-1 italic">Техникалық қолдау</p>
+                                </div>
+                                <div className="glass p-6 rounded-3xl border border-white/5 group hover:bg-white/5 cursor-pointer transition-all">
+                                    <LucideIcon name="file-text" className="w-6 h-6 text-royalBlue mb-4" />
+                                    <h4 className="text-sm font-bold text-white uppercase tracking-tighter">Құжаттар</h4>
+                                    <p className="text-[10px] font-medium text-slate-500 mt-1 italic">Келісімшарттар</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         const Sidebar = ({ currentTab, setTab, t, role }) => {
             const items = [
                 { id: 'monitoring', icon: 'activity', label: t.monitoring },
@@ -1383,9 +1772,14 @@
                 { id: 'downloadHub', icon: 'download', label: t.downloadHub },
                 { id: 'prices', icon: 'tags', label: t.prices },
                 { id: 'analytics', icon: 'bar-chart-2', label: t.analytics, adminOnly: true },
+                { id: 'overview', icon: 'layout-dashboard', label: t.overview, adminOnly: true },
+                { id: 'finance', icon: 'wallet', label: t.finance, adminOnly: true },
+                { id: 'news', icon: 'newspaper', label: t.news, adminOnly: true },
                 { id: 'admin', icon: 'shield-check', label: t.admin, adminOnly: true },
                 { id: 'requests', icon: 'user-plus', label: t.requests, adminOnly: true },
                 { id: 'audit', icon: 'clipboard-list', label: t.audit },
+                { id: 'security', icon: 'lock', label: t.security },
+                { id: 'profile', icon: 'user', label: t.profile },
             ];
 
             return (
@@ -1434,7 +1828,8 @@
 
             const [user, setUser] = useState(null); // { name, role }
             const [authMode, setAuthMode] = useState('login'); // 'login' | 'register'
-            const [currentTab, setCurrentTab] = useState('monitoring');
+            const [currentTab, setCurrentTab] = useState('landing');
+            const [showAuthModal, setShowAuthModal] = useState(false);
             const [notifications, setNotifications] = useState([]);
             const [calcPrefill, setCalcPrefill] = useState(null);
 
@@ -1639,89 +2034,86 @@
                 }
             }, [currentTab, user]);
 
-            if (!user) {
-                return (
-                    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
-                        <div className="absolute inset-0 z-0">
-                            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-royalBlue/20 rounded-full blur-[120px]"></div>
-                            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-mercuryGold/10 rounded-full blur-[120px]"></div>
+            const AuthModal = () => (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-cosmicDeep/90 backdrop-blur-sm animate-fade-in">
+                    <div className="w-full max-w-md glass p-10 rounded-[40px] shadow-2xl relative border border-white/10">
+                        <button onClick={() => setShowAuthModal(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors">
+                            <LucideIcon name="x" className="w-6 h-6" />
+                        </button>
+                        <div className="flex flex-col items-center mb-10">
+                            <div className="w-16 h-16 bg-mercuryGold rounded-2xl flex items-center justify-center text-cosmicDeep shadow-2xl shadow-amber-400/20 mb-6">
+                                <LucideIcon name="zap" className="w-10 h-10 fill-current text-cosmicDeep" />
+                            </div>
+                            <h1 className="text-2xl font-display font-black uppercase tracking-tighter italic">Smart Mercury Energy</h1>
+                            <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-2">Enterprise Solutions v3.5</p>
                         </div>
 
-                        <div className="w-full max-w-md glass p-10 rounded-[40px] shadow-2xl relative z-10 animate-fade-in">
-                            <div className="flex flex-col items-center mb-10">
-                                <div className="w-16 h-16 bg-mercuryGold rounded-2xl flex items-center justify-center text-cosmicDeep shadow-2xl shadow-amber-400/20 mb-6">
-                                    <LucideIcon name="zap" className="w-10 h-10 fill-current text-cosmicDeep" />
-                                </div>
-                                <h1 className="text-2xl font-display font-black uppercase tracking-tighter italic">Smart Mercury Energy</h1>
-                                <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-2">Enterprise Solutions v3.5</p>
-                            </div>
+                        <div className="flex bg-white/5 p-1 rounded-2xl mb-8">
+                            <button
+                                type="button"
+                                onClick={() => setAuthMode('login')}
+                                className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'login' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
+                            >
+                                Кіру
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setAuthMode('register')}
+                                className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'register' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
+                            >
+                                Тіркелу
+                            </button>
+                        </div>
 
-                            <div className="flex bg-white/5 p-1 rounded-2xl mb-8">
-                                <button
-                                    type="button"
-                                    onClick={() => setAuthMode('login')}
-                                    className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'login' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
-                                >
-                                    Кіру
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setAuthMode('register')}
-                                    className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'register' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
-                                >
-                                    Тіркелу
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleLogin} className="space-y-6">
-                                {authMode === 'register' && (
-                                    <div className="space-y-4 animate-fade-in">
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Компания атауы</label>
-                                            <input name="companyName" type="text" required className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">БИН</label>
-                                            <input name="bin" type="text" required maxLength="12" placeholder="123456789012" className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white" />
-                                        </div>
+                        <form onSubmit={(e) => { handleLogin(e); setShowAuthModal(false); }} className="space-y-6">
+                            {authMode === 'register' && (
+                                <div className="space-y-4 animate-fade-in">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Компания атауы</label>
+                                        <input name="companyName" type="text" required className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white" />
                                     </div>
-                                )}
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Email</label>
-                                    <input
-                                        name="email"
-                                        type="email"
-                                        required
-                                        placeholder={authMode === 'login' ? "admin@sme.kz" : "info@company.kz"}
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    />
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">БИН</label>
+                                        <input name="bin" type="text" required maxLength="12" placeholder="123456789012" className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white" />
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Құпиясөз</label>
-                                    <input
-                                        name="password"
-                                        type="password"
-                                        required
-                                        placeholder="••••••••"
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    />
-                                </div>
-                                <button className="w-full bg-mercuryGold text-cosmicDeep py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-400/10 hover:bg-white transition-all transform active:scale-95">
-                                    {authMode === 'login' ? 'Жүйеге кіру' : 'Өтінім жіберу'}
-                                </button>
-                            </form>
-
-                            <div className="mt-8 text-center">
-                                <a href="#" className="text-[10px] font-bold text-slate-600 uppercase tracking-widest hover:text-white transition-colors">Құпиясөзді ұмыттыңыз ба?</a>
+                            )}
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Email</label>
+                                <input
+                                    name="email"
+                                    type="email"
+                                    required
+                                    placeholder={authMode === 'login' ? "admin@sme.kz" : "info@company.kz"}
+                                    className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
+                                />
                             </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Құпиясөз</label>
+                                <input
+                                    name="password"
+                                    type="password"
+                                    required
+                                    placeholder="••••••••"
+                                    className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
+                                />
+                            </div>
+                            <button className="w-full bg-mercuryGold text-cosmicDeep py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-400/10 hover:bg-white transition-all transform active:scale-95">
+                                {authMode === 'login' ? 'Жүйеге кіру' : 'Өтінім жіберу'}
+                            </button>
+                        </form>
+
+                        <div className="mt-8 text-center">
+                            <a href="#" className="text-[10px] font-bold text-slate-600 uppercase tracking-widest hover:text-white transition-colors">Құпиясөзді ұмыттыңыз ба?</a>
                         </div>
                     </div>
-                );
-            }
+                </div>
+            );
 
             return (
                 <div className="min-h-screen">
-                    <Sidebar currentTab={currentTab} setTab={setCurrentTab} t={t} role={user.role} />
+                    {showAuthModal && <AuthModal />}
+                    {user && <Sidebar currentTab={currentTab} setTab={setCurrentTab} t={t} role={user.role} />}
 
                     {/* Floating Notifications */}
                     <div className="fixed bottom-10 right-10 z-[100] w-80">
@@ -1730,18 +2122,26 @@
                         ))}
                     </div>
 
-                    <main className="pl-20 lg:ml-64 transition-all duration-300">
+                    <main className={`${user ? 'pl-20 lg:ml-64' : ''} transition-all duration-300`}>
                         {/* Header */}
                         <header className="h-24 px-8 flex items-center justify-between sticky top-0 bg-cosmicDeep/80 backdrop-blur-xl z-40 border-b border-white/5">
-                            <div className="flex items-center gap-4">
-                                <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 text-xs font-bold text-slate-400">
-                                    <LucideIcon name="clock" className="w-4 h-4" />
-                                    <span>{new Date().toLocaleDateString()}</span>
+                            {!user ? (
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-mercuryGold rounded-xl flex items-center justify-center text-cosmicDeep shadow-lg shadow-amber-400/20">
+                                        <LucideIcon name="zap" className="w-6 h-6 fill-current" />
+                                    </div>
+                                    <span className="font-display font-black text-xl uppercase tracking-tighter italic">Smart Mercury</span>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="flex items-center gap-4">
+                                    <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 text-xs font-bold text-slate-400">
+                                        <LucideIcon name="clock" className="w-4 h-4" />
+                                        <span>{new Date().toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="flex items-center gap-6">
-                                {/* Language Switcher */}
                                 <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10">
                                     {['kk', 'ru', 'en'].map(l => (
                                         <button
@@ -1754,29 +2154,48 @@
                                     ))}
                                 </div>
 
-                                <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-white relative hover:scale-105 transition-transform cursor-pointer">
-                                    <LucideIcon name="bell" />
-                                    <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-royalBlue rounded-full border-2 border-cosmicDeep"></span>
-                                </div>
-
-                                <div className="flex items-center gap-4 pl-6 border-l border-white/10">
-                                    <div className="text-right hidden sm:block">
-                                        <p className="text-sm font-black text-white italic tracking-tight">{user.name}</p>
-                                        <p className="text-[10px] font-bold text-mercuryGold uppercase tracking-widest opacity-70">{user.role === 'admin' ? 'Chief Hub Controller' : 'Client Access'}</p>
-                                    </div>
+                                {!user ? (
                                     <button
-                                        onClick={handleLogout}
-                                        className="w-12 h-12 bg-mercuryGold rounded-2xl shadow-xl shadow-amber-400/10 flex items-center justify-center font-black text-cosmicDeep italic hover:bg-white transition-all"
+                                        onClick={() => setShowAuthModal(true)}
+                                        className="px-6 py-3 bg-mercuryGold text-cosmicDeep rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white transition-all shadow-xl shadow-amber-400/10"
                                     >
-                                        <LucideIcon name="log-out" className="w-5 h-5 text-cosmicDeep" />
+                                        Кіру / Тіркелу
                                     </button>
-                                </div>
+                                ) : (
+                                    <>
+                                        <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-white relative hover:scale-105 transition-transform cursor-pointer">
+                                            <LucideIcon name="bell" />
+                                            <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-royalBlue rounded-full border-2 border-cosmicDeep"></span>
+                                        </div>
+
+                                        <div className="flex items-center gap-4 pl-6 border-l border-white/10">
+                                            <div className="text-right hidden sm:block">
+                                                <p className="text-sm font-black text-white italic tracking-tight">{user.name}</p>
+                                                <p className="text-[10px] font-bold text-mercuryGold uppercase tracking-widest opacity-70">{user.role === 'admin' ? 'Chief Hub Controller' : 'Client Access'}</p>
+                                            </div>
+                                            <button
+                                                onClick={handleLogout}
+                                                className="w-12 h-12 bg-mercuryGold rounded-2xl shadow-xl shadow-amber-400/10 flex items-center justify-center font-black text-cosmicDeep italic hover:bg-white transition-all"
+                                            >
+                                                <LucideIcon name="log-out" className="w-5 h-5 text-cosmicDeep" />
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </header>
 
                         {/* Page Content */}
                         <div className="p-8 max-w-7xl mx-auto">
-                            {currentTab === 'monitoring' && (
+                            {!user && currentTab === 'landing' && (
+                                <LandingPage
+                                    t={t}
+                                    onLoginClick={() => setShowAuthModal(true)}
+                                    prices={prices}
+                                    lang={lang}
+                                />
+                            )}
+                            {user && currentTab === 'monitoring' && (
                                 <MonitoringHub
                                     t={t}
                                     depotTanks={depotTanks}
@@ -1828,6 +2247,15 @@
                                     b2bOrders={b2bOrders}
                                 />
                             )}
+                            {currentTab === 'overview' && (
+                                <AdminOverview t={t} />
+                            )}
+                            {currentTab === 'finance' && (
+                                <FinanceModule t={t} />
+                            )}
+                            {currentTab === 'news' && (
+                                <NewsManagement t={t} />
+                            )}
                             {currentTab === 'admin' && (
                                 <AdminPanel
                                     t={t}
@@ -1851,6 +2279,12 @@
                                     t={t}
                                     logs={logs}
                                 />
+                            )}
+                            {currentTab === 'security' && (
+                                <SecurityTab t={t} />
+                            )}
+                            {currentTab === 'profile' && (
+                                <ProfileView t={t} user={user} b2bOrders={b2bOrders} />
                             )}
                         </div>
                     </main>
