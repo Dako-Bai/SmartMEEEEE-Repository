@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mercury Energy | Интеллектуалды Басқару Хабы</title>
+    <title>Bilmek | Адамзаттың асыл мұрасы</title>
 
     <!-- Dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -11,22 +11,47 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        cosmicDeep: '#0b1329',
-                        cosmicSurface: '#121f3d',
-                        mercuryGold: '#fcd34d',
-                        royalBlue: '#2563eb',
-                        safetyGreen: '#34d399',
+                        sage: {
+                            50: '#f4f7f4',
+                            100: '#e8ece8',
+                            200: '#d1dbd1',
+                            300: '#adbdb1',
+                            400: '#7f9684',
+                            500: '#5d7363',
+                            600: '#485c4d',
+                            700: '#3a4a3e',
+                            800: '#2f3b32',
+                            900: '#27312a',
+                        },
+                        gold: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        },
+                        premiumDark: '#1a1f1c',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         display: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    boxShadow: {
+                        'premium': '0 20px 50px rgba(0, 0, 0, 0.05)',
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
                     }
                 }
             }
@@ -34,1835 +59,647 @@
     </script>
 
     <style type="text/css">
+        :root {
+            --sage-gradient: linear-gradient(135deg, #f4f7f4 0%, #e8ece8 100%);
+            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #fcd34d 100%);
+        }
+
         body {
-            background-color: #0b1329;
-            color: #f8fafc;
+            background-color: #f4f7f4;
+            color: #27312a;
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        .glass {
-            background: rgba(18, 31, 61, 0.6);
+        .premium-glass {
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* 3D Tank Styles */
-        .tank-cylinder {
+        .dark-glass {
+            background: rgba(39, 49, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ornament-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0 L60 40 L100 50 L60 60 L50 100 L40 60 L0 50 L40 40 Z' fill='%235d7363' fill-opacity='0.02'/%3E%3C/svg%3E");
+        }
+
+        .constellation-node {
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .constellation-node:hover {
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
+            transform: scale(1.1);
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nav-underline {
             position: relative;
+        }
+        .nav-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #d4af37;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .nav-underline:hover::after, .nav-active::after {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg,
-                rgba(30, 41, 59, 0.9) 0%,
-                rgba(71, 85, 105, 0.4) 50%,
-                rgba(30, 41, 59, 0.9) 100%);
-            border-radius: 10px / 20px;
-            box-shadow:
-                inset 0 0 30px rgba(0,0,0,0.7),
-                0 10px 20px rgba(0,0,0,0.4);
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .tank-glint {
-            position: absolute;
-            top: 0;
-            left: 20%;
-            width: 15%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            z-index: 15;
-            pointer-events: none;
-        }
-
-        .tank-top {
-            position: absolute;
-            top: -10px;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(90deg, #334155, #64748b, #334155);
-            border-radius: 50%;
-            z-index: 20;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.3);
-        }
-
-        /* Liquid Wave Animation */
-        .liquid-container {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .wave {
-            position: absolute;
-            top: -15px;
-            left: 0;
-            width: 200%;
-            height: 30px;
-            background: inherit;
-            border-radius: 38%;
-            opacity: 0.8;
-            filter: brightness(1.1);
-        }
-
-        .wave-1 { animation: waveMoveSlow 5s linear infinite; }
-        .wave-2 { animation: waveMoveFast 3s linear infinite reverse; top: -20px; opacity: 0.4; }
-
-        @keyframes waveMoveSlow {
-            0% { transform: translateX(0) rotate(0deg); }
-            100% { transform: translateX(-50%) rotate(360deg); }
-        }
-        @keyframes waveMoveFast {
-            0% { transform: translateX(0) rotate(0deg); }
-            100% { transform: translateX(-50%) rotate(-360deg); }
-        }
-
-        /* Water level styling */
-        .water-layer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(90deg, #0f766e 0%, #14b8a6 50%, #0f766e 100%);
-            z-index: 5;
-            transition: height 1s ease-in-out;
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0b1329; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f7f4; }
+        ::-webkit-scrollbar-thumb { background: #adbdb1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #7f9684; }
 
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-premium {
+            background: var(--gold-gradient);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-premium:hover {
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
     </style>
 </head>
-<body>
+<body class="ornament-pattern min-h-screen">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
-        // --- Helper Logic ---
-        const escapeHtml = (text) => {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        };
-
-        const showToast = (message, type = 'info') => {
-            let container = document.getElementById('toast-root');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'toast-root';
-                container.className = 'fixed top-10 right-10 z-[1000] space-y-4 pointer-events-none';
-                document.body.appendChild(container);
-            }
-            const toast = document.createElement('div');
-            toast.className = `glass p-4 rounded-2xl border-l-4 shadow-2xl animate-fade-in flex items-center gap-3 min-w-[300px] pointer-events-auto ${
-                type === 'success' ? 'border-emerald-500 text-emerald-100' :
-                type === 'error' ? 'border-red-500 text-red-100' : 'border-blue-500 text-blue-100'
-            }`;
-            toast.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                    <i data-lucide="${type === 'error' ? 'alert-circle' : (type === 'success' ? 'check-circle' : 'info')}" class="w-4 h-4"></i>
-                </div>
-                <span class="text-xs font-bold uppercase tracking-tight">${escapeHtml(message)}</span>
-            `;
-            container.appendChild(toast);
-            if (window.lucide) {
-                window.lucide.createIcons({ node: toast });
-            }
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-20px)';
-                toast.style.transition = 'all 0.5s ease';
-                setTimeout(() => toast.remove(), 500);
-            }, 4000);
-        };
-
-        // --- Translations ---
+        // --- Premium Localization ---
         const translations = {
             kk: {
-                title: "Smart Mercury Energy",
-                dashboard: "Басқару панелі",
-                monitoring: "Мониторинг",
-                depot: "Мұнай базасы",
-                stations: "Жанармай бекеттері",
-                admin: "Әкімшілік",
-                prices: "Бағалар",
-                requests: "Тіркелу өтінімдері",
-                audit: "Аудит журналы",
-                settings: "Баптаулар",
-                oilDepot: "НБ (Мұнай базасы)",
-                azsNetwork: "АЗС Желісі",
-                premium: "Premium АИ-95",
-                regular: "Regular АИ-92",
-                diesel: "Дизель (ДТ)",
-                volume: "Көлем",
-                temp: "Температура",
-                density: "Тығыздық",
-                water: "Төменгі су",
-                lastUpdate: "Соңғы жаңарту",
-                edit: "Өңдеу",
-                save: "Сақтау",
-                cancel: "Болдырмау",
-                addStation: "Бекет қосу",
-                stationName: "Бекет атауы",
-                region: "Аймақ",
-                actions: "Әрекеттер",
-                systemStatus: "Жүйе күйі",
-                active: "Белсенді",
-                warning: "Ескерту",
-                critical: "Қауіпті",
-                stock: "Қоймада",
-                priceList: "Ағымдағы бағалар",
-                userRoles: "Пайдаланушылар",
-                export: "Экспорт",
-                notification: "Хабарламалар",
-                // Жаңа бөлімдердің аудармасы
-                orderForm: "Тапсырыс беру",
-                analytics: "Аналитика",
-                calculator: "Калькулятор",
-                downloadHub: "Жүктеу орталығы"
-            },
-            ru: {
-                title: "Smart Mercury Energy",
-                dashboard: "Панель управления",
-                monitoring: "Мониторинг",
-                depot: "Нефтебаза",
-                stations: "Автозаправочные станции",
-                admin: "Администрирование",
-                prices: "Цены",
-                requests: "Заявки на регистрацию",
-                audit: "Журнал аудита",
-                settings: "Настройки",
-                oilDepot: "НБ (Нефтебаза)",
-                azsNetwork: "Сеть АЗС",
-                premium: "Premium АИ-95",
-                regular: "Regular АИ-92",
-                diesel: "Дизельное топливо",
-                volume: "Объем",
-                temp: "Температура",
-                density: "Плотность",
-                water: "Подтоварная вода",
-                lastUpdate: "Последнее обновление",
-                edit: "Изменить",
-                save: "Сохранить",
-                cancel: "Отмена",
-                addStation: "Добавить станцию",
-                stationName: "Название станции",
-                region: "Регион",
-                actions: "Действия",
-                systemStatus: "Статус системы",
-                active: "Активен",
-                warning: "Предупреждение",
-                critical: "Критично",
-                stock: "В наличии",
-                priceList: "Текущие цены",
-                userRoles: "Пользователи",
-                export: "Экспорт",
-                notification: "Уведомления",
-                // Переводы для новых разделов
-                orderForm: "Заказать топливо",
-                analytics: "Аналитика",
-                calculator: "Калькулятор",
-                downloadHub: "Центр загрузок"
+                appName: "Bilmek",
+                slogan: "Адамзаттың ойына ортақтас",
+                nav: {
+                    collection: "Мұра",
+                    diary: "Толғаныс",
+                    daily: "Таным",
+                    map: "Байланыс",
+                    quiz: "Сынақ",
+                },
+                common: {
+                    search: "Іздеу...",
+                    streak: "Күндік айналым",
+                    badges: "Жетістіктер",
+                    share: "Бөлісу",
+                    download: "Жүктеу",
+                    score: "Нәтиже",
+                    next: "Келесі",
+                    back: "Артқа",
+                    save: "Сақтау",
+                    cancel: "Болдырмау",
+                    delete: "Өшіру",
+                    edit: "Өңдеу",
+                },
+                streakMsg: "Сіз қатарынан {n} күн бойы ізденістесіз!",
+                badgesList: {
+                    thinker: "Ойшыл",
+                    philosopher: "Философ",
+                    sage: "Дана"
+                }
             },
             en: {
-                title: "Smart Mercury Energy",
-                dashboard: "Dashboard",
-                monitoring: "Monitoring",
-                depot: "Oil Depot",
-                stations: "Fuel Stations",
-                admin: "Administration",
-                prices: "Prices",
-                requests: "Registration Requests",
-                audit: "Audit Log",
-                settings: "Settings",
-                oilDepot: "Oil Depot (NB)",
-                azsNetwork: "AZS Network",
-                premium: "Premium AI-95",
-                regular: "Regular AI-92",
-                diesel: "Diesel Fuel",
-                volume: "Volume",
-                temp: "Temperature",
-                density: "Density",
-                water: "Bottom Water",
-                lastUpdate: "Last Update",
-                edit: "Edit",
-                save: "Save",
-                cancel: "Cancel",
-                addStation: "Add Station",
-                stationName: "Station Name",
-                region: "Region",
-                actions: "Actions",
-                systemStatus: "System Status",
-                active: "Active",
-                warning: "Warning",
-                critical: "Critical",
-                stock: "In Stock",
-                priceList: "Current Prices",
-                userRoles: "Users",
-                export: "Export",
-                notification: "Notifications",
-                // Translations for new sections
-                orderForm: "Order Fuel",
-                analytics: "Analytics",
-                calculator: "Calculator",
-                downloadHub: "Download Hub"
+                appName: "Bilmek",
+                slogan: "Sharing Human Thought",
+                nav: {
+                    collection: "Heritage",
+                    diary: "Reflections",
+                    daily: "Wisdom",
+                    map: "Constellation",
+                    quiz: "Challenge",
+                },
+                common: {
+                    search: "Search...",
+                    streak: "Daily Streak",
+                    badges: "Achievements",
+                    share: "Share",
+                    download: "Download",
+                    score: "Score",
+                    next: "Next",
+                    back: "Back",
+                    save: "Save",
+                    cancel: "Cancel",
+                    delete: "Delete",
+                    edit: "Edit",
+                },
+                streakMsg: "You have been exploring for {n} days straight!",
+                badgesList: {
+                    thinker: "Thinker",
+                    philosopher: "Philosopher",
+                    sage: "Sage"
+                }
             }
         };
 
-        // --- Mock Data ---
-        const initialDepotState = [
-            { id: 't1', name: 'РВС-5000 #1', fuelType: 'premium', capacity: 5000, current: 3850, water: 12, temp: 18.5, density: 745 },
-            { id: 't2', name: 'РВС-5000 #2', fuelType: 'regular', capacity: 5000, current: 4200, water: 8, temp: 19.2, density: 730 },
-            { id: 't3', name: 'РВС-3000 #3', fuelType: 'diesel', capacity: 3000, current: 1200, water: 25, temp: 17.8, density: 835 },
-            { id: 't4', name: 'РВС-2000 #4', fuelType: 'premium', capacity: 2000, current: 1800, water: 5, temp: 18.1, density: 742 },
-            { id: 't5', name: 'РВС-5000 #5', fuelType: 'regular', capacity: 5000, current: 2100, water: 15, temp: 18.9, density: 735 },
-            { id: 't6', name: 'РВС-3000 #6', fuelType: 'diesel', capacity: 3000, current: 2800, water: 4, temp: 17.5, density: 840 },
-            { id: 't7', name: 'РВС-5000 #7', fuelType: 'premium', capacity: 5000, current: 4900, water: 2, temp: 19.5, density: 748 },
-            { id: 't8', name: 'РВС-2000 #8', fuelType: 'regular', capacity: 2000, current: 500, water: 30, temp: 18.0, density: 732 },
+        // --- Deepened Mock Data ---
+        const initialThoughts = [
+            {
+                id: 1, author: "Abai Qunanbaiuly",
+                text: { kk: "Адам болам десеңіз, оған себепші бес нәрсе бар: өсек, өтірік, мақтаншақ, еріншек, бекер мал шашпақ - бұлардан сақ бол.", en: "If you want to be a man, beware of five things: gossip, lying, boasting, laziness, and wasting wealth." },
+                category: "wisdom", tags: ["morality", "values"]
+            },
+            {
+                id: 2, author: "Al-Farabi",
+                text: { kk: "Тәрбиесіз берілген білім — адамзаттың қас жауы.", en: "Knowledge without upbringing is the enemy of mankind." },
+                category: "wisdom", tags: ["education", "ethics"]
+            },
+            {
+                id: 3, author: "Shakarim Kudaiberdiuly",
+                text: { kk: "Ар-ұяттың күзеті — әркімнің өз жүрегінде.", en: "The guardian of conscience is in everyone's heart." },
+                category: "life", tags: ["conscience", "heart"]
+            },
+            {
+                id: 4, author: "Marcus Aurelius",
+                text: { kk: "Өміріңнің бақыты ойыңның сапасына байланысты.", en: "The happiness of your life depends upon the quality of your thoughts." },
+                category: "life", tags: ["mindset", "stoicism"]
+            },
+            {
+                id: 5, author: "Socrates",
+                text: { kk: "Мен ешнәрсе білмейтінімді білемін.", en: "I know that I know nothing." },
+                category: "wisdom", tags: ["humility", "knowledge"]
+            },
+            {
+                id: 6, author: "Khoja Akhmet Yasawi",
+                text: { kk: "Көңіліңді таза ұста, сонда ғана шындыққа жетесің.", en: "Keep your heart clean, only then will you reach the truth." },
+                category: "wisdom", tags: ["spirituality", "truth"]
+            },
+            {
+                id: 7, author: "Seneca",
+                text: { kk: "Уақыт — біздің ең қымбат қазынамыз.", en: "Time is our most precious treasure." },
+                category: "time", tags: ["stoicism", "value"]
+            }
         ];
 
-        const initialStations = [
-            { id: 1, name: 'SME Almaty-01', region: 'Almaty', stocks: { premium: 85, regular: 60, diesel: 40 } },
-            { id: 2, name: 'SME Astana-04', region: 'Astana', stocks: { premium: 45, regular: 90, diesel: 75 } },
-            { id: 3, name: 'SME Shymkent-02', region: 'Shymkent', stocks: { premium: 70, regular: 30, diesel: 95 } },
-        ];
-
-        const initialPrices = {
-            premium: { kk: 255, ru: 255, en: 255 },
-            regular: { kk: 205, ru: 205, en: 205 },
-            diesel: { kk: 295, ru: 295, en: 295 }
-        };
-
-        const initialDocuments = [
-            { id: 'doc-1', title: 'Premium АИ-95 сапа сертификаты', category: 'Сертификаттар', size: '2.4 MB', type: 'PDF', downloads: 142 },
-            { id: 'doc-2', title: 'Дизельді отын (қысқы) сынақ хаттамасы', category: 'Сертификаттар', size: '1.8 MB', type: 'PDF', downloads: 98 },
-            { id: 'doc-3', title: 'Smart Mercury Energy коммерциялық ұсынысы 2026', category: 'Презентациялар', size: '5.2 MB', type: 'PPTX', downloads: 310 },
-            { id: 'doc-4', title: 'Көтерме жеткізу шарттары мен типтік келісімшарт', category: 'Құжаттар', size: '1.1 MB', type: 'DOCX', downloads: 215 },
-        ];
-
-        const initialAnalyticsLogs = [
-            { id: 'an-1', page: 'Мониторинг', referral: 'Тікелей кіру', action: '3D резервуарлар күйін тексерді', timestamp: '15:24:10' },
-            { id: 'an-2', page: 'Калькулятор', referral: 'Google Search', action: 'АИ-92 үшін 15,000л есептеді', timestamp: '15:25:32' },
-            { id: 'an-3', page: 'Жүктеу орталығы', referral: 'Коммерциялық сілтеме', action: 'АИ-95 сертификатын жүктеді', timestamp: '15:28:15' },
-        ];
-
-        const initialB2bOrders = [
-            { id: 'o-1', company: 'KazTransLogistics LLP', bin: '920840001234', fuelType: 'diesel', volume: 25000, region: 'Astana', status: 'Жаңа', date: '19.06.2026' },
-            { id: 'o-2', company: 'SinoOil Partner', bin: '120540009876', fuelType: 'premium', volume: 10000, region: 'Almaty', status: 'Жаңа', date: '21.06.2026' }
-        ];
-
-        // --- Safe Lucide React Wrapper ---
+        // --- Helper Components ---
         const LucideIcon = ({ name, className = "w-5 h-5" }) => {
             const iconRef = useRef(null);
             useEffect(() => {
                 if (window.lucide && iconRef.current) {
                     iconRef.current.innerHTML = `<i data-lucide="${name}"></i>`;
-                    window.lucide.createIcons({
-                        node: iconRef.current,
-                        attrs: { class: className }
-                    });
+                    window.lucide.createIcons({ node: iconRef.current, attrs: { class: className } });
                 }
             }, [name, className]);
-
             return <span ref={iconRef} className="inline-flex items-center justify-center" />;
         };
 
-        // --- NEW COMPONENT: Notification Toast ---
-        const NotificationToast = ({ notif, onClose }) => {
-            useEffect(() => {
-                const timer = setTimeout(onClose, 5000);
-                return () => clearTimeout(timer);
-            }, [onClose]);
+        const KazakhOrnament = ({ className = "w-12 h-12 text-sage-300" }) => (
+            <svg viewBox="0 0 100 100" className={className} fill="currentColor">
+                <path d="M50 0 C 60 20 80 30 100 30 C 80 30 70 50 70 70 C 70 90 50 100 50 100 C 50 100 30 90 30 70 C 30 50 20 30 0 30 C 20 30 40 20 50 0" />
+            </svg>
+        );
 
-            return (
-                <div className={`glass p-4 rounded-2xl border-l-4 shadow-2xl animate-fade-in flex items-center gap-3 mb-4 pointer-events-auto ${
-                    notif.type === 'error' ? 'border-red-500 text-red-100' :
-                    notif.type === 'success' ? 'border-emerald-500 text-emerald-100' : 'border-blue-500 text-blue-100'
-                }`}>
-                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                        <LucideIcon name={notif.type === 'error' ? 'alert-circle' : (notif.type === 'success' ? 'check-circle' : 'info')} className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1">
-                        <p className="text-[10px] font-black uppercase tracking-tight">{escapeHtml(notif.message)}</p>
-                        <p className="text-[8px] font-bold opacity-50">{notif.time}</p>
-                    </div>
-                    <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
-                        <LucideIcon name="x" className="w-3 h-3" />
-                    </button>
-                </div>
-            );
+        // --- Gamification Logic ---
+        const useGamification = () => {
+            const [streak, setStreak] = useState(() => parseInt(localStorage.getItem('bilmek_streak') || '0'));
+            const [badges, setBadges] = useState(() => JSON.parse(localStorage.getItem('bilmek_badges') || '[]'));
+
+            const incrementStreak = useCallback(() => {
+                const today = new Date().toDateString();
+                const lastDate = localStorage.getItem('bilmek_last_visit');
+                if (lastDate !== today) {
+                    const newStreak = lastDate === new Date(Date.now() - 86400000).toDateString() ? streak + 1 : 1;
+                    setStreak(newStreak);
+                    localStorage.setItem('bilmek_streak', newStreak);
+                    localStorage.setItem('bilmek_last_visit', today);
+                }
+            }, [streak]);
+
+            const awardBadge = useCallback((badge) => {
+                if (!badges.includes(badge)) {
+                    const newBadges = [...badges, badge];
+                    setBadges(newBadges);
+                    localStorage.setItem('bilmek_badges', JSON.stringify(newBadges));
+                }
+            }, [badges]);
+
+            return { streak, badges, incrementStreak, awardBadge };
         };
 
-        // --- Sub-Components ---
-        const Tank3D = ({ label, percentage, fuelType, capacity, current, waterLevel, variant = "large", t }) => {
-            const getFuelColor = (type) => {
-                switch(type) {
-                    case 'premium': return 'linear-gradient(90deg, #b45309 0%, #fbbf24 50%, #b45309 100%)';
-                    case 'regular': return 'linear-gradient(90deg, #1e3a8a 0%, #3b82f6 50%, #1e3a8a 100%)';
-                    case 'diesel': return 'linear-gradient(90deg, #064e3b 0%, #10b981 50%, #064e3b 100%)';
-                    default: return '#334155';
-                }
+        // --- UI Modules ---
+
+        const DailyThoughtModule = ({ t, lang, awardBadge }) => {
+            const questions = [
+                { id: 1, q: { kk: "Бүгін сізді не қуантты және неге?", en: "What made you happy today and why?" } },
+                { id: 2, q: { kk: "Егер уақытты тоқтата алсаңыз, қай сәтті таңдар едіңіз?", en: "If you could stop time, which moment would you choose?" } }
+            ];
+            const [val, setVal] = useState('');
+            const [done, setDone] = useState(false);
+            const q = questions[new Date().getDate() % questions.length];
+
+            const submit = () => {
+                if (!val.trim()) return;
+                setDone(true);
+                awardBadge('sage');
             };
 
-            const heightVal = Math.min(percentage, 100);
-            const waterHeight = variant === "large" ? (waterLevel / 50) * 100 : 0;
-
             return (
-                <div className={`flex flex-col items-center ${variant === "large" ? "w-full" : "w-24"}`}>
-                    <div className={`${variant === "large" ? "h-64 w-32" : "h-32 w-12"} relative`}>
-                        <div className="tank-top"></div>
-
-                        {variant === "large" && (
-                            <div className="absolute right-[-45px] top-0 h-full flex flex-col justify-between text-[10px] font-black text-slate-600 py-1 border-r border-white/5 pr-2">
-                                {[100, 80, 60, 40, 20, 0].map(v => <span key={v}>{v}%</span>)}
-                            </div>
-                        )}
-
-                        <div className="tank-cylinder">
-                            <div className="tank-glint"></div>
-
-                            <div
-                                className="liquid-container"
-                                style={{
-                                    height: `${heightVal}%`,
-                                    background: getFuelColor(fuelType)
-                                }}
-                            >
-                                <div className="wave wave-1"></div>
-                                <div className="wave wave-2"></div>
-                                <div className="absolute top-0 left-0 w-full h-[2px] bg-white/20 blur-[1px] z-10"></div>
-                            </div>
-
-                            {variant === "large" && waterLevel > 0 && (
-                                <div className="water-layer" style={{ height: `${waterHeight}%` }}>
-                                    <div className="absolute top-0 left-0 w-full h-[1px] bg-white/30"></div>
-                                </div>
-                            )}
+                <div className="max-w-3xl mx-auto animate-fade-in">
+                    <div className="premium-glass p-16 rounded-[60px] text-center space-y-12 shadow-premium relative overflow-hidden">
+                        <KazakhOrnament className="w-20 h-20 text-gold-100 absolute top-[-20px] left-[-20px] opacity-40" />
+                        <div className="space-y-4">
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold-500">Daily Inquiry</span>
+                            <h3 className="text-4xl font-serif italic text-sage-900 leading-tight">{q.q[lang]}</h3>
                         </div>
-
-                        <div className="absolute bottom-[-15px] left-0 w-full h-[25px] bg-black/60 blur-lg rounded-full -z-10"></div>
-                    </div>
-
-                    <div className="mt-8 text-center">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">{label}</p>
-                        <div className="flex items-center justify-center gap-2">
-                            <span className="text-lg font-display font-black text-white italic">{percentage}%</span>
-                            <span className={`text-[10px] font-bold ${percentage > 20 ? 'text-emerald-400' : 'text-red-400'} animate-pulse`}>
-                                ●
-                            </span>
-                        </div>
-                        {variant === "large" && (
-                            <div className="mt-3 p-3 bg-white/5 rounded-2xl grid grid-cols-1 gap-1 text-[10px] font-bold">
-                                <div className="flex justify-between gap-4">
-                                    <span className="text-slate-500 uppercase">{t.volume}:</span>
-                                    <span className="text-mercuryGold">{current.toLocaleString()} m³</span>
-                                </div>
-                                <div className="flex justify-between gap-4">
-                                    <span className="text-slate-500 uppercase">{t.water}:</span>
-                                    <span className="text-blue-400">{waterLevel} cm</span>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        };
-
-        const InventoryChart = ({ t }) => {
-            const canvasRef = useRef(null);
-
-            useEffect(() => {
-                if (!canvasRef.current) return;
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                const data = [65, 82, 45, 90, 70, 85, 95];
-
-                ctx.clearRect(0, 0, 800, 200);
-
-                ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-                ctx.lineWidth = 1;
-                for(let i=0; i<6; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, i * 40);
-                    ctx.lineTo(800, i * 40);
-                    ctx.stroke();
-                }
-
-                ctx.beginPath();
-                ctx.strokeStyle = '#fcd34d';
-                ctx.lineWidth = 3;
-                ctx.lineJoin = 'round';
-                ctx.lineCap = 'round';
-
-                const step = 800 / (data.length - 1);
-                data.forEach((val, i) => {
-                    const x = i * step;
-                    const y = 200 - (val / 100 * 180);
-                    if(i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                });
-                ctx.stroke();
-
-                ctx.lineTo(800, 200);
-                ctx.lineTo(0, 200);
-                const grad = ctx.createLinearGradient(0, 0, 0, 200);
-                grad.addColorStop(0, 'rgba(252, 211, 77, 0.2)');
-                grad.addColorStop(1, 'transparent');
-                ctx.fillStyle = grad;
-                ctx.fill();
-
-                ctx.fillStyle = '#fcd34d';
-                data.forEach((val, i) => {
-                    const x = i * step;
-                    const y = 200 - (val / 100 * 180);
-                    ctx.beginPath();
-                    ctx.arc(x, y, 4, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-
-            }, [t]);
-
-            return (
-                <div className="w-full h-48 mt-4 relative">
-                    <canvas ref={canvasRef} width="800" height="200" className="w-full h-full"></canvas>
-                    <div className="absolute bottom-0 left-0 w-full flex justify-between px-2 text-[8px] font-bold text-slate-600 uppercase tracking-widest">
-                        <span>00:00</span>
-                        <span>06:00</span>
-                        <span>12:00</span>
-                        <span>18:00</span>
-                        <span>23:59</span>
-                    </div>
-                </div>
-            );
-        };
-
-        const MonitoringHub = ({ t, depotTanks, stations, onRefresh }) => (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 animate-fade-in">
-                {/* Left: Main Depot */}
-                <div className="xl:col-span-8 space-y-8">
-                    <div className="glass p-8 rounded-[40px] relative overflow-hidden">
-                        <div className="flex items-center justify-between mb-12">
-                            <div>
-                                <h2 className="text-2xl font-display font-black uppercase italic tracking-tighter">{t.oilDepot}</h2>
-                                <p className="text-sm font-medium text-slate-500">Орталық терминалдың 3D-мониторингі</p>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <button onClick={onRefresh} className="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                    <LucideIcon name="refresh-cw" className="w-5 h-5 text-amber-400" />
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pt-4">
-                            {depotTanks.map(tank => (
-                                <Tank3D
-                                    key={tank.id}
-                                    label={tank.name}
-                                    percentage={Math.round((tank.current / tank.capacity) * 100)}
-                                    fuelType={tank.fuelType}
-                                    capacity={tank.capacity}
-                                    current={tank.current}
-                                    waterLevel={tank.water}
-                                    t={t}
+                        {!done ? (
+                            <div className="space-y-8">
+                                <textarea
+                                    value={val} onChange={e => setVal(e.target.value)}
+                                    placeholder="..."
+                                    className="w-full h-48 bg-white/40 border border-sage-100 rounded-[40px] p-10 text-2xl font-serif italic outline-none focus:bg-white focus:border-gold-300 transition-all shadow-inner"
                                 />
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="glass p-8 rounded-[40px]">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 italic">Тәуліктік айналым графигі</h3>
-                            <span className="text-[10px] font-bold text-emerald-400">+4.2% Бүгін</span>
-                        </div>
-                        <InventoryChart t={t} />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {[
-                            { label: t.premium, color: 'bg-amber-400', val: '5,650 m³' },
-                            { label: t.regular, color: 'bg-blue-500', val: '4,200 m³' },
-                            { label: t.diesel, color: 'bg-emerald-500', val: '1,200 m³' },
-                        ].map((stat, idx) => (
-                            <div key={idx} className="glass p-6 rounded-3xl flex items-center gap-4">
-                                <div className={`w-3 h-3 rounded-full ${stat.color} shadow-lg shadow-${stat.color.split('-')[1]}-500/50`}></div>
-                                <div>
-                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{stat.label}</p>
-                                    <p className="text-xl font-black text-white italic">{stat.val}</p>
-                                </div>
+                                <button onClick={submit} className="btn-premium text-gold-900 px-16 py-5 rounded-[25px] text-xs font-black uppercase tracking-widest">Жауап беру</button>
                             </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Right: AZS Network */}
-                <div className="xl:col-span-4 space-y-6">
-                    <div className="glass p-8 rounded-[40px] h-full border-l-4 border-amber-400">
-                        <h2 className="text-xl font-display font-black uppercase italic tracking-tighter mb-8">{t.azsNetwork}</h2>
-                        <div className="space-y-8">
-                            {stations.map(station => (
-                                <div key={station.id} className="p-6 bg-white/5 rounded-3xl border border-white/5 hover:border-white/10 transition-all duration-300">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <div>
-                                            <h4 className="font-bold text-sm text-white">{station.name}</h4>
-                                            <p className="text-[10px] font-bold text-slate-500 uppercase">{station.region}</p>
-                                        </div>
-                                        <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center">
-                                            <LucideIcon name="map-pin" className="w-4 h-4 text-blue-400" />
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-end">
-                                        <Tank3D percentage={station.stocks.premium} fuelType="premium" variant="mini" label="P" t={t} />
-                                        <Tank3D percentage={station.stocks.regular} fuelType="regular" variant="mini" label="R" t={t} />
-                                        <Tank3D percentage={station.stocks.diesel} fuelType="diesel" variant="mini" label="D" t={t} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-
-        const PriceManagement = ({ t, prices, setPrices, onSave, lang }) => (
-            <div className="max-w-4xl space-y-8 animate-fade-in">
-                <div className="glass p-10 rounded-[40px]">
-                    <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-10">{t.priceList}</h2>
-                    <div className="space-y-6">
-                        {Object.entries(prices).map(([type, priceObj]) => (
-                            <div key={type} className="flex items-center justify-between p-6 bg-white/5 rounded-3xl group hover:bg-white/10 transition-all">
-                                <div className="flex items-center gap-6">
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                                        type === 'premium' ? 'bg-amber-400/10 text-amber-400' :
-                                        type === 'regular' ? 'bg-blue-400/10 text-blue-400' : 'bg-emerald-400/10 text-emerald-400'
-                                    }`}>
-                                        <LucideIcon name="fuel" className="w-8 h-8" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-lg font-black uppercase italic">{t[type]}</h4>
-                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest italic">{t.lastUpdate}: 14:45</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-6">
-                                    <input
-                                        type="number"
-                                        value={priceObj[lang] || priceObj.kk || 0}
-                                        onChange={(e) => {
-                                            const newVal = parseFloat(e.target.value) || 0;
-                                            setPrices(prev => ({
-                                                ...prev,
-                                                [type]: { ...prev[type], [lang]: newVal }
-                                            }));
-                                        }}
-                                        className="w-32 bg-cosmicDeep border border-white/10 rounded-2xl px-4 py-3 text-2xl font-display font-black text-mercuryGold text-right outline-none focus:border-mercuryGold/50 transition-all"
-                                    />
-                                    <span className="text-xl font-black text-slate-600">₸/L</span>
-                                </div>
+                        ) : (
+                            <div className="py-20 space-y-8 animate-fade-in">
+                                <div className="w-24 h-24 bg-gold-100 rounded-full flex items-center justify-center text-gold-600 mx-auto shadow-xl"><LucideIcon name="check" className="w-12 h-12" /></div>
+                                <h4 className="text-2xl font-bold text-sage-900 uppercase tracking-widest">Түйін жасалды</h4>
                             </div>
-                        ))}
-                    </div>
-                    <div className="mt-12 flex justify-end">
-                        <button
-                            onClick={onSave}
-                            className="bg-amber-400 text-cosmicDeep px-10 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber-400/20"
-                        >
-                            {t.save}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-
-        // --- NEW MODULE: Fuel Cost Calculator ---
-        const FuelCalculator = ({ t, prices, lang, onApplyToForm }) => {
-            const [selectedFuel, setSelectedFuel] = useState('diesel');
-            const [volume, setVolume] = useState(15000);
-            const [region, setRegion] = useState('Astana');
-
-            const currentPrice = useMemo(() => {
-                return prices[selectedFuel]?.[lang] || prices[selectedFuel]?.kk || 0;
-            }, [prices, selectedFuel, lang]);
-
-            const logisticsCostPerLiter = {
-                Almaty: 4,
-                Astana: 8,
-                Shymkent: 3,
-                Kokshetau: 9,
-                Aktau: 14
-            };
-
-            const calculation = useMemo(() => {
-                const basePrice = volume * currentPrice;
-                const logisticsPrice = volume * (logisticsCostPerLiter[region] || 5);
-
-                // Volume discounts (көлемдік жеңілдіктер)
-                let discountPercent = 0;
-                if (volume >= 50000) discountPercent = 0.05; // 5%
-                else if (volume >= 20000) discountPercent = 0.03; // 3%
-                else if (volume >= 10000) discountPercent = 0.015; // 1.5%
-
-                const baseDiscount = basePrice * discountPercent;
-                const subtotal = basePrice + logisticsPrice - baseDiscount;
-                const vat = subtotal * 0.12; // 12% VAT (ҚҚС)
-                const total = subtotal + vat;
-
-                return {
-                    basePrice,
-                    logisticsPrice,
-                    discountPercent: (discountPercent * 100).toFixed(1),
-                    discountAmount: baseDiscount,
-                    subtotal,
-                    vat,
-                    total
-                };
-            }, [volume, currentPrice, region]);
-
-            return (
-                <div className="max-w-4xl space-y-8 animate-fade-in">
-                    <div className="glass p-10 rounded-[40px] border-l-4 border-amber-400">
-                        <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-4">{t.calculator}</h2>
-                        <p className="text-sm font-medium text-slate-500 mb-8">Көтерме отын құнын автоматты түрде есептеу жүйесі (ҚҚС және жеткізуді есептейді)</p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Отын түрі</label>
-                                    <select
-                                        value={selectedFuel}
-                                        onChange={(e) => setSelectedFuel(e.target.value)}
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    >
-                                        <option value="premium">{t.premium}</option>
-                                        <option value="regular">{t.regular}</option>
-                                        <option value="diesel">{t.diesel}</option>
-                                    </select>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Жеткізу аймағы</label>
-                                    <select
-                                        value={region}
-                                        onChange={(e) => setRegion(e.target.value)}
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    >
-                                        <option value="Almaty">Алматы (Логистика: +4 ₸/л)</option>
-                                        <option value="Astana">Астана (Логистика: +8 ₸/л)</option>
-                                        <option value="Shymkent">Шымкент (Логистика: +3 ₸/л)</option>
-                                        <option value="Kokshetau">Көкшетау (Логистика: +9 ₸/л)</option>
-                                        <option value="Aktau">Ақтау (Логистика: +14 ₸/л)</option>
-                                    </select>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <div className="flex justify-between items-center px-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Қажетті көлем</label>
-                                        <span className="text-xs font-bold text-amber-400">{volume.toLocaleString()} Литр</span>
-                                    </div>
-                                    <input
-                                        type="range"
-                                        min="1000"
-                                        max="100000"
-                                        step="500"
-                                        value={volume}
-                                        onChange={(e) => setVolume(parseInt(e.target.value))}
-                                        className="w-full accent-amber-400 cursor-pointer"
-                                    />
-                                    <input
-                                        type="number"
-                                        value={volume}
-                                        onChange={(e) => setVolume(Math.max(0, parseInt(e.target.value) || 0))}
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-3 text-xs font-bold focus:border-mercuryGold transition-all outline-none text-white mt-2"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Calculation Display Card */}
-                            <div className="bg-white/5 p-8 rounded-3xl border border-white/10 flex flex-col justify-between">
-                                <div>
-                                    <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6 italic">Есептеу нәтижесі</h4>
-
-                                    <div className="space-y-4">
-                                        <div className="flex justify-between text-xs font-bold">
-                                            <span className="text-slate-400">Отын базалық құны:</span>
-                                            <span>{calculation.basePrice.toLocaleString()} ₸</span>
-                                        </div>
-                                        <div className="flex justify-between text-xs font-bold">
-                                            <span className="text-slate-400">Тасымалдау / Логистика:</span>
-                                            <span>+ {calculation.logisticsPrice.toLocaleString()} ₸</span>
-                                        </div>
-                                        <div className="flex justify-between text-xs font-bold text-emerald-400">
-                                            <span>Жеңілдік ({calculation.discountPercent}%):</span>
-                                            <span>- {calculation.discountAmount.toLocaleString()} ₸</span>
-                                        </div>
-                                        <div className="flex justify-between text-xs font-bold">
-                                            <span className="text-slate-400">ҚҚС (12%):</span>
-                                            <span>{calculation.vat.toLocaleString()} ₸</span>
-                                        </div>
-                                        <hr className="border-white/10 my-4" />
-                                        <div className="flex justify-between items-baseline">
-                                            <span className="text-sm font-black uppercase tracking-wider text-slate-400">Барлығы:</span>
-                                            <span className="text-2xl font-display font-black text-mercuryGold italic">
-                                                {Math.round(calculation.total).toLocaleString()} ₸
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={() => onApplyToForm({ fuelType: selectedFuel, volume, region })}
-                                    className="w-full bg-amber-400 text-cosmicDeep py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-400/10 hover:bg-white transition-all transform active:scale-95 mt-6"
-                                >
-                                    Осы есеппен тапсырыс беру
-                                </button>
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             );
         };
 
-        // --- NEW MODULE: Contact & B2B Order Form ---
-        const B2bOrderForm = ({ t, initialValues, onSubmitOrder, userRole, b2bOrders, onUpdateStatus }) => {
-            const [company, setCompany] = useState('');
-            const [bin, setBin] = useState('');
-            const [fuelType, setFuelType] = useState('diesel');
-            const [volume, setVolume] = useState(10000);
-            const [region, setRegion] = useState('Almaty');
-            const [contactPerson, setContactPerson] = useState('');
-            const [email, setEmail] = useState('');
+        const DiaryModule = ({ t, lang, awardBadge }) => {
+            const [entries, setEntries] = useState(() => JSON.parse(localStorage.getItem('bilmek_diary') || '[]'));
+            const [text, setText] = useState('');
 
-            useEffect(() => {
-                if (initialValues) {
-                    if (initialValues.fuelType) setFuelType(initialValues.fuelType);
-                    if (initialValues.volume) setVolume(initialValues.volume);
-                    if (initialValues.region) setRegion(initialValues.region);
+            const save = () => {
+                if (!text.trim()) return;
+                const newEntries = [{ id: Date.now(), text, date: new Date().toLocaleDateString() }, ...entries];
+                setEntries(newEntries);
+                localStorage.setItem('bilmek_diary', JSON.stringify(newEntries));
+                setText('');
+                if (newEntries.length >= 3) awardBadge('philosopher');
+            };
+
+            return (
+                <div className="max-w-4xl mx-auto space-y-12 animate-fade-in">
+                    <div className="premium-glass p-12 rounded-[50px] shadow-glass border-l-8 border-gold-400">
+                        <textarea
+                            value={text} onChange={e => setText(e.target.value)}
+                            placeholder={lang === 'kk' ? "Ой толғау..." : "Write your reflections..."}
+                            className="w-full h-48 bg-transparent text-2xl font-serif italic outline-none resize-none placeholder:text-sage-300"
+                        />
+                        <div className="mt-8 flex justify-end">
+                            <button onClick={save} className="btn-premium text-gold-900 px-12 py-4 rounded-3xl font-black uppercase text-xs tracking-widest">Түю</button>
+                        </div>
+                    </div>
+                    <div className="space-y-8">
+                        {entries.map(e => (
+                            <div key={e.id} className="premium-glass p-10 rounded-[40px] border-b border-sage-100">
+                                <p className="text-[10px] font-black text-gold-500 uppercase tracking-widest mb-4 italic">{e.date}</p>
+                                <p className="text-xl font-serif leading-relaxed text-sage-800">{e.text}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const QuizModule = ({ t, lang, awardBadge }) => {
+            const quizData = [
+                {
+                    id: 1, difficulty: 'easy',
+                    question: { kk: "«Өміріңнің бақыты ойыңның сапасына байланысты» - авторы кім?", en: "«The happiness of your life depends upon the quality of your thoughts» - author?" },
+                    options: ["Abai", "Marcus Aurelius", "Socrates", "Al-Farabi"],
+                    correct: "Marcus Aurelius"
+                },
+                {
+                    id: 2, difficulty: 'medium',
+                    question: { kk: "Әл-Фараби бойынша: «... берілген білім - адамзаттың қас жауы»", en: "According to Al-Farabi: «Knowledge given without ... is the enemy of mankind»" },
+                    options: { kk: ["Көп", "Тәрбиесіз", "Кеш", "Ақысыз"], en: ["Wealth", "Upbringing", "Time", "Effort"] },
+                    correctIndex: 1
+                },
+                {
+                    id: 3, difficulty: 'hard',
+                    question: { kk: "«Ар-ұяттың күзеті — әркімнің өз жүрегінде» - кімнің сөзі?", en: "«The guardian of conscience is in everyone's heart» - whose words?" },
+                    options: ["Shakarim", "Abai", "Yasawi", "Zhumabayev"],
+                    correct: "Shakarim"
                 }
-            }, [initialValues]);
-
-            const handleFormSubmit = (e) => {
-                e.preventDefault();
-                const newOrder = {
-                    id: 'o-' + Date.now(),
-                    company: company || 'Жеке кәсіпкер',
-                    bin: bin || '123456789012',
-                    fuelType,
-                    volume: parseInt(volume) || 1000,
-                    region,
-                    contactPerson,
-                    email,
-                    status: 'Жаңа',
-                    date: new Date().toLocaleDateString()
-                };
-                onSubmitOrder(newOrder);
-                // Reset Form
-                setCompany('');
-                setBin('');
-                setContactPerson('');
-                setEmail('');
-                showToast('Көтерме отынға тапсырысыңыз сәтті қабылданды!', 'success');
-            };
-
-            return (
-                <div className="space-y-8 animate-fade-in">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        {/* Order / Contact Form Card */}
-                        <div className="lg:col-span-7 glass p-10 rounded-[40px]">
-                            <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-4">Жеткізуге сұраныс жіберу</h2>
-                            <p className="text-sm font-medium text-slate-500 mb-8">B2B серіктестер үшін көтерме сауда шарты бойынша жылдам сұраныс формасы</p>
-
-                            <form onSubmit={handleFormSubmit} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Компания атауы</label>
-                                        <input
-                                            value={company}
-                                            onChange={(e) => setCompany(e.target.value)}
-                                            type="text"
-                                            required
-                                            placeholder="ЖШС ОтынТранс"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">БИН (12 таңба)</label>
-                                        <input
-                                            value={bin}
-                                            onChange={(e) => setBin(e.target.value)}
-                                            type="text"
-                                            required
-                                            maxLength="12"
-                                            placeholder="920440001234"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Отын түрі</label>
-                                        <select
-                                            value={fuelType}
-                                            onChange={(e) => setFuelType(e.target.value)}
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                        >
-                                            <option value="premium">{t.premium}</option>
-                                            <option value="regular">{t.regular}</option>
-                                            <option value="diesel">{t.diesel}</option>
-                                        </select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Көлем (Литр)</label>
-                                        <input
-                                            value={volume}
-                                            onChange={(e) => setVolume(e.target.value)}
-                                            type="number"
-                                            required
-                                            min="1000"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Жеткізу аймағы</label>
-                                        <select
-                                            value={region}
-                                            onChange={(e) => setRegion(e.target.value)}
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                        >
-                                            <option value="Almaty">Алматы</option>
-                                            <option value="Astana">Астана</option>
-                                            <option value="Shymkent">Шымкент</option>
-                                            <option value="Kokshetau">Көкшетау</option>
-                                            <option value="Aktau">Ақтау</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Байланысушы тұлға</label>
-                                        <input
-                                            value={contactPerson}
-                                            onChange={(e) => setContactPerson(e.target.value)}
-                                            type="text"
-                                            required
-                                            placeholder="Арман Ахметов"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Электронды пошта</label>
-                                        <input
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            type="email"
-                                            required
-                                            placeholder="b2b@company.kz"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                </div>
-
-                                <button className="w-full bg-mercuryGold text-cosmicDeep py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-400/10 hover:bg-white transition-all transform active:scale-95">
-                                    Жеткізу шартын бекітуге өтінім жіберу
-                                </button>
-                            </form>
-                        </div>
-
-                        {/* Order Tracking Dashboard / Sidebar info */}
-                        <div className="lg:col-span-5 space-y-6">
-                            <div className="glass p-8 rounded-[40px] border-r-4 border-royalBlue">
-                                <h3 className="text-xl font-display font-black uppercase italic tracking-tighter mb-6">Сұраныстар журналы</h3>
-
-                                <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2">
-                                    {b2bOrders.length === 0 ? (
-                                        <p className="text-xs text-slate-500 font-bold uppercase italic text-center py-8">Сұраныстар тізімі бос</p>
-                                    ) : (
-                                        b2bOrders.map(order => (
-                                            <div key={order.id} className="p-5 bg-white/5 rounded-2xl border border-white/5 space-y-3">
-                                                <div className="flex justify-between items-start">
-                                                    <div>
-                                                        <h4 className="text-xs font-black text-white">{order.company}</h4>
-                                                        <p className="text-[9px] font-mono text-slate-500">БИН: {order.bin}</p>
-                                                    </div>
-                                                    <span className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
-                                                        order.status === 'Жаңа' ? 'bg-amber-400/10 text-amber-400' :
-                                                        order.status === 'Жасалды' ? 'bg-emerald-400/10 text-emerald-400' : 'bg-royalBlue/10 text-royalBlue'
-                                                    }`}>
-                                                        {order.status}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between items-center text-[10px] font-bold">
-                                                    <span className="text-slate-400">{t[order.fuelType]}: <strong className="text-white">{order.volume.toLocaleString()} л</strong></span>
-                                                    <span className="text-slate-400">Аймақ: <strong className="text-white">{order.region}</strong></span>
-                                                </div>
-
-                                                {/* Admin Action to complete request */}
-                                                {userRole === 'admin' && order.status === 'Жаңа' && (
-                                                    <div className="pt-2 flex justify-end">
-                                                        <button
-                                                            onClick={() => onUpdateStatus(order.id, 'Жасалды')}
-                                                            className="px-3 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg text-[9px] font-black uppercase hover:bg-emerald-400 hover:text-cosmicDeep transition-all"
-                                                        >
-                                                            Мақұлдау
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // --- NEW MODULE: Download Hub ---
-        const DownloadHub = ({ t, documents, onDownload }) => {
-            const [downloadingId, setDownloadingId] = useState(null);
-            const [progress, setProgress] = useState(0);
-
-            const handleDownloadClick = (doc) => {
-                if (downloadingId) return;
-                setDownloadingId(doc.id);
-                setProgress(0);
-
-                const interval = setInterval(() => {
-                    setProgress(prev => {
-                        if (prev >= 100) {
-                            clearInterval(interval);
-                            setTimeout(() => {
-                                setDownloadingId(null);
-                                onDownload(doc);
-                                showToast(`Құжат жүктелді: ${doc.title}`, 'success');
-                            }, 500);
-                            return 100;
-                        }
-                        return prev + 10;
-                    });
-                }, 150);
-            };
-
-            return (
-                <div className="space-y-8 animate-fade-in max-w-5xl">
-                    <div className="glass p-10 rounded-[40px]">
-                        <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-4">{t.downloadHub}</h2>
-                        <p className="text-sm font-medium text-slate-500 mb-10">Тікелей серверден отын сертификаттарын, мемлекеттік стандарттарды және коммерциялық ұсыныстарды жылдам жүктеу бөлімі</p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {documents.map(doc => {
-                                const isDownloading = downloadingId === doc.id;
-                                return (
-                                    <div key={doc.id} className="p-6 bg-white/5 rounded-3xl border border-white/5 flex flex-col justify-between hover:border-white/10 transition-all group">
-                                        <div className="flex items-start gap-4 mb-6">
-                                            <div className="w-12 h-12 bg-royalBlue/20 rounded-2xl flex items-center justify-center text-royalBlue">
-                                                <LucideIcon name="file-text" className="w-6 h-6" />
-                                            </div>
-                                            <div>
-                                                <span className="text-[8px] font-black uppercase tracking-widest bg-white/5 text-slate-400 px-2 py-1 rounded-md">{doc.category}</span>
-                                                <h4 className="text-sm font-bold text-white mt-2 group-hover:text-amber-400 transition-colors">{doc.title}</h4>
-                                                <div className="flex gap-4 mt-1 text-[10px] font-bold text-slate-500">
-                                                    <span>Көлемі: {doc.size}</span>
-                                                    <span>Формат: {doc.type}</span>
-                                                    <span>Жүктелді: {doc.downloads} рет</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {isDownloading ? (
-                                            <div className="space-y-2">
-                                                <div className="flex justify-between text-[10px] font-black uppercase text-amber-400 tracking-widest">
-                                                    <span>Жүктелуде...</span>
-                                                    <span>{progress}%</span>
-                                                </div>
-                                                <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                                    <div className="h-full bg-amber-400 rounded-full transition-all duration-150" style={{ width: `${progress}%` }}></div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <button
-                                                onClick={() => handleDownloadClick(doc)}
-                                                className="w-full py-3 bg-white/5 group-hover:bg-amber-400 group-hover:text-cosmicDeep text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2"
-                                            >
-                                                <LucideIcon name="download" className="w-4 h-4" />
-                                                Жүктеп алу
-                                            </button>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // --- NEW MODULE: Visitor Analytics ---
-        const VisitorAnalytics = ({ t, analyticsLogs, b2bOrders }) => {
-            const uniqueVisitors = useMemo(() => {
-                return Math.floor(analyticsLogs.length * 0.6) + 3;
-            }, [analyticsLogs]);
-
-            const totalOrdersVolume = useMemo(() => {
-                return b2bOrders.reduce((acc, curr) => acc + curr.volume, 0);
-            }, [b2bOrders]);
-
-            return (
-                <div className="space-y-8 animate-fade-in">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {[
-                            { label: "Жалпы әрекеттер саны", val: analyticsLogs.length + 120, icon: "activity", color: "text-royalBlue" },
-                            { label: "Бірегей келушілер", val: uniqueVisitors, icon: "globe", color: "text-amber-400" },
-                            { label: "Жиынтық тапсырыс көлемі", val: `${totalOrdersVolume.toLocaleString()} л`, icon: "fuel", color: "text-emerald-400" },
-                            { label: "Көрсетілім конверсиясы", val: "14.2 %", icon: "activity", color: "text-red-400" },
-                        ].map((card, i) => (
-                            <div key={i} className="glass p-6 rounded-3xl flex items-center gap-5 border border-white/5">
-                                <div className={`w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center ${card.color}`}>
-                                    <LucideIcon name={card.icon} />
-                                </div>
-                                <div>
-                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-wider">{card.label}</p>
-                                    <p className="text-xl font-black text-white italic mt-1">{card.val}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* Interactive Visitor Logs */}
-                        <div className="lg:col-span-2 glass rounded-[40px] overflow-hidden">
-                            <div className="p-8 border-b border-white/5 flex justify-between items-center">
-                                <h3 className="text-xl font-display font-black uppercase italic tracking-tighter">Шынайы уақыттағы келушілер логы</h3>
-                                <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 animate-pulse">● Live бақылау</span>
-                            </div>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left text-xs">
-                                    <thead className="bg-white/5 text-slate-500 uppercase text-[9px] font-black tracking-widest">
-                                        <tr>
-                                            <th className="px-6 py-4">Бет / Секция</th>
-                                            <th className="px-6 py-4">Кіру көзі</th>
-                                            <th className="px-6 py-4">Орындалған әрекет</th>
-                                            <th className="px-6 py-4 text-right">Уақыты</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-white/5">
-                                        {analyticsLogs.map(log => (
-                                            <tr key={log.id} className="hover:bg-white/5 transition-colors">
-                                                <td className="px-6 py-4 font-bold text-white">{log.page}</td>
-                                                <td className="px-6 py-4">
-                                                    <span className="px-2 py-0.5 bg-white/5 text-slate-400 rounded-md">{log.referral}</span>
-                                                </td>
-                                                <td className="px-6 py-4 text-slate-300 font-medium">{log.action}</td>
-                                                <td className="px-6 py-4 text-right text-slate-500 font-mono">{log.timestamp}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        {/* Interactive analytical breakdowns */}
-                        <div className="glass p-8 rounded-[40px] space-y-6">
-                            <h3 className="text-xl font-display font-black uppercase italic tracking-tighter">Сұраныс конверсиясы</h3>
-
-                            <div className="space-y-4">
-                                <div>
-                                    <div className="flex justify-between text-xs font-bold mb-1">
-                                        <span className="text-slate-400">Іздеу жүйелерінен (Organic)</span>
-                                        <span>42%</span>
-                                    </div>
-                                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-royalBlue" style={{ width: '42%' }}></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="flex justify-between text-xs font-bold mb-1">
-                                        <span className="text-slate-400">Тікелей сілтемелер (Direct)</span>
-                                        <span>35%</span>
-                                    </div>
-                                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-amber-400" style={{ width: '35%' }}></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="flex justify-between text-xs font-bold mb-1">
-                                        <span className="text-slate-400">Серіктестік желілер</span>
-                                        <span>23%</span>
-                                    </div>
-                                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-emerald-400" style={{ width: '23%' }}></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const AdminPanel = ({ t, stations, setStations, logAction }) => (
-            <div className="space-y-8 animate-fade-in">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="glass p-8 rounded-[40px]">
-                        <h3 className="text-xl font-display font-black uppercase italic tracking-tighter mb-8">{t.stations}</h3>
-                        <div className="space-y-4">
-                            {stations.map(st => (
-                                <div key={st.id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center">
-                                            <LucideIcon name="building-2" className="w-5 h-5 text-slate-400" />
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-sm">{st.name}</p>
-                                            <p className="text-[10px] font-bold text-slate-500 uppercase">{st.region}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button className="p-2 text-slate-500 hover:text-white transition-colors"><LucideIcon name="edit-3" className="w-4 h-4" /></button>
-                                        <button
-                                            onClick={() => {
-                                                setStations(stations.filter(s => s.id !== st.id));
-                                                logAction(`Өшірілді АЗС: ${st.name}`);
-                                            }}
-                                            className="p-2 text-slate-500 hover:text-red-400 transition-colors"
-                                        >
-                                            <LucideIcon name="trash-2" className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                            <button
-                                onClick={() => {
-                                    const newStation = { id: Date.now(), name: 'New SME Station', region: 'Astana', stocks: { premium: 50, regular: 50, diesel: 50 } };
-                                    setStations([...stations, newStation]);
-                                    logAction(`Қосылды жаңа АЗС: ${newStation.name}`);
-                                }}
-                                className="w-full py-4 border-2 border-dashed border-white/10 rounded-2xl text-slate-500 hover:border-amber-400 hover:text-amber-400 transition-all font-bold text-sm"
-                            >
-                                + {t.addStation}
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="glass p-8 rounded-[40px]">
-                        <h3 className="text-xl font-display font-black uppercase italic tracking-tighter mb-8">{t.userRoles}</h3>
-                        <div className="space-y-4">
-                            {[
-                                { name: 'Admin Hub', role: 'Superuser', status: 'Online' },
-                                { name: 'Operator_Almaty', role: 'Operator', status: 'Idle' },
-                                { name: 'Manager_NB', role: 'Viewer', status: 'Online' },
-                            ].map((user, i) => (
-                                <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-royalBlue/20 rounded-full flex items-center justify-center text-royalBlue font-black text-xs">
-                                            {user.name.substring(0, 2)}
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-sm">{user.name}</p>
-                                            <p className="text-[10px] font-bold text-royalBlue uppercase">{user.role}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'Online' ? 'bg-emerald-400' : 'bg-slate-600'}`}></div>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase">{user.status}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-
-        const UserRequests = ({ t, userRequests, setUserRequests, registeredUsers, setRegisteredUsers, logAction }) => (
-            <div className="glass rounded-[40px] overflow-hidden animate-fade-in">
-                <div className="p-8 border-b border-white/5 flex items-center justify-between">
-                    <h2 className="text-2xl font-display font-black uppercase italic tracking-tighter">{t.requests}</h2>
-                    <span className="px-4 py-1.5 bg-royalBlue/20 text-royalBlue rounded-full text-[10px] font-black uppercase tracking-widest">{userRequests.length} Жаңа</span>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-white/5 text-slate-500 uppercase text-[10px] font-black tracking-widest">
-                            <tr>
-                                <th className="px-8 py-6">Компания / БИН</th>
-                                <th className="px-8 py-6">Email</th>
-                                <th className="px-8 py-6">Дата</th>
-                                <th className="px-8 py-6 text-right">Шешім</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5 font-medium">
-                            {userRequests.map(req => (
-                                <tr key={req.id} className="hover:bg-white/5 transition-colors">
-                                    <td className="px-8 py-5">
-                                        <p className="text-sm font-bold text-white">{req.name}</p>
-                                        <p className="text-[10px] font-mono text-slate-500">{req.bin}</p>
-                                    </td>
-                                    <td className="px-8 py-5 text-sm text-slate-300">{req.email}</td>
-                                    <td className="px-8 py-5 text-sm text-slate-500">{req.date}</td>
-                                    <td className="px-8 py-5 text-right space-x-2">
-                                        <button
-                                            onClick={() => {
-                                                const newUser = { id: Date.now(), name: req.name, role: 'client', email: req.email };
-                                                setRegisteredUsers([...registeredUsers, newUser]);
-                                                setUserRequests(userRequests.filter(r => r.id !== req.id));
-                                                logAction(`Расталды тіркелу өтінімі ${req.name}`);
-                                                showToast(`Пайдаланушы ${req.name} расталды`, 'success');
-                                            }}
-                                            className="px-4 py-2 bg-emerald-500/10 text-emerald-500 rounded-xl text-[10px] font-black uppercase hover:bg-emerald-500 hover:text-white transition-all"
-                                        >
-                                            Растау
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setUserRequests(userRequests.filter(r => r.id !== req.id));
-                                                logAction(`Бас тартылды тіркелу өтінімі ${req.name}`);
-                                                showToast(`Өтінім бас тартылды`, 'error');
-                                            }}
-                                            className="px-4 py-2 bg-red-500/10 text-red-500 rounded-xl text-[10px] font-black uppercase hover:bg-red-500 hover:text-white transition-all"
-                                        >
-                                            Бас тарту
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        );
-
-        const AuditLogs = ({ t, logs }) => (
-            <div className="glass rounded-[40px] overflow-hidden animate-fade-in">
-                <div className="p-8 border-b border-white/5 flex items-center justify-between">
-                    <h2 className="text-2xl font-display font-black uppercase italic tracking-tighter">{t.audit}</h2>
-                    <button className="text-xs font-black text-amber-400 uppercase tracking-widest border border-amber-400/30 px-4 py-2 rounded-xl hover:bg-amber-400 hover:text-cosmicDeep transition-all">{t.export}</button>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-white/5 text-slate-500 uppercase text-[10px] font-black tracking-widest">
-                            <tr>
-                                <th className="px-8 py-6">ID</th>
-                                <th className="px-8 py-6">{t.audit}</th>
-                                <th className="px-8 py-6">User</th>
-                                <th className="px-8 py-6">Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5 font-medium">
-                            {logs.map(log => (
-                                <tr key={log.id} className="hover:bg-white/5 transition-colors">
-                                    <td className="px-8 py-5 text-slate-500 font-mono text-[10px]">#{log.id.toString().slice(-6)}</td>
-                                    <td className="px-8 py-5 text-sm">{log.action}</td>
-                                    <td className="px-8 py-5">
-                                        <span className="px-3 py-1 bg-royalBlue/10 text-royalBlue rounded-lg text-xs font-bold">{log.user}</span>
-                                    </td>
-                                    <td className="px-8 py-5 text-sm text-slate-400">{log.time}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        );
-
-        const Sidebar = ({ currentTab, setTab, t, role }) => {
-            const items = [
-                { id: 'monitoring', icon: 'activity', label: t.monitoring },
-                { id: 'calculator', icon: 'calculator', label: t.calculator },
-                { id: 'orderForm', icon: 'mail', label: t.orderForm },
-                { id: 'downloadHub', icon: 'download', label: t.downloadHub },
-                { id: 'prices', icon: 'tags', label: t.prices },
-                { id: 'analytics', icon: 'bar-chart-2', label: t.analytics, adminOnly: true },
-                { id: 'admin', icon: 'shield-check', label: t.admin, adminOnly: true },
-                { id: 'requests', icon: 'user-plus', label: t.requests, adminOnly: true },
-                { id: 'audit', icon: 'clipboard-list', label: t.audit },
             ];
 
-            return (
-                <div className="fixed left-0 top-0 h-full w-20 lg:w-64 glass z-50 flex flex-col">
-                    <div className="p-6 flex items-center gap-3">
-                        <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center text-cosmicDeep shadow-lg shadow-amber-400/20">
-                            <LucideIcon name="zap" className="w-6 h-6 text-cosmicDeep fill-current" />
-                        </div>
-                        <span className="hidden lg:block font-display font-black text-lg uppercase tracking-tighter italic">Smart Mercury</span>
-                    </div>
+            const [currentQ, setCurrentQ] = useState(0);
+            const [score, setScore] = useState(0);
+            const [finished, setFinished] = useState(false);
+            const [selected, setSelected] = useState(null);
 
-                    <nav className="flex-1 mt-10 px-4 space-y-2 overflow-y-auto pr-1">
-                        {items.filter(i => !i.adminOnly || role === 'admin').map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => setTab(item.id)}
-                                className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 ${
-                                    currentTab === item.id
-                                    ? "bg-royalBlue text-white shadow-xl shadow-blue-600/30"
-                                    : "text-slate-400 hover:bg-white/5"
-                                }`}
-                            >
-                                <LucideIcon name={item.icon} />
-                                <span className="hidden lg:block font-bold text-sm tracking-tight">{item.label}</span>
-                            </button>
-                        ))}
-                    </nav>
+            const q = quizData[currentQ];
 
-                    <div className="p-6 border-t border-white/5 space-y-4">
-                        <div className="hidden lg:block">
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">{t.systemStatus}</p>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                                <span className="text-xs font-bold text-emerald-400 uppercase tracking-tight">{t.active}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
+            const handleAnswer = (idx, label) => {
+                setSelected(idx);
+                const isCorrect = typeof q.options === 'object' && !Array.isArray(q.options) ? idx === q.correctIndex : label === q.correct;
+                if (isCorrect) setScore(score + 1);
 
-        // --- Main App Component ---
-        const App = () => {
-            const [lang, setLang] = useState('kk');
-            const t = useMemo(() => translations[lang] || translations.kk, [lang]);
-
-            const [user, setUser] = useState(null); // { name, role }
-            const [authMode, setAuthMode] = useState('login'); // 'login' | 'register'
-            const [currentTab, setCurrentTab] = useState('monitoring');
-            const [notifications, setNotifications] = useState([]);
-            const [calcPrefill, setCalcPrefill] = useState(null);
-
-            // Core States with LocalStorage
-            const [depotTanks, setDepotState] = useState(() => {
-                const saved = localStorage.getItem('sme_depot');
-                return saved ? JSON.parse(saved) : initialDepotState;
-            });
-            const [stations, setStations] = useState(() => {
-                const saved = localStorage.getItem('sme_stations');
-                return saved ? JSON.parse(saved) : initialStations;
-            });
-            const [prices, setPrices] = useState(() => {
-                const saved = localStorage.getItem('sme_prices');
-                return saved ? JSON.parse(saved) : initialPrices;
-            });
-            const [logs, setLogs] = useState(() => {
-                const saved = localStorage.getItem('sme_audit');
-                return saved ? JSON.parse(saved) : [{ id: 1, action: 'Система инициализирована', time: new Date().toLocaleString(), user: 'System' }];
-            });
-            const [userRequests, setUserRequests] = useState(() => {
-                const saved = localStorage.getItem('sme_requests');
-                return saved ? JSON.parse(saved) : [
-                    { id: 101, name: 'OilTrans LLP', email: 'manager@oiltrans.kz', date: '16.06.2026', bin: '123456789012' },
-                    { id: 102, name: 'Aviation Group', email: 'ops@avg.com', date: '17.06.2026', bin: '987654321098' }
-                ];
-            });
-            const [registeredUsers, setRegisteredUsers] = useState(() => {
-                const saved = localStorage.getItem('sme_users');
-                return saved ? JSON.parse(saved) : [
-                    { id: 1, name: 'Admin Hub', role: 'admin', email: 'admin@sme.kz' },
-                    { id: 2, name: 'Operator_Almaty', role: 'operator', email: 'alm@sme.kz' }
-                ];
-            });
-
-            // NEW STATE: Documents, B2B Orders & Analytics
-            const [documents, setDocuments] = useState(() => {
-                const saved = localStorage.getItem('sme_docs');
-                return saved ? JSON.parse(saved) : initialDocuments;
-            });
-            const [b2bOrders, setB2bOrders] = useState(() => {
-                const saved = localStorage.getItem('sme_orders');
-                return saved ? JSON.parse(saved) : initialB2bOrders;
-            });
-            const [analyticsLogs, setAnalyticsLogs] = useState(() => {
-                const saved = localStorage.getItem('sme_analytics');
-                return saved ? JSON.parse(saved) : initialAnalyticsLogs;
-            });
-
-            // Synchronize with localStorage
-            useEffect(() => {
-                localStorage.setItem('sme_depot', JSON.stringify(depotTanks));
-            }, [depotTanks]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_stations', JSON.stringify(stations));
-            }, [stations]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_prices', JSON.stringify(prices));
-            }, [prices]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_requests', JSON.stringify(userRequests));
-            }, [userRequests]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_users', JSON.stringify(registeredUsers));
-            }, [registeredUsers]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_docs', JSON.stringify(documents));
-            }, [documents]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_orders', JSON.stringify(b2bOrders));
-            }, [b2bOrders]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_analytics', JSON.stringify(analyticsLogs));
-            }, [analyticsLogs]);
-
-            const logAction = useCallback((action, userName = "Admin") => {
-                const newLog = {
-                    id: Date.now(),
-                    action,
-                    time: new Date().toLocaleString(),
-                    user: userName
-                };
-                setLogs(prev => {
-                    const updated = [newLog, ...prev].slice(0, 50);
-                    localStorage.setItem('sme_audit', JSON.stringify(updated));
-                    return updated;
-                });
-            }, []);
-
-            const trackVisit = useCallback((pageName, actionDescription) => {
-                const newVisit = {
-                    id: 'an-' + Date.now(),
-                    page: pageName,
-                    referral: 'Жүйелік сілтеме',
-                    action: actionDescription,
-                    timestamp: new Date().toTimeString().split(' ')[0]
-                };
-                setAnalyticsLogs(prev => [newVisit, ...prev].slice(0, 100));
-            }, []);
-
-            const addNotification = useCallback((message, type = 'info') => {
-                const newNotif = { id: Date.now(), message, type, time: new Date().toLocaleTimeString() };
-                setNotifications(prev => [newNotif, ...prev].slice(0, 5));
-            }, []);
-
-            // Simulation of live data changes and alerts
-            useEffect(() => {
-                const interval = setInterval(() => {
-                    setDepotState(prev => prev.map(tank => {
-                        const change = (Math.random() - 0.5) * 20;
-                        const newCurrent = Math.max(0, Math.min(tank.capacity, tank.current + change));
-
-                        // Alert Logic
-                        if (newCurrent < tank.capacity * 0.1 && tank.current >= tank.capacity * 0.1) {
-                            addNotification(`Критикалық деңгей: ${tank.name} отыны таусылуда!`, 'error');
-                        }
-
-                        return { ...tank, current: Math.round(newCurrent) };
-                    }));
-                }, 5000);
-                return () => clearInterval(interval);
-            }, [addNotification]);
-
-            const handleLogin = (e) => {
-                e.preventDefault();
-                if (authMode === 'register') {
-                    const name = e.target.companyName.value;
-                    const email = e.target.email.value;
-                    const bin = e.target.bin.value;
-                    const newRequest = { id: Date.now(), name, email, bin, date: new Date().toLocaleDateString() };
-                    setUserRequests(prev => [newRequest, ...prev]);
-                    logAction(`Тіркелуге жаңа өтінім жіберілді: ${name}`, 'Қонақ');
-                    trackVisit('Авторизация', 'Жаңа тіркелу өтінімін қалдырды');
-                    showToast('Өтінім жіберілді. Менеджер жауабын күтіңіз.', 'success');
-                    setAuthMode('login');
-                    return;
-                }
-                const email = e.target.email.value;
-                if (email === 'admin@sme.kz') {
-                    setUser({ name: 'Super Admin', role: 'admin' });
-                    logAction('Жүйеге кіру (Админ)', 'Super Admin');
-                    trackVisit('Басқару панелі', 'Жүйеге кірді (Админ)');
-                } else {
-                    const clientName = email.split('@')[0];
-                    setUser({ name: clientName, role: 'client' });
-                    logAction('Жүйеге кіру (Клиент)', clientName);
-                    trackVisit('Клиент хабы', 'Жүйеге кірді (Клиент)');
-                }
+                setTimeout(() => {
+                    if (currentQ < quizData.length - 1) {
+                        setCurrentQ(currentQ + 1);
+                        setSelected(null);
+                    } else {
+                        setFinished(true);
+                        if (score >= 2) awardBadge('thinker');
+                    }
+                }, 1000);
             };
 
-            const handleLogout = () => {
-                logAction('Жүйеден шығу', user?.name || 'Қолданушы');
-                trackVisit('Шығу', 'Жүйеден шықты');
-                setUser(null);
-                setCurrentTab('monitoring');
-            };
-
-            const handleRefreshData = () => {
-                setDepotState(prev => prev.map(tank => ({
-                    ...tank,
-                    current: Math.round(Math.random() * (tank.capacity - 200) + 200)
-                })));
-                showToast('Мәліметтер жаңартылды', 'success');
-                trackVisit('Мониторинг', '3D отын деңгейінің мәліметтерін қолмен жаңартты');
-            };
-
-            const handleNewB2bOrder = (order) => {
-                setB2bOrders(prev => [order, ...prev]);
-                logAction(`Жаңа көтерме отын тапсырысы қосылды: ${order.company}`, order.company);
-                trackVisit('Тапсырыстар', `${order.company} БИН ${order.bin} үшін отын тапсырысын жіберді`);
-            };
-
-            const handleUpdateOrderStatus = (orderId, status) => {
-                setB2bOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o));
-                logAction(`Тапсырыс күйі жаңартылды: #${orderId.slice(-4)} -> ${status}`, user.name);
-                trackVisit('Әкімшілік', `Тапсырыс статусын ${status} күйіне ауыстырды`);
-            };
-
-            const handleDocumentDownload = (doc) => {
-                setDocuments(prev => prev.map(d => d.id === doc.id ? { ...d, downloads: d.downloads + 1 } : d));
-                trackVisit('Жүктеу орталығы', `Құжат жүктелді: ${doc.title}`);
-            };
-
-            const handlePrefillApply = (values) => {
-                setCalcPrefill(values);
-                setCurrentTab('orderForm');
-                showToast('Калькулятор мәліметтері тапсырыс формасына енгізілді', 'info');
-                trackVisit('Калькулятор', 'Есептеу нәтижесін тапсырыс формасына өткізді');
-            };
-
-            // Track page view logs on menu clicks
-            useEffect(() => {
-                if (user) {
-                    trackVisit(t[currentTab] || currentTab, `Бетті қарады: ${t[currentTab] || currentTab}`);
-                }
-            }, [currentTab, user]);
-
-            if (!user) {
+            if (finished) {
                 return (
-                    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
-                        <div className="absolute inset-0 z-0">
-                            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-royalBlue/20 rounded-full blur-[120px]"></div>
-                            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-mercuryGold/10 rounded-full blur-[120px]"></div>
-                        </div>
-
-                        <div className="w-full max-w-md glass p-10 rounded-[40px] shadow-2xl relative z-10 animate-fade-in">
-                            <div className="flex flex-col items-center mb-10">
-                                <div className="w-16 h-16 bg-mercuryGold rounded-2xl flex items-center justify-center text-cosmicDeep shadow-2xl shadow-amber-400/20 mb-6">
-                                    <LucideIcon name="zap" className="w-10 h-10 fill-current text-cosmicDeep" />
-                                </div>
-                                <h1 className="text-2xl font-display font-black uppercase tracking-tighter italic">Smart Mercury Energy</h1>
-                                <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-2">Enterprise Solutions v3.5</p>
-                            </div>
-
-                            <div className="flex bg-white/5 p-1 rounded-2xl mb-8">
-                                <button
-                                    type="button"
-                                    onClick={() => setAuthMode('login')}
-                                    className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'login' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
-                                >
-                                    Кіру
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setAuthMode('register')}
-                                    className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'register' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
-                                >
-                                    Тіркелу
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleLogin} className="space-y-6">
-                                {authMode === 'register' && (
-                                    <div className="space-y-4 animate-fade-in">
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Компания атауы</label>
-                                            <input name="companyName" type="text" required className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">БИН</label>
-                                            <input name="bin" type="text" required maxLength="12" placeholder="123456789012" className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white" />
-                                        </div>
-                                    </div>
-                                )}
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Email</label>
-                                    <input
-                                        name="email"
-                                        type="email"
-                                        required
-                                        placeholder={authMode === 'login' ? "admin@sme.kz" : "info@company.kz"}
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Құпиясөз</label>
-                                    <input
-                                        name="password"
-                                        type="password"
-                                        required
-                                        placeholder="••••••••"
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    />
-                                </div>
-                                <button className="w-full bg-mercuryGold text-cosmicDeep py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-400/10 hover:bg-white transition-all transform active:scale-95">
-                                    {authMode === 'login' ? 'Жүйеге кіру' : 'Өтінім жіберу'}
-                                </button>
-                            </form>
-
-                            <div className="mt-8 text-center">
-                                <a href="#" className="text-[10px] font-bold text-slate-600 uppercase tracking-widest hover:text-white transition-colors">Құпиясөзді ұмыттыңыз ба?</a>
-                            </div>
-                        </div>
+                    <div className="max-w-xl mx-auto premium-glass p-16 rounded-[60px] text-center animate-fade-in shadow-glass">
+                        <KazakhOrnament className="w-16 h-16 text-gold-200 mx-auto mb-8" />
+                        <h3 className="text-3xl font-display font-black uppercase italic tracking-tighter">Сынақ аяқталды</h3>
+                        <p className="text-7xl font-black text-sage-900 my-10">{score} / {quizData.length}</p>
+                        <button
+                            onClick={() => { setFinished(false); setCurrentQ(0); setScore(0); }}
+                            className="w-full btn-premium text-gold-900 py-5 rounded-3xl text-xs font-black uppercase tracking-widest"
+                        >
+                            Қайта тапсыру
+                        </button>
                     </div>
                 );
             }
 
             return (
-                <div className="min-h-screen">
-                    <Sidebar currentTab={currentTab} setTab={setCurrentTab} t={t} role={user.role} />
+                <div className="max-w-2xl mx-auto animate-fade-in">
+                    <div className="premium-glass p-12 rounded-[50px] space-y-12 shadow-glass border-4 border-white">
+                        <div className="flex justify-between items-center">
+                             <div className="space-y-1">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-sage-400">Difficulty: {q.difficulty}</span>
+                                <p className="text-xs font-bold text-gold-600 uppercase tracking-widest">Question {currentQ+1}/{quizData.length}</p>
+                             </div>
+                             <div className="flex gap-1.5">
+                                {quizData.map((_, i) => <div key={i} className={`h-1.5 w-10 rounded-full transition-all duration-500 ${i <= currentQ ? 'bg-gold-400' : 'bg-sage-100'}`}></div>)}
+                             </div>
+                        </div>
 
-                    {/* Floating Notifications */}
-                    <div className="fixed bottom-10 right-10 z-[100] w-80">
-                        {notifications.map(n => (
-                            <NotificationToast key={n.id} notif={n} onClose={() => setNotifications(prev => prev.filter(x => x.id !== n.id))} />
+                        <h3 className="text-3xl font-serif italic text-sage-900 leading-tight">{q.question[lang]}</h3>
+
+                        <div className="grid grid-cols-1 gap-4">
+                            {(Array.isArray(q.options) ? q.options : q.options[lang]).map((opt, i) => (
+                                <button
+                                    key={i} onClick={() => handleAnswer(i, opt)} disabled={selected !== null}
+                                    className={`p-6 rounded-3xl text-left font-bold transition-all border-2 flex items-center gap-6 ${
+                                        selected === i
+                                        ? ((Array.isArray(q.options) ? opt === q.correct : i === q.correctIndex) ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-red-50 border-red-500 text-red-700')
+                                        : 'bg-white border-sage-100 hover:border-gold-300 hover:bg-gold-50/30 text-sage-600'
+                                    }`}
+                                >
+                                    <span className="w-10 h-10 rounded-2xl bg-sage-50 text-sage-400 flex items-center justify-center text-xs font-black">{String.fromCharCode(65 + i)}</span>
+                                    {opt}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const QuoteCard = ({ thought, lang, onShare }) => (
+            <div className="premium-glass p-8 rounded-[40px] flex flex-col justify-between hover:shadow-premium transition-all duration-500 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <KazakhOrnament className="w-24 h-24" />
+                </div>
+                <div className="space-y-6 relative z-10">
+                    <div className="flex justify-between items-start">
+                        <div className="w-10 h-10 bg-gold-100 rounded-full flex items-center justify-center text-gold-600">
+                            <LucideIcon name="quote" className="w-5 h-5" />
+                        </div>
+                        <button onClick={() => onShare(thought)} className="p-2 text-sage-400 hover:text-gold-600 transition-colors">
+                            <LucideIcon name="share-2" className="w-4 h-4" />
+                        </button>
+                    </div>
+                    <p className="text-2xl font-serif italic leading-relaxed text-sage-900 group-hover:text-black transition-colors">
+                        "{thought.text[lang]}"
+                    </p>
+                </div>
+                <div className="mt-8 pt-6 border-t border-sage-100 relative z-10">
+                    <h4 className="font-display font-bold text-sm uppercase tracking-wider text-gold-700">{thought.author}</h4>
+                    <div className="flex gap-2 mt-2">
+                        {thought.tags.map(tag => (
+                            <span key={tag} className="text-[9px] font-black uppercase tracking-widest text-sage-400 bg-sage-50 px-2 py-0.5 rounded-full">#{tag}</span>
                         ))}
                     </div>
+                </div>
+            </div>
+        );
 
-                    <main className="pl-20 lg:ml-64 transition-all duration-300">
-                        {/* Header */}
-                        <header className="h-24 px-8 flex items-center justify-between sticky top-0 bg-cosmicDeep/80 backdrop-blur-xl z-40 border-b border-white/5">
-                            <div className="flex items-center gap-4">
-                                <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 text-xs font-bold text-slate-400">
-                                    <LucideIcon name="clock" className="w-4 h-4" />
-                                    <span>{new Date().toLocaleDateString()}</span>
-                                </div>
+        const QuoteGenerator = ({ thought, lang, onClose }) => {
+            const cardRef = useRef(null);
+            return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm animate-fade-in">
+                    <div className="max-w-xl w-full bg-white rounded-[50px] overflow-hidden shadow-2xl animate-float">
+                        <div ref={cardRef} className="p-16 bg-[#fcfdfc] relative flex flex-col items-center text-center space-y-10">
+                            <KazakhOrnament className="w-32 h-32 text-gold-200 absolute top-[-40px] opacity-30" />
+                            <div className="w-12 h-1 bg-gold-400 rounded-full"></div>
+                            <p className="text-3xl font-serif italic text-sage-900 leading-tight">"{thought.text[lang]}"</p>
+                            <div className="space-y-2">
+                                <h4 className="text-sm font-display font-black uppercase tracking-[0.3em] text-gold-600">{thought.author}</h4>
+                                <p className="text-[10px] font-bold text-sage-400 uppercase tracking-widest italic">Bilmek App Heritage</p>
                             </div>
-
-                            <div className="flex items-center gap-6">
-                                {/* Language Switcher */}
-                                <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10">
-                                    {['kk', 'ru', 'en'].map(l => (
-                                        <button
-                                            key={l}
-                                            onClick={() => setLang(l)}
-                                            className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all ${lang === l ? "bg-mercuryGold text-cosmicDeep shadow-lg shadow-amber-400/20" : "text-slate-400 hover:text-white"}`}
-                                        >
-                                            {l}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-white relative hover:scale-105 transition-transform cursor-pointer">
-                                    <LucideIcon name="bell" />
-                                    <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-royalBlue rounded-full border-2 border-cosmicDeep"></span>
-                                </div>
-
-                                <div className="flex items-center gap-4 pl-6 border-l border-white/10">
-                                    <div className="text-right hidden sm:block">
-                                        <p className="text-sm font-black text-white italic tracking-tight">{user.name}</p>
-                                        <p className="text-[10px] font-bold text-mercuryGold uppercase tracking-widest opacity-70">{user.role === 'admin' ? 'Chief Hub Controller' : 'Client Access'}</p>
-                                    </div>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="w-12 h-12 bg-mercuryGold rounded-2xl shadow-xl shadow-amber-400/10 flex items-center justify-center font-black text-cosmicDeep italic hover:bg-white transition-all"
-                                    >
-                                        <LucideIcon name="log-out" className="w-5 h-5 text-cosmicDeep" />
-                                    </button>
-                                </div>
-                            </div>
-                        </header>
-
-                        {/* Page Content */}
-                        <div className="p-8 max-w-7xl mx-auto">
-                            {currentTab === 'monitoring' && (
-                                <MonitoringHub
-                                    t={t}
-                                    depotTanks={depotTanks}
-                                    stations={stations}
-                                    onRefresh={handleRefreshData}
-                                />
-                            )}
-                            {currentTab === 'calculator' && (
-                                <FuelCalculator
-                                    t={t}
-                                    prices={prices}
-                                    lang={lang}
-                                    onApplyToForm={handlePrefillApply}
-                                />
-                            )}
-                            {currentTab === 'orderForm' && (
-                                <B2bOrderForm
-                                    t={t}
-                                    initialValues={calcPrefill}
-                                    onSubmitOrder={handleNewB2bOrder}
-                                    userRole={user.role}
-                                    b2bOrders={b2bOrders}
-                                    onUpdateStatus={handleUpdateOrderStatus}
-                                />
-                            )}
-                            {currentTab === 'downloadHub' && (
-                                <DownloadHub
-                                    t={t}
-                                    documents={documents}
-                                    onDownload={handleDocumentDownload}
-                                />
-                            )}
-                            {currentTab === 'prices' && (
-                                <PriceManagement
-                                    t={t}
-                                    prices={prices}
-                                    setPrices={setPrices}
-                                    onSave={() => {
-                                        logAction('Жанармай бағалары өзгертілді', user.name);
-                                        showToast('Бағалар сәтті сақталды', 'success');
-                                    }}
-                                    lang={lang}
-                                />
-                            )}
-                            {currentTab === 'analytics' && (
-                                <VisitorAnalytics
-                                    t={t}
-                                    analyticsLogs={analyticsLogs}
-                                    b2bOrders={b2bOrders}
-                                />
-                            )}
-                            {currentTab === 'admin' && (
-                                <AdminPanel
-                                    t={t}
-                                    stations={stations}
-                                    setStations={setStations}
-                                    logAction={(msg) => logAction(msg, user.name)}
-                                />
-                            )}
-                            {currentTab === 'requests' && (
-                                <UserRequests
-                                    t={t}
-                                    userRequests={userRequests}
-                                    setUserRequests={setUserRequests}
-                                    registeredUsers={registeredUsers}
-                                    setRegisteredUsers={setRegisteredUsers}
-                                    logAction={(msg) => logAction(msg, user.name)}
-                                />
-                            )}
-                            {currentTab === 'audit' && (
-                                <AuditLogs
-                                    t={t}
-                                    logs={logs}
-                                />
-                            )}
+                            <div className="w-12 h-1 bg-gold-400 rounded-full"></div>
+                            <KazakhOrnament className="w-32 h-32 text-gold-200 absolute bottom-[-40px] opacity-30 rotate-180" />
                         </div>
-                    </main>
+                        <div className="p-6 bg-sage-50 flex justify-center gap-4">
+                            <button onClick={onClose} className="px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest text-sage-400 hover:text-sage-600 transition-all">Close</button>
+                            <button className="btn-premium text-gold-900 px-10 py-3 rounded-2xl text-xs font-black uppercase tracking-widest" onClick={() => window.print()}>Print / Save</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
-                    {/* Footer Background Effect */}
-                    <div className="fixed bottom-0 right-0 w-[500px] h-[500px] bg-royalBlue/5 blur-[150px] -z-10 rounded-full"></div>
+        const HeritageModule = ({ t, lang, thoughts, onShare }) => {
+            const [searchTerm, setSearchTerm] = useState('');
+            const filtered = thoughts.filter(q => q.author.toLowerCase().includes(searchTerm.toLowerCase()) || q.text[lang].toLowerCase().includes(searchTerm.toLowerCase()));
+
+            return (
+                <div className="space-y-12 animate-fade-in">
+                    <div className="flex flex-col md:flex-row gap-6 items-center justify-between premium-glass p-8 rounded-[40px] shadow-glass">
+                        <div className="relative w-full md:w-1/2">
+                            <LucideIcon name="search" className="absolute left-6 top-1/2 -translate-y-1/2 text-sage-400 w-5 h-5" />
+                            <input
+                                type="text" placeholder={t.common.search}
+                                value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+                                className="w-full bg-white/50 border border-white rounded-[25px] pl-16 pr-6 py-4 text-sm focus:border-gold-400 outline-none transition-all shadow-inner"
+                            />
+                        </div>
+                        <div className="flex items-center gap-4 text-sage-400 font-bold uppercase text-[10px] tracking-[0.2em]">
+                            <LucideIcon name="filter" className="w-4 h-4" />
+                            <span>Discovering {filtered.length} insights</span>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        {filtered.map(thought => <QuoteCard key={thought.id} thought={thought} lang={lang} onShare={onShare} />)}
+                    </div>
+                </div>
+            );
+        };
+
+        const ConstellationMap = ({ t, lang }) => {
+            const nodes = [
+                { id: 1, label: { kk: 'Жан', en: 'Soul' }, x: 400, y: 300, glow: '#fcd34d' },
+                { id: 2, label: { kk: 'Ар', en: 'Conscience' }, x: 250, y: 150, glow: '#fbbf24' },
+                { id: 3, label: { kk: 'Махаббат', en: 'Love' }, x: 550, y: 150, glow: '#fbbf24' },
+                { id: 4, label: { kk: 'Еркіндік', en: 'Freedom' }, x: 200, y: 450, glow: '#fbbf24' },
+                { id: 5, label: { kk: 'Уақыт', en: 'Time' }, x: 600, y: 450, glow: '#fbbf24' },
+                { id: 6, label: { kk: 'Шындық', en: 'Truth' }, x: 400, y: 80, glow: '#adbdb1' },
+            ];
+            const links = [ {s:1, t:2}, {s:1, t:3}, {s:1, t:4}, {s:1, t:5}, {s:2, t:6} ];
+
+            return (
+                <div className="premium-glass rounded-[60px] p-12 overflow-hidden animate-fade-in shadow-glass border-4 border-white">
+                    <div className="relative aspect-video bg-premiumDark/5 rounded-[40px] overflow-hidden">
+                        <svg viewBox="0 0 800 600" className="w-full h-full">
+                            {links.map((l, i) => {
+                                const sn = nodes.find(n => n.id === l.s), tn = nodes.find(n => n.id === l.t);
+                                return <line key={i} x1={sn.x} y1={sn.y} x2={tn.x} y2={tn.y} stroke="#d1dbd1" strokeWidth="1" strokeDasharray="10,10" className="animate-pulse" />;
+                            })}
+                            {nodes.map(n => (
+                                <g key={n.id} className="constellation-node cursor-pointer group">
+                                    <circle cx={n.x} cy={n.y} r="35" fill="white" stroke={n.glow} strokeWidth="3" />
+                                    <text x={n.x} y={n.y + 6} textAnchor="middle" className="text-[11px] font-black uppercase tracking-tighter fill-sage-900">{n.label[lang]}</text>
+                                </g>
+                            ))}
+                        </svg>
+                        <div className="absolute top-10 left-10 pointer-events-none">
+                            <h3 className="text-xl font-serif italic text-sage-800">Idea Constellation</h3>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-sage-400 mt-2">Exploring conceptual links</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const MainApp = () => {
+            const [lang, setLang] = useState('kk');
+            const [currentTab, setTab] = useState('collection');
+            const [shareQuote, setShareQuote] = useState(null);
+            const { streak, badges, incrementStreak, awardBadge } = useGamification();
+            const t = useMemo(() => translations[lang], [lang]);
+
+            useEffect(() => { incrementStreak(); }, [incrementStreak]);
+
+            const renderContent = () => {
+                switch(currentTab) {
+                    case 'collection': return <HeritageModule t={t} lang={lang} thoughts={initialThoughts} onShare={setShareQuote} />;
+                    case 'map': return <ConstellationMap t={t} lang={lang} />;
+                    case 'diary': return <DiaryModule t={t} lang={lang} awardBadge={awardBadge} />;
+                    case 'daily': return <DailyThoughtModule t={t} lang={lang} awardBadge={awardBadge} />;
+                    case 'quiz': return <QuizModule t={t} lang={lang} awardBadge={awardBadge} />;
+                    default: return <div className="text-center py-20 text-sage-300 italic">Coming Soon...</div>;
+                }
+            };
+
+            return (
+                <div className="max-w-7xl mx-auto px-6 py-8">
+                    {shareQuote && <QuoteGenerator thought={shareQuote} lang={lang} onClose={() => setShareQuote(null)} />}
+
+                    {/* Premium Header */}
+                    <header className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8">
+                        <div className="flex items-center gap-6">
+                            <div className="w-16 h-16 btn-premium rounded-3xl flex items-center justify-center text-gold-900 shadow-xl">
+                                <LucideIcon name="library" className="w-8 h-8" />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-black uppercase tracking-tighter italic text-glow">{t.appName}</h1>
+                                <p className="text-[10px] font-bold text-sage-500 uppercase tracking-[0.4em]">{t.slogan}</p>
+                            </div>
+                        </div>
+
+                        <nav className="flex items-center gap-8 premium-glass px-10 py-4 rounded-full shadow-glass border border-white">
+                            {Object.entries(t.nav).map(([key, label]) => (
+                                <button
+                                    key={key} onClick={() => setTab(key)}
+                                    className={`text-[11px] font-black uppercase tracking-[0.2em] nav-underline transition-all ${currentTab === key ? "text-gold-600 nav-active" : "text-sage-400 hover:text-sage-700"}`}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </nav>
+
+                        <div className="flex items-center gap-4">
+                            <div className="flex bg-sage-200/50 p-1 rounded-2xl border border-white">
+                                {['kk', 'en'].map(l => (
+                                    <button key={l} onClick={() => setLang(l)} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${lang === l ? "bg-white text-gold-700 shadow-sm" : "text-sage-400"}`}>{l}</button>
+                                ))}
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Stats & Streak Bar */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+                        <div className="premium-glass p-6 rounded-[30px] flex items-center gap-5">
+                            <div className="w-12 h-12 bg-gold-100 rounded-2xl flex items-center justify-center text-gold-600"><LucideIcon name="zap" /></div>
+                            <div>
+                                <p className="text-[10px] font-black text-sage-400 uppercase tracking-widest">{t.common.streak}</p>
+                                <p className="text-xl font-black text-sage-900 italic">{streak} Days</p>
+                            </div>
+                        </div>
+                        <div className="premium-glass p-6 rounded-[30px] flex items-center gap-5 col-span-1 md:col-span-3">
+                            <LucideIcon name="award" className="text-gold-500" />
+                            <div className="flex gap-4">
+                                {badges.length === 0 ? <p className="text-xs font-bold text-sage-300 italic">No badges earned yet. Keep exploring!</p> :
+                                 badges.map(b => <span key={b} className="bg-gold-50 text-gold-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-gold-100">{t.badgesList[b]}</span>)}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Content Section */}
+                    <div className="min-h-[600px]">
+                        <div className="mb-12 text-center max-w-2xl mx-auto space-y-4">
+                             <KazakhOrnament className="w-10 h-10 text-gold-300 mx-auto opacity-40" />
+                             <h2 className="text-5xl font-serif italic text-sage-900">{t.nav[currentTab]}</h2>
+                             <div className="h-0.5 w-12 bg-gold-400 mx-auto rounded-full"></div>
+                        </div>
+                        {renderContent()}
+                    </div>
+
+                    <footer className="mt-32 py-12 border-t border-sage-200 text-center">
+                         <p className="text-[10px] font-black text-sage-400 uppercase tracking-[0.5em]">© 2026 Bilmek • Intellectual Excellence</p>
+                    </footer>
                 </div>
             );
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        root.render(<MainApp />);
     </script>
 </body>
 </html>
