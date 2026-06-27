@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilmek | Elite Philosophical Intelligence</title>
+    <title>Bilmek | Philosophical Intelligence Platform</title>
 
     <!-- Dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -18,21 +18,19 @@
             theme: {
                 extend: {
                     colors: {
-                        zenPaper: '#FDFCFB',
-                        zenEbony: '#1A1A1A',
-                        zenGold: '#AF915E',
-                        zenSage: '#8C948D',
-                        zenBorder: '#EEEAE5',
-                        zenGlow: '#F5F0E8',
+                        obsidian: '#0B0C10',
+                        deepSlate: '#1F2833',
+                        platinum: '#E5E5E5',
+                        amberGold: '#FFB400',
+                        sageGray: '#C5C6C7',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         serif: ['Playfair Display', 'serif'],
                     },
                     boxShadow: {
-                        'soft': '0 10px 40px rgba(0, 0, 0, 0.02)',
-                        'hard': '0 20px 60px rgba(0, 0, 0, 0.08)',
-                        'gold': '0 0 20px rgba(175, 145, 94, 0.2)',
+                        'premium': '0 25px 60px -15px rgba(0, 0, 0, 0.6)',
+                        'gold-glow': '0 0 20px rgba(255, 180, 0, 0.2)',
                     }
                 }
             }
@@ -41,97 +39,83 @@
 
     <style type="text/css">
         body {
-            background-color: #FDFCFB;
-            color: #1A1A1A;
+            background-color: #0B0C10;
+            color: #E5E5E5;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        .fade-in { animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .glass {
+            background: rgba(31, 40, 51, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-        .slide-up { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .gold-gradient {
+            background: linear-gradient(135deg, #FFB400 0%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .fade-in { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #AF915E; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0B0C10; }
+        ::-webkit-scrollbar-thumb { background: #FFB400; border-radius: 10px; }
 
-        .ornament-bg {
-            background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0 L70 50 L120 60 L70 70 L60 120 L50 70 L0 60 L50 50 Z' fill='%23AF915E' fill-opacity='0.03'/%3E%3C/svg%3E");
+        .ornament-watermark {
+            opacity: 0.03;
+            pointer-events: none;
+            position: absolute;
+            z-index: 0;
         }
 
-        .breathe-guide {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            border: 1px solid #AF915E;
+        .breathe-animation {
             animation: breathe 12s ease-in-out infinite;
         }
         @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.2; } /* Exhale 4s */
-            33% { transform: scale(1.6); opacity: 0.6; }    /* Inhale 4s */
-            66% { transform: scale(1.6); opacity: 0.6; }    /* Hold 4s */
+            0%, 100% { transform: scale(1); opacity: 0.15; }
+            33% { transform: scale(1.6); opacity: 0.4; } /* Inhale 4s */
+            66% { transform: scale(1.6); opacity: 0.4; } /* Hold 4s */
         }
 
-        .aura-pulse {
-            filter: blur(80px);
-            transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+        .constellation-link {
+            stroke: rgba(255, 180, 0, 0.1);
+            stroke-dasharray: 5, 5;
+            transition: all 0.5s ease;
         }
 
-        .interactive-node {
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .interactive-node:hover {
-            filter: drop-shadow(0 0 15px rgba(175, 145, 94, 0.5));
-        }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid #EEEAE5;
-        }
-
-        .nav-item::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            width: 0;
-            height: 1px;
-            background: #1A1A1A;
-            transition: all 0.4s ease;
-            transform: translateX(-50%);
-        }
-        .nav-item-active::after { width: 100%; }
-
-        @media print {
-            .no-print { display: none; }
+        .active-nav-glow {
+            box-shadow: 0 0 15px rgba(255, 180, 0, 0.3);
         }
     </style>
 </head>
-<body class="ornament-bg selection:bg-zenEbony selection:text-white min-h-screen">
+<body class="selection:bg-amberGold selection:text-obsidian">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
-        // --- ELITE CONTENT DATABASE ---
-        const KAZAKH_ORNAMENT = `<path d="M50 10 C 60 10 70 20 70 35 C 70 50 60 60 50 60 C 40 60 30 50 30 35 C 30 20 40 10 50 10 M50 60 L50 90 M30 75 L70 75 M40 65 L60 65 M20 35 C 10 35 0 45 0 60 C 0 75 10 85 25 85 C 40 85 50 75 50 60 M50 60 C 50 75 60 85 75 85 C 90 85 100 75 100 60 C 100 45 90 35 80 35" />`;
+        // --- ASSETS & CONSTANTS ---
+        const KAZAKH_ORNAMENT_PATH = `M50 0 C 60 20 80 30 100 30 C 80 30 70 50 70 70 C 70 90 50 100 50 100 C 50 100 30 90 30 70 C 30 50 20 30 0 30 C 20 30 40 20 50 0`;
 
-        const THOUGHTS = [
-            { id: 1, author: "Abai", cat: "wisdom", tags: ["self", "discipline"], text: { kk: "Адам болам десеңіз, оған себепші бес нәрсе бар: өсек, өтірік, мақтаншақ, еріншек, бекер мал шашпақ - бұлардан сақ бол.", en: "If you want to be a human, beware of gossip, lying, boasting, laziness, and waste." } },
-            { id: 2, author: "Al-Farabi", cat: "wisdom", tags: ["education", "virtue"], text: { kk: "Тәрбиесіз берілген білім — адамзаттың қас жауы.", en: "Knowledge without upbringing is the enemy of mankind." } },
+        const THOUGHTS_DATABASE = [
+            { id: 1, author: "Abai", cat: "wisdom", tags: ["morality", "logic"], text: { kk: "Адам болам десеңіз, оған себепші бес нәрсе бар: өсек, өтірік, мақтаншақ, еріншек, бекер мал шашпақ - бұлардан сақ бол.", en: "If you want to be a human, beware of five things: gossip, lying, boasting, laziness, and waste." } },
+            { id: 2, author: "Al-Farabi", cat: "wisdom", tags: ["education", "science"], text: { kk: "Тәрбиесіз берілген білім — адамзаттың қас жауы.", en: "Knowledge without upbringing is the enemy of mankind." } },
             { id: 3, author: "Shakarim", cat: "life", tags: ["conscience"], text: { kk: "Ар-ұяттың күзеті — әркімнің өз жүрегінде.", en: "The guardian of conscience is in everyone's heart." } },
             { id: 4, author: "Marcus Aurelius", cat: "life", tags: ["stoic"], text: { kk: "Өміріңнің бақыты ойыңның сапасына байланысты.", en: "The happiness of your life depends upon the quality of your thoughts." } },
-            { id: 5, author: "Seneca", cat: "time", tags: ["stoic"], text: { kk: "Уақыт — біздің ең қымбат қазынамыз.", en: "Time is our most precious treasure." } },
-            { id: 6, author: "Yasawi", cat: "spirit", tags: ["truth"], text: { kk: "Көңіліңді таза ұста, сонда ғана шындыққа жетесің.", en: "Keep your heart clean, only then will you reach the truth." } },
-            { id: 7, author: "Epictetus", cat: "wisdom", tags: ["control"], text: { kk: "Сенің бақытың тек өз еркіңдегі нәрселерге ғана байланысты.", en: "Your happiness depends only on what is within your power." } }
+            { id: 5, author: "Seneca", cat: "time", tags: ["value"], text: { kk: "Уақыт — біздің ең қымбат қазынамыз.", en: "Time is our most precious treasure." } },
+            { id: 6, author: "Socrates", cat: "wisdom", tags: ["truth"], text: { kk: "Мен ешнәрсе білмейтінімді білемін.", en: "I know that I know nothing." } }
         ];
 
-        // --- SHARED COMPONENTS ---
+        // --- COMPONENTS ---
         const Icon = ({ name, className = "w-4 h-4" }) => {
             const iconRef = useRef(null);
             useEffect(() => {
@@ -143,19 +127,16 @@
             return <span ref={iconRef} className="inline-flex items-center justify-center" />;
         };
 
-        const Ornament = ({ className = "w-6 h-6 text-zenGold" }) => (
-            <svg viewBox="0 0 100 100" className={className} fill="currentColor" dangerouslySetInnerHTML={{ __html: KAZAKH_ORNAMENT }} />
+        const KazakhOrnament = ({ className = "w-10 h-10 text-amberGold" }) => (
+            <svg viewBox="0 0 100 100" className={className} fill="currentColor" dangerouslySetInnerHTML={{ __html: `<path d="${KAZAKH_ORNAMENT_PATH}" />` }} />
         );
 
-        // --- MODULES ---
-
-        // 1. HERITAGE LIBRARY
         const HeritageModule = ({ lang, addXp }) => {
             const [search, setSearch] = useState('');
-            const [activeTag, setTag] = useState(null);
             const [speaking, setSpeaking] = useState(null);
+            const [activeTag, setTag] = useState(null);
 
-            const filtered = useMemo(() => THOUGHTS.filter(q =>
+            const filtered = useMemo(() => THOUGHTS_DATABASE.filter(q =>
                 (q.author.toLowerCase().includes(search.toLowerCase()) || q.text[lang].toLowerCase().includes(search.toLowerCase())) &&
                 (!activeTag || q.tags.includes(activeTag))
             ), [search, lang, activeTag]);
@@ -165,66 +146,61 @@
                 if (speaking === id) { setSpeaking(null); return; }
                 const utter = new SpeechSynthesisUtterance(text);
                 utter.lang = lang === 'kk' ? 'tr-TR' : 'en-US';
-                utter.onstart = () => setSpeaking(id);
                 utter.onend = () => setSpeaking(null);
+                setSpeaking(id);
                 window.speechSynthesis.speak(utter);
             };
 
-            const share = (q) => {
+            const generateCard = (q) => {
                 const canvas = document.createElement('canvas');
-                canvas.width = 1080; canvas.height = 1080;
+                canvas.width = 1000; canvas.height = 1000;
                 const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#FDFCFB'; ctx.fillRect(0, 0, 1080, 1080);
-
-                ctx.fillStyle = '#1A1A1A'; ctx.font = 'italic 52px "Playfair Display"'; ctx.textAlign = 'center';
+                ctx.fillStyle = '#0B0C10'; ctx.fillRect(0, 0, 1000, 1000);
+                ctx.fillStyle = '#FFB400'; ctx.font = '700 40px Inter'; ctx.textAlign = 'center';
+                ctx.fillText('BILMEK WISDOM', 500, 150);
+                ctx.fillStyle = '#E5E5E5'; ctx.font = 'italic 50px "Playfair Display"';
                 const words = `"${q.text[lang]}"`.split(' ');
-                let line = '', y = 500;
+                let line = '', y = 450;
                 for(let n=0; n<words.length; n++) {
                     let test = line + words[n] + ' ';
-                    if (ctx.measureText(test).width > 800) { ctx.fillText(line, 540, y); line = words[n] + ' '; y += 75; }
+                    if (ctx.measureText(test).width > 700) { ctx.fillText(line, 500, y); line = words[n] + ' '; y += 75; }
                     else line = test;
                 }
-                ctx.fillText(line, 540, y);
-
-                ctx.fillStyle = '#AF915E'; ctx.font = '700 28px "Inter"'; ctx.fillText(q.author.toUpperCase(), 540, y + 100);
-
+                ctx.fillText(line, 500, y);
+                ctx.fillStyle = '#FFB400'; ctx.font = '700 30px Inter'; ctx.fillText(q.author.toUpperCase(), 500, y + 120);
                 const link = document.createElement('a');
-                link.download = `bilmek_wisdom_${q.author}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                addXp(30);
+                link.download = `bilmek_${q.author}.png`; link.href = canvas.toDataURL(); link.click();
+                addXp(25);
             };
 
             return (
-                <div className="space-y-24 fade-in">
-                    <div className="max-w-2xl mx-auto space-y-10 flex flex-col items-center">
-                        <Ornament className="w-12 h-12 opacity-40 animate-pulse" />
+                <div className="space-y-20 fade-in">
+                    <div className="max-w-xl mx-auto relative group">
+                        <Icon name="search" className="absolute left-6 top-1/2 -translate-y-1/2 text-sageGray" />
                         <input
-                            type="text" placeholder="Search insights..." value={search} onChange={e => setSearch(e.target.value)}
-                            className="w-full bg-transparent border-b border-zenBorder py-6 text-center text-2xl font-serif italic outline-none focus:border-zenEbony transition-all placeholder:opacity-20"
+                            type="text" placeholder="Discover ancient insights..." value={search} onChange={e => setSearch(e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-full pl-16 pr-8 py-5 text-sm focus:border-amberGold outline-none transition-all shadow-inner font-medium"
                         />
-                        <div className="flex gap-4 flex-wrap justify-center">
-                            {['wisdom', 'life', 'spirit', 'time'].map(c => <button key={c} className="text-[10px] font-black uppercase tracking-[0.3em] text-zenSage hover:text-zenEbony transition-all">{c}</button>)}
-                        </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                         {filtered.map(q => (
-                            <div key={q.id} className="p-12 border border-zenBorder bg-white flex flex-col justify-between h-[500px] hover:border-zenGold transition-all duration-1000 group shadow-soft hover:shadow-hard">
-                                <div className="space-y-10">
-                                    <div className="flex justify-between items-center opacity-30 group-hover:opacity-100 transition-all">
-                                        <Icon name="feather" className="text-zenGold" />
-                                        <div className="flex gap-6">
-                                            <button onClick={() => speak(q.id, q.text[lang])} className={`transition-all ${speaking === q.id ? "text-zenGold scale-125" : "hover:text-zenGold"}`}><Icon name={speaking === q.id ? "volume-2" : "volume-x"} /></button>
-                                            <button onClick={() => share(q)} className="hover:text-zenGold transition-all"><Icon name="share-2" /></button>
+                            <div key={q.id} className="glass p-12 rounded-[40px] flex flex-col justify-between h-[500px] hover:border-amberGold/30 transition-all duration-700 group relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity"><KazakhOrnament className="w-24 h-24" /></div>
+                                <div className="space-y-10 relative z-10">
+                                    <div className="flex justify-between items-center">
+                                        <div className="w-12 h-12 rounded-2xl bg-amberGold/10 flex items-center justify-center text-amberGold border border-amberGold/20"><Icon name="quote" className="w-6 h-6" /></div>
+                                        <div className="flex gap-4 opacity-30 group-hover:opacity-100 transition-all">
+                                            <button onClick={() => speak(q.id, q.text[lang])} className={`p-2 transition-all ${speaking === q.id ? "text-amberGold scale-125" : "hover:text-amberGold"}`}><Icon name="volume-2" /></button>
+                                            <button onClick={() => generateCard(q)} className="p-2 hover:text-amberGold transition-all"><Icon name="share-2" /></button>
                                         </div>
                                     </div>
-                                    <p className="text-2xl font-serif italic leading-relaxed text-zenEbony">"{q.text[lang]}"</p>
+                                    <p className="text-3xl font-serif italic leading-relaxed text-platinum group-hover:text-white transition-colors">"{q.text[lang]}"</p>
                                 </div>
-                                <div className="mt-auto pt-10 border-t border-zenPaper flex flex-col gap-4">
-                                    <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-zenGold">{q.author}</h4>
-                                    <div className="flex flex-wrap gap-3">
-                                        {q.tags.map(t => <span key={t} className="text-[9px] font-bold text-zenSage uppercase tracking-widest bg-zenGlow px-2 py-1 rounded-sm">#{t}</span>)}
+                                <div className="mt-auto pt-10 border-t border-white/5 relative z-10 flex flex-col gap-4">
+                                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-amberGold">{q.author}</h4>
+                                    <div className="flex gap-2">
+                                        {q.tags.map(t => <button key={t} onClick={() => setTag(activeTag === t ? null : t)} className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm ${activeTag === t ? "bg-amberGold text-obsidian" : "bg-white/5 text-sageGray hover:text-white"}`}>#{t}</button>)}
                                     </div>
                                 </div>
                             </div>
@@ -234,75 +210,61 @@
             );
         };
 
-        // 2. REFLECTION LAB (Mood Aura + Locking + Mirroring)
         const ReflectionModule = ({ lang, addXp }) => {
             const [text, setText] = useState('');
-            const [entries, setEntries] = useState(() => JSON.parse(localStorage.getItem('zen_entries_v2') || '[]'));
-            const [aura, setAura] = useState({ color: '#8C948D11', mood: 'neutral' });
-            const [locked, setLocked] = useState(false);
+            const [entries, setEntries] = useState(() => JSON.parse(localStorage.getItem('bilmek_ref_v2') || '[]'));
+            const [aura, setAura] = useState({ color: 'rgba(197, 198, 199, 0.1)', mood: 'peace' });
 
             useEffect(() => {
                 const lower = text.toLowerCase();
-                if (lower.includes('happy') || lower.includes('бақыт') || lower.includes('қуаныш')) setAura({ color: '#AF915E44', mood: 'joy' });
-                else if (lower.includes('sad') || lower.includes('мұң') || lower.includes('жалғыз')) setAura({ color: '#1C1C1C22', mood: 'melancholy' });
-                else if (lower.includes('think') || lower.includes('ой')) setAura({ color: '#8C948D44', mood: 'contemplative' });
-                else setAura({ color: '#8C948D11', mood: 'neutral' });
+                if (lower.includes('happy') || lower.includes('бақыт') || lower.includes('қуаныш')) setAura({ color: 'rgba(255, 180, 0, 0.2)', mood: 'joy' });
+                else if (lower.includes('sad') || lower.includes('мұң') || lower.includes('жалғыз')) setAura({ color: 'rgba(31, 40, 51, 0.4)', mood: 'melancholy' });
+                else if (lower.includes('think') || lower.includes('ой') || lower.includes('сұрақ')) setAura({ color: 'rgba(255, 255, 255, 0.1)', mood: 'thought' });
+                else setAura({ color: 'rgba(197, 198, 199, 0.1)', mood: 'peace' });
             }, [text]);
 
-            const mirrored = useMemo(() => THOUGHTS[Math.floor(Math.random() * THOUGHTS.length)], [aura.mood]);
+            const mirrored = useMemo(() => THOUGHTS_DATABASE[Math.floor(Math.random() * THOUGHTS_DATABASE.length)], [aura.mood]);
 
             const save = () => {
                 if (!text.trim()) return;
-                const newEntry = { id: Date.now(), text, mood: aura.mood, locked, date: new Date().toLocaleDateString() };
-                const next = [newEntry, ...entries];
+                const entry = { id: Date.now(), text, mood: aura.mood, date: new Date().toLocaleDateString() };
+                const next = [entry, ...entries];
                 setEntries(next);
-                localStorage.setItem('zen_entries_v2', JSON.stringify(next));
-                setText(''); setLocked(false); addXp(50);
+                localStorage.setItem('bilmek_ref_v2', JSON.stringify(next));
+                setText(''); addXp(50);
             };
 
             return (
-                <div className="max-w-4xl mx-auto space-y-24 fade-in">
-                    <div className="relative p-20 border border-zenBorder bg-white overflow-hidden shadow-soft">
-                        <div className="aura-pulse absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full" style={{ background: aura.color }}></div>
-                        <div className="relative z-10 space-y-16">
+                <div className="max-w-4xl mx-auto space-y-20 fade-in">
+                    <div className="relative glass p-16 rounded-[60px] overflow-hidden border border-white/5">
+                        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[100px] transition-all duration-1000" style={{ background: aura.color }}></div>
+                        <div className="relative z-10 space-y-12">
                             <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: aura.mood === 'joy' ? '#AF915E' : '#8C948D' }}></div>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zenSage">Aura: {aura.mood}</span>
-                                </div>
-                                <button onClick={() => setLocked(!locked)} className={`transition-all ${locked ? "text-zenGold" : "text-zenSage hover:text-zenEbony"}`}><Icon name={locked ? "lock" : "unlock"} className="w-5 h-5" /></button>
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-amberGold">Aura: {aura.mood}</span>
+                                <KazakhOrnament className="w-8 h-8 opacity-20" />
                             </div>
                             <textarea
                                 value={text} onChange={e => setText(e.target.value)}
-                                placeholder="Pour your soul onto the paper..."
-                                className="w-full h-96 bg-transparent text-3xl font-serif italic text-center outline-none resize-none placeholder:opacity-20 leading-relaxed"
+                                placeholder="Whisper your silence to the digital paper..."
+                                className="w-full h-80 bg-transparent text-4xl font-serif italic text-center outline-none resize-none placeholder:opacity-10 leading-relaxed text-platinum"
                             />
-                            {text.length > 40 && (
-                                <div className="p-10 border-y border-zenPaper text-center animate-fade-in space-y-4">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zenGold">Philosophical Mirror</p>
-                                    <p className="text-lg text-zenSage italic">"{mirrored.text[lang]}" — {mirrored.author}</p>
+                            {text.length > 50 && (
+                                <div className="p-8 bg-white/5 border border-white/5 rounded-3xl animate-fade-in text-center">
+                                    <p className="text-sm text-sageGray italic">"{mirrored.text[lang]}" — {mirrored.author}</p>
                                 </div>
                             )}
                             <div className="flex justify-center">
-                                <button onClick={save} className="px-20 py-6 bg-zenEbony text-white text-[10px] font-black uppercase tracking-[0.5em] hover:bg-zenGold transition-all">Enshrine Reflection</button>
+                                <button onClick={save} className="px-16 py-5 bg-amberGold text-obsidian rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all">Enshrine Insight</button>
                             </div>
                         </div>
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         {entries.map(e => (
-                            <div key={e.id} className="p-12 border border-zenBorder bg-white hover:border-zenEbony transition-all group flex flex-col justify-between min-h-[300px]">
-                                {e.locked ? (
-                                    <div className="flex flex-col items-center justify-center h-full opacity-20">
-                                        <Icon name="lock" className="w-12 h-12 mb-4" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest">Time Capsule Locked</p>
-                                    </div>
-                                ) : (
-                                    <p className="text-xl font-serif italic leading-relaxed text-zenEbony">"{e.text}"</p>
-                                )}
-                                <div className="mt-10 pt-6 border-t border-zenPaper flex justify-between items-center">
-                                    <span className="text-[10px] font-bold text-zenSage uppercase">{e.date}</span>
-                                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: e.mood === 'joy' ? '#AF915E' : '#8C948D' }}></div>
+                            <div key={e.id} className="glass p-10 rounded-[40px] flex flex-col justify-between hover:border-white/20 transition-all group">
+                                <p className="text-xl font-serif italic text-sageGray leading-relaxed">"{e.text}"</p>
+                                <div className="mt-8 pt-6 border-t border-white/5 flex justify-between items-center">
+                                    <span className="text-[10px] font-bold text-sageGray uppercase tracking-widest">{e.date}</span>
+                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: e.mood === 'joy' ? '#FFB400' : '#1F2833' }}></div>
                                 </div>
                             </div>
                         ))}
@@ -311,80 +273,88 @@
             );
         };
 
-        // 3. MINDFULNESS JOURNEY (Breathe + Local Poll)
-        const WisdomModule = ({ addXp }) => {
+        const ZenModule = ({ lang, addXp }) => {
             const [stage, setStage] = useState('breathe');
-            const [poll, setPoll] = useState(() => JSON.parse(localStorage.getItem('zen_poll_v2') || '[42, 38, 20]'));
-            const [voted, setVoted] = useState(() => localStorage.getItem('zen_voted_v2') === 'true');
+            const [pollData, setPollData] = useState(() => JSON.parse(localStorage.getItem('bilmek_poll_v3') || '[45, 30, 25]'));
+            const [voted, setVoted] = useState(() => localStorage.getItem('bilmek_voted_v3') === 'true');
 
             const vote = (idx) => {
                 if (voted) return;
-                const next = [...poll]; next[idx]++;
-                setPoll(next);
-                localStorage.setItem('zen_poll_v2', JSON.stringify(next));
-                localStorage.setItem('zen_voted_v2', 'true');
+                const next = [...pollData]; next[idx]++;
+                setPollData(next);
+                localStorage.setItem('bilmek_poll_v3', JSON.stringify(next));
+                localStorage.setItem('bilmek_voted_v3', 'true');
                 setVoted(true);
                 addXp(40);
                 setStage('result');
             };
 
             return (
-                <div className="max-w-4xl mx-auto fade-in">
+                <div className="max-w-4xl mx-auto space-y-16 fade-in">
                     {stage === 'breathe' && (
-                        <div className="flex flex-col items-center justify-center py-24 space-y-24">
-                            <div className="flex items-center justify-center breathe-guide">
-                                <Icon name="wind" className="w-16 h-16 text-zenGold" />
+                        <div className="flex flex-col items-center justify-center py-24 space-y-20">
+                            <div className="relative w-64 h-64 flex items-center justify-center">
+                                <div className="absolute inset-0 border-2 border-amberGold/30 rounded-full breathe-animation"></div>
+                                <div className="absolute inset-8 border border-amberGold/20 rounded-full breathe-animation" style={{ animationDelay: '3s' }}></div>
+                                <Icon name="wind" className="w-12 h-12 text-amberGold relative z-10" />
                             </div>
                             <div className="text-center space-y-6">
-                                <h3 className="text-5xl font-serif italic text-zenEbony tracking-tight">Sync Your Spirit</h3>
-                                <p className="text-[11px] font-black uppercase tracking-[0.8em] text-zenSage">Inhale Existence • Exhale Identity</p>
+                                <h3 className="text-5xl font-serif italic text-platinum tracking-tight">Sync Your Rhythm</h3>
+                                <p className="text-[11px] font-black uppercase tracking-[0.8em] text-sageGray">Inhale Existence • Exhale Identity</p>
                             </div>
-                            <button onClick={() => setStage('inquiry')} className="px-16 py-5 border border-zenEbony text-[10px] font-black uppercase tracking-[0.5em] hover:bg-zenEbony hover:text-white transition-all">Enter Inquiry</button>
+                            <button onClick={() => setStage('inquiry')} className="px-12 py-4 border border-platinum/20 text-platinum text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-obsidian transition-all duration-700">Enter Silent Inquiry</button>
                         </div>
                     )}
 
                     {stage === 'inquiry' && (
-                        <div className="p-24 border border-zenBorder bg-white text-center space-y-20 shadow-soft">
-                            <div className="space-y-4">
-                                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zenGold">Daily Dilemma</span>
-                                <h4 className="text-4xl font-serif italic text-zenEbony leading-tight">"Is the silence between notes what makes the music, or the notes themselves?"</h4>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                                {["The Silence", "The Notes", "The Witness"].map((o, i) => (
-                                    <button key={i} onClick={() => vote(i)} className="p-12 border border-zenBorder hover:border-zenEbony transition-all font-serif italic text-2xl group relative overflow-hidden">
-                                        <span className="relative z-10">{o}</span>
-                                        <div className="absolute inset-0 bg-zenPaper -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                        <div className="glass p-20 rounded-[60px] text-center space-y-16 border border-white/5">
+                             <span className="text-[10px] font-black uppercase tracking-[0.5em] text-amberGold">Collective Dilemma</span>
+                             <h4 className="text-4xl font-serif italic text-platinum leading-tight">
+                                {lang === 'kk' ? "Уақыт — сызық па, әлде айналым ба?" : "Is time a forward line or a returning circle?"}
+                             </h4>
+                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
+                                {[
+                                    { kk: "Сызық", en: "A Line" },
+                                    { kk: "Айналым", en: "A Circle" },
+                                    { kk: "Екеуі де емес", en: "Neither" }
+                                ].map((opt, i) => (
+                                    <button key={i} onClick={() => vote(i)} className="p-8 border border-white/10 hover:border-amberGold transition-all font-serif italic text-xl rounded-2xl bg-white/5">
+                                        {opt[lang]}
                                     </button>
                                 ))}
-                            </div>
+                             </div>
                         </div>
                     )}
 
                     {stage === 'result' && (
-                        <div className="p-24 border border-zenBorder bg-white space-y-20">
+                        <div className="glass p-16 rounded-[60px] space-y-16 border border-white/5">
                              <div className="text-center">
-                                <h3 className="text-3xl font-serif italic text-zenEbony">The Collective Resonance</h3>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-zenSage mt-6">How elite minds aligned today</p>
+                                <h3 className="text-3xl font-serif italic text-platinum">The Shared Resonance</h3>
+                                <p className="text-sageGray text-[10px] font-black uppercase tracking-widest mt-4 opacity-50">Global alignment of consciousness</p>
                              </div>
-                             <div className="space-y-16 max-w-xl mx-auto">
-                                {["The Silence", "The Notes", "The Witness"].map((o, i) => {
-                                    const total = poll.reduce((a,b)=>a+b, 0);
-                                    const pct = Math.round((poll[i]/total)*100);
+                             <div className="space-y-10 max-w-xl mx-auto">
+                                {[
+                                    { label: {kk: "Сызық", en: "Line"}, color: "#FFB400" },
+                                    { label: {kk: "Айналым", en: "Circle"}, color: "#C5C6C7" },
+                                    { label: {kk: "Басқа", en: "Other"}, color: "#1F2833" }
+                                ].map((item, i) => {
+                                    const total = pollData.reduce((a,b)=>a+b, 0);
+                                    const p = Math.round((pollData[i]/total)*100);
                                     return (
-                                        <div key={i} className="space-y-4">
+                                        <div key={i} className="space-y-3">
                                             <div className="flex justify-between items-end px-2">
-                                                <span className="text-xs font-black uppercase tracking-[0.2em] text-zenSage">{o}</span>
-                                                <span className="text-3xl font-serif italic text-zenGold">{pct}%</span>
+                                                <span className="text-xs font-black uppercase tracking-widest text-sageGray">{item.label[lang]}</span>
+                                                <span className="text-2xl font-serif italic text-amberGold">{p}%</span>
                                             </div>
-                                            <div className="w-full h-[1px] bg-zenPaper relative overflow-hidden">
-                                                <div className="absolute inset-y-0 left-0 bg-zenEbony transition-all duration-1000 ease-out" style={{ width: `${pct}%` }}></div>
+                                            <div className="w-full h-1 bg-white/5 relative overflow-hidden rounded-full">
+                                                <div className="absolute top-0 left-0 h-full transition-all duration-1000 ease-out" style={{ width: `${p}%`, background: item.color }}></div>
                                             </div>
                                         </div>
                                     );
                                 })}
                              </div>
                              <div className="text-center">
-                                <button onClick={() => setStage('breathe')} className="text-[10px] font-black uppercase tracking-widest text-zenSage hover:text-zenEbony border-b border-transparent hover:border-zenEbony transition-all pb-2">Reset Journey</button>
+                                <button onClick={() => setStage('breathe')} className="text-[10px] font-black uppercase tracking-widest text-sageGray hover:text-amberGold transition-colors">Reset Experience</button>
                              </div>
                         </div>
                     )}
@@ -392,59 +362,57 @@
             );
         };
 
-        // 4. KNOWLEDGE GRAPH (Relational SVG Map + Dialogue)
         const ConnectionModule = ({ lang, addXp }) => {
             const [nodes, setNodes] = useState([
-                { id: 1, x: 500, y: 300, label: {kk: "Жан", en: "Soul"}, glow: '#AF915E' },
-                { id: 2, x: 300, y: 150, label: {kk: "Ар", en: "Truth"}, glow: '#8C948D' },
-                { id: 3, x: 700, y: 150, label: {kk: "Ерік", en: "Will"}, glow: '#8C948D' },
-                { id: 4, x: 250, y: 450, label: {kk: "Ақыл", en: "Reason"}, glow: '#8C948D' },
-                { id: 5, x: 750, y: 450, label: {kk: "Сезім", en: "Passion"}, glow: '#8C948D' },
+                { id: 1, x: 500, y: 300, label: {kk: "Жан", en: "Soul"}, color: "#FFB400" },
+                { id: 2, x: 300, y: 150, label: {kk: "Ар", en: "Truth"}, color: "#platinum" },
+                { id: 3, x: 700, y: 150, label: {kk: "Махаббат", en: "Love"}, color: "#platinum" },
+                { id: 4, x: 250, y: 450, label: {kk: "Еркіндік", en: "Freedom"}, color: "#platinum" },
+                { id: 5, x: 750, y: 450, label: {kk: "Уақыт", en: "Time"}, color: "#platinum" },
             ]);
-            const links = [ {s:1, t:2}, {s:1, t:3}, {s:1, t:4}, {s:1, t:5} ];
-            const [drag, setDrag] = useState(null);
-            const [dialogue, setDialogue] = useState(null);
+            const links = [ {s: 1, t: 2}, {s: 1, t: 3}, {s: 1, t: 4}, {s: 1, t: 5} ];
+            const [dragging, setDragging] = useState(null);
+            const [activeNode, setActiveNode] = useState(null);
 
-            const handleMove = (e) => {
-                if (drag === null) return;
+            const onMouseMove = (e) => {
+                if (dragging === null) return;
                 const rect = e.currentTarget.getBoundingClientRect();
                 const x = (e.clientX - rect.left) * (1000 / rect.width);
                 const y = (e.clientY - rect.top) * (600 / rect.height);
-                setNodes(nodes.map(n => n.id === drag ? { ...n, x, y } : n));
+                setNodes(nodes.map(n => n.id === dragging ? { ...n, x, y } : n));
             };
 
             return (
-                <div className="max-w-6xl mx-auto space-y-20 fade-in">
-                    <div className="relative aspect-[10/6] border border-zenBorder bg-white shadow-soft overflow-hidden cursor-crosshair"
-                         onMouseMove={handleMove} onMouseUp={() => setDrag(null)} onMouseLeave={() => setDrag(null)}>
-                        <svg viewBox="0 0 1000 600" className="w-full h-full">
+                <div className="max-w-6xl mx-auto space-y-16 fade-in">
+                    <div className="relative aspect-[10/6] glass rounded-[60px] border border-white/5 overflow-hidden cursor-crosshair shadow-premium"
+                         onMouseMove={onMouseMove} onMouseUp={() => setDragging(null)}>
+                        <svg viewBox="0 0 1000 600" className="w-full h-full select-none">
                             {links.map((l, i) => {
-                                const sn = nodes.find(n=>n.id===l.s), tn = nodes.find(n=>n.id===l.t);
-                                return <line key={i} x1={sn.x} y1={sn.y} x2={tn.x} y2={tn.y} stroke="#EEEAE5" strokeWidth="1" strokeDasharray="6,6" />;
+                                const sn = nodes.find(n => n.id === l.s), tn = nodes.find(n => n.id === l.t);
+                                return <line key={i} x1={sn.x} y1={sn.y} x2={tn.x} y2={tn.y} className="constellation-link" strokeWidth="1" />;
                             })}
                             {nodes.map(n => (
-                                <g key={n.id} onMouseDown={() => setDrag(n.id)} onClick={() => setDialogue(n)} className="interactive-node cursor-grab active:cursor-grabbing group">
-                                    <circle cx={n.x} cy={n.y} r="50" fill="white" stroke={dialogue?.id === n.id ? "#1A1A1A" : "#EEEAE5"} strokeWidth="1" />
-                                    <text x={n.x} y={n.y+6} textAnchor="middle" className="text-[10px] font-black uppercase tracking-widest fill-zenSage group-hover:fill-zenEbony transition-colors pointer-events-none">{n.label[lang]}</text>
+                                <g key={n.id} onMouseDown={() => setDragging(n.id)} onClick={() => setActiveNode(n)} className="cursor-grab active:cursor-grabbing group">
+                                    <circle cx={n.x} cy={n.y} r="45" fill="#0B0C10" stroke={activeNode?.id === n.id ? "#FFB400" : "rgba(255,255,255,0.1)"} strokeWidth="2" className="transition-all duration-500 group-hover:stroke-amberGold" />
+                                    <text x={n.x} y={n.y + 6} textAnchor="middle" className="text-[10px] font-black uppercase tracking-widest fill-sageGray group-hover:fill-white transition-colors pointer-events-none">{n.label[lang]}</text>
                                 </g>
                             ))}
                         </svg>
-                        <div className="absolute top-12 left-12 pointer-events-none">
-                            <h3 className="text-3xl font-serif italic text-zenEbony">The Relational Constellation</h3>
-                            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-zenSage mt-4">Map the architecture of your ideas</p>
+                        <div className="absolute top-10 left-10 pointer-events-none">
+                             <h3 className="text-3xl font-serif italic text-platinum">Relational Graph</h3>
+                             <p className="text-[10px] font-black uppercase tracking-widest text-amberGold mt-2">Interact to reveal Socratic Dialogues</p>
                         </div>
                     </div>
 
-                    {dialogue && (
-                        <div className="p-24 border border-zenBorder bg-white animate-slide-up relative">
-                             <button onClick={() => setDialogue(null)} className="absolute top-10 right-10 text-zenSage hover:text-zenEbony transition-all"><Icon name="x" className="w-6 h-6" /></button>
-                             <div className="max-w-2xl mx-auto text-center space-y-16">
-                                <Ornament className="w-10 h-10 opacity-20 mx-auto" />
-                                <h4 className="text-4xl font-serif italic text-zenEbony">Socratic Inquiry: {dialogue.label[lang]}</h4>
-                                <p className="text-2xl text-zenSage italic leading-relaxed">"If the {dialogue.label[lang].toLowerCase()} is the observer, who then observes the observer?"</p>
-                                <div className="flex justify-center gap-12">
-                                    <button onClick={() => { addXp(20); setDialogue(null); }} className="px-12 py-5 border border-zenBorder hover:border-zenEbony transition-all text-[10px] font-black uppercase tracking-widest">Rationalist Path</button>
-                                    <button onClick={() => { addXp(20); setDialogue(null); }} className="px-12 py-5 border border-zenBorder hover:border-zenEbony transition-all text-[10px] font-black uppercase tracking-widest">Mystic Path</button>
+                    {activeNode && (
+                        <div className="glass p-16 rounded-[50px] border-l-8 border-amberGold animate-slide-up relative">
+                             <button onClick={() => setActiveNode(null)} className="absolute top-8 right-8 text-sageGray hover:text-white transition-colors"><Icon name="x" /></button>
+                             <div className="max-w-2xl mx-auto space-y-12 text-center">
+                                <h4 className="text-3xl font-serif italic text-platinum">Inquiry: {activeNode.label[lang]}</h4>
+                                <p className="text-xl text-sageGray italic">"If you claim to know the {activeNode.label[lang].toLowerCase()}, do you know its weight upon the soul when the truth is absent?"</p>
+                                <div className="flex justify-center gap-8">
+                                    <button onClick={() => { addXp(20); setActiveNode(null); }} className="px-10 py-4 border border-white/10 hover:border-amberGold transition-all rounded-xl text-[10px] font-black uppercase tracking-widest">Rational Path</button>
+                                    <button onClick={() => { addXp(20); setActiveNode(null); }} className="px-10 py-4 border border-white/10 hover:border-amberGold transition-all rounded-xl text-[10px] font-black uppercase tracking-widest">Mystic Path</button>
                                 </div>
                              </div>
                         </div>
@@ -453,42 +421,32 @@
             );
         };
 
-        // 5. LOGIC LAB (Scramble + Challenge)
-        const ChallengeModule = ({ addXp }) => {
+        const ChallengeModule = ({ lang, addXp }) => {
             const [mode, setMode] = useState('menu');
-            const target = ["Мен", "ешнәрсе", "білмейтінімді", "білемін"];
-            const [scrambled, setScrambled] = useState([]);
-            const [recon, setRecon] = useState([]);
-            const [timer, setTimer] = useState(15);
+            const [scramble, setScramble] = useState({ s: [], r: [] });
+
+            const solutions = {
+                kk: "Мен ешнәрсе білмейтінімді білемін",
+                en: "I know that I know nothing"
+            };
 
             const startScramble = () => {
-                setScrambled([...target].sort(() => Math.random() - 0.5));
-                setRecon([]);
+                const words = solutions[lang].split(' ');
+                const shuffled = [...words].sort(() => Math.random() - 0.5);
+                setScramble({ s: shuffled, r: [] });
                 setMode('scramble');
             };
 
-            const startTime = () => {
-                setTimer(15);
-                setMode('time');
-            };
-
-            useEffect(() => {
-                let id;
-                if (mode === 'time' && timer > 0) {
-                    id = setInterval(() => setTimer(t => t - 1), 1000);
-                } else if (timer === 0) {
-                    setMode('menu');
-                }
-                return () => clearInterval(id);
-            }, [mode, timer]);
-
             const pick = (w, i) => {
-                const nextS = scrambled.filter((_, idx) => idx !== i);
-                const nextR = [...recon, w];
-                setScrambled(nextS); setRecon(nextR);
-                if (nextR.length === target.length) {
-                    if (nextR.join(' ') === target.join(' ')) {
-                        addXp(100); setTimeout(() => setMode('menu'), 1500);
+                const nextR = [...scramble.r, w];
+                const nextS = scramble.s.filter((_, idx) => idx !== i);
+                setScramble({ s: nextS, r: nextR });
+
+                const targetLength = solutions[lang].split(' ').length;
+                if (nextR.length === targetLength) {
+                    if (nextR.join(' ') === solutions[lang]) {
+                        addXp(100);
+                        setTimeout(() => setMode('menu'), 1500);
                     } else {
                         setTimeout(() => startScramble(), 1000);
                     }
@@ -496,157 +454,143 @@
             };
 
             return (
-                <div className="max-w-5xl mx-auto space-y-24 fade-in">
+                <div className="max-w-5xl mx-auto space-y-16 fade-in">
                     {mode === 'menu' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-                            <div onClick={startScramble} className="p-20 border border-zenBorder bg-white cursor-pointer hover:border-zenEbony transition-all group btn-museum text-center">
-                                <Icon name="puzzle" className="w-16 h-16 mb-10 text-zenGold group-hover:scale-110 transition-transform" />
-                                <h3 className="text-4xl font-serif italic mb-6">Word Scramble</h3>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-zenSage">Reconstruct Socratic Axioms</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div onClick={startScramble} className="glass p-16 rounded-[50px] border border-white/5 cursor-pointer hover:border-amberGold transition-all group text-center">
+                                <Icon name="brain" className="w-16 h-16 mb-8 text-amberGold group-hover:scale-110 transition-transform" />
+                                <h3 className="text-3xl font-serif italic text-platinum mb-4">Axiom Reconstructor</h3>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-sageGray">Logical structural challenge</p>
                             </div>
-                            <div onClick={startTime} className="p-20 border border-zenBorder bg-white cursor-pointer hover:border-zenEbony transition-all group btn-museum text-center">
-                                <Icon name="zap" className="w-16 h-16 mb-10 text-zenGold group-hover:scale-110 transition-transform" />
-                                <h3 className="text-4xl font-serif italic mb-6">Time Attack</h3>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-zenSage">Rapid philosophical validation</p>
+                            <div className="glass p-16 rounded-[50px] border border-white/5 opacity-40 cursor-not-allowed text-center">
+                                <Icon name="zap" className="w-16 h-16 mb-8 text-sageGray" />
+                                <h3 className="text-3xl font-serif italic text-platinum mb-4">Speed Trials</h3>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-sageGray">Cognitive fast-path coming soon</p>
                             </div>
-                        </div>
-                    )}
-
-                    {mode === 'time' && (
-                        <div className="p-24 border border-zenBorder bg-white space-y-24 text-center relative overflow-hidden">
-                             <div className="absolute top-0 left-0 h-1 bg-zenGold transition-all duration-1000" style={{ width: `${(timer/15)*100}%` }}></div>
-                             <div className="flex justify-between items-center">
-                                <span className="text-5xl font-serif italic text-zenEbony">{timer}s</span>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-zenSage">Temporal Trial</span>
-                             </div>
-                             <div className="space-y-12">
-                                <h4 className="text-3xl font-serif italic text-zenEbony leading-tight">"Virtue is the only good." — Stoic or Epicurean?</h4>
-                                <div className="flex justify-center gap-8">
-                                    <button onClick={() => { addXp(50); setMode('menu'); }} className="px-12 py-5 border border-zenEbony hover:bg-zenEbony hover:text-white transition-all font-black uppercase text-xs tracking-widest">Stoic</button>
-                                    <button onClick={() => { setMode('menu'); }} className="px-12 py-5 border border-zenEbony hover:bg-zenEbony hover:text-white transition-all font-black uppercase text-xs tracking-widest">Epicurean</button>
-                                </div>
-                             </div>
                         </div>
                     )}
 
                     {mode === 'scramble' && (
-                        <div className="p-24 border border-zenBorder bg-white space-y-24 text-center">
-                            <div className="space-y-6">
-                                <h3 className="text-3xl font-serif italic text-zenEbony">Quote Reconstruction</h3>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-zenSage">Place the words in their divine order</p>
-                            </div>
-                            <div className="min-h-[120px] p-12 border border-dashed border-zenBorder bg-zenPaper flex flex-wrap justify-center gap-6 rounded-sm">
-                                {recon.map((w, i) => <span key={i} className="text-4xl font-serif italic text-zenEbony animate-fade-in">{w}</span>)}
-                            </div>
-                            <div className="flex flex-wrap justify-center gap-8">
-                                {scrambled.map((w, i) => (
-                                    <button key={i} onClick={() => pick(w, i)} className="px-10 py-5 border border-zenEbony text-zenEbony hover:bg-zenEbony hover:text-white transition-all font-serif italic text-2xl">
+                        <div className="glass p-20 rounded-[60px] border border-white/5 space-y-16 text-center">
+                             <div className="space-y-4">
+                                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-amberGold">Axiom Reconstruction</span>
+                                <h3 className="text-2xl font-serif italic text-platinum">
+                                    {lang === 'kk' ? "Сократ логикасын қалпына келтіріңіз" : "Restore the logic of Socrates"}
+                                </h3>
+                             </div>
+                             <div className="min-h-[120px] p-12 border border-dashed border-white/10 bg-white/5 rounded-[40px] flex flex-wrap justify-center gap-6 items-center">
+                                {scramble.r.map((w, i) => <span key={i} className="text-3xl font-serif italic text-platinum animate-fade-in">{w}</span>)}
+                             </div>
+                             <div className="flex flex-wrap justify-center gap-8">
+                                {scramble.s.map((w, i) => (
+                                    <button key={i} onClick={() => pick(w, i)} className="px-10 py-5 border border-white/10 hover:border-amberGold transition-all font-serif italic text-2xl rounded-2xl bg-white/5 text-platinum">
                                         {w}
                                     </button>
                                 ))}
-                            </div>
-                            <button onClick={() => setMode('menu')} className="text-[10px] font-black uppercase tracking-widest text-zenSage hover:text-zenEbony transition-colors">Abort Trial</button>
+                             </div>
+                             <button onClick={() => setMode('menu')} className="text-[10px] font-black uppercase tracking-widest text-sageGray hover:text-white transition-colors">Abort Trial</button>
                         </div>
                     )}
                 </div>
             );
         };
 
-        // --- MAIN APP CONTROLLER ---
-        const Main = () => {
+        const App = () => {
             const [lang, setLang] = useState('kk');
-            const [tab, setTab] = useState('heritage');
-            const [xp, setXp] = useState(() => parseInt(localStorage.getItem('zen_xp_v4') || '0'));
-            const [badges, setBadges] = useState(() => JSON.parse(localStorage.getItem('zen_badges') || '[]'));
-            const [streak, setStreak] = useState(() => parseInt(localStorage.getItem('zen_streak') || '1'));
-
-            const addXp = (v) => {
-                setXp(p => p + v);
-                if (xp > 500 && !badges.includes('Thinker')) setBadges(b => [...b, 'Thinker']);
-                if (xp > 1500 && !badges.includes('Philosopher')) setBadges(b => [...b, 'Philosopher']);
-            };
+            const [activeTab, setTab] = useState('library');
+            const [xp, setXp] = useState(() => parseInt(localStorage.getItem('bilmek_xp_pro') || '0'));
+            const [level, setLevel] = useState(1);
 
             useEffect(() => {
-                localStorage.setItem('zen_xp_v4', xp);
-                localStorage.setItem('zen_badges', JSON.stringify(badges));
-            }, [xp, badges]);
+                const newLevel = Math.floor(xp / 1000) + 1;
+                if (newLevel !== level) setLevel(newLevel);
+                localStorage.setItem('bilmek_xp_pro', xp);
+            }, [xp]);
 
-            const nav = [
-                { id: 'heritage', label: { kk: "Мұра", en: "Library" }, icon: "book-open" },
-                { id: 'reflection', label: { kk: "Толғаныс", en: "Reflect" }, icon: "pen-tool" },
-                { id: 'wisdom', label: { kk: "Таным", en: "Breathe" }, icon: "sun" },
-                { id: 'connection', label: { kk: "Байланыс", en: "Map" }, icon: "share-2" },
-                { id: 'challenge', label: { kk: "Сынақ", en: "Trial" }, icon: "target" }
-            ];
+            const addXp = (val) => setXp(prev => prev + val);
+
+            const translations = {
+                kk: {
+                    library: "Мұра", reflection: "Толғаныс", zen: "Таным", connection: "Байланыс", challenge: "Сынақ",
+                    level: "Деңгей", xp: "XP Тәжірибе", slogan: "Адамзаттың ойына ортақтас"
+                },
+                en: {
+                    library: "Heritage", reflection: "Neural Reflection", zen: "Mindfulness", connection: "Knowledge Graph", challenge: "Logic Lab",
+                    level: "Level", xp: "XP Progress", slogan: "Sharing the mind of humanity"
+                }
+            };
+
+            const t = translations[lang];
 
             return (
-                <div className="flex min-h-screen">
-                    {/* Minimalist Museum Sidebar */}
-                    <aside className="no-print w-24 border-r border-zenBorder bg-white flex flex-col items-center py-12 sticky top-0 h-screen z-50">
-                        <Ornament className="w-12 h-12 mb-20" />
-                        <nav className="flex flex-col gap-10 flex-1">
-                            {nav.map(n => (
-                                <button key={n.id} onClick={() => setTab(n.id)} className={`p-4 rounded-full transition-all group relative ${tab === n.id ? "bg-zenEbony text-white shadow-gold" : "text-zenSage hover:bg-zenPaper hover:text-zenEbony"}`}>
-                                    <Icon name={n.icon} className="w-5 h-5" />
-                                    <span className="absolute left-full ml-8 px-5 py-2 bg-zenEbony text-white text-[9px] font-black uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 rounded-sm">{n.label[lang]}</span>
+                <div className="flex flex-col min-h-screen">
+                    {/* Header: Elite Glassmorphism */}
+                    <header className="fixed top-0 left-0 w-full z-[100] glass border-b border-white/5 px-8 h-20 flex items-center justify-between">
+                        <div className="flex items-center gap-6">
+                            <KazakhOrnament className="w-10 h-10 shadow-gold-glow" />
+                            <div>
+                                <h1 className="text-2xl font-black italic gold-gradient tracking-tighter uppercase leading-none">BILMEK</h1>
+                                <p className="text-[9px] font-bold text-sageGray uppercase tracking-[0.4em]">{t.slogan}</p>
+                            </div>
+                        </div>
+
+                        <nav className="hidden xl:flex items-center gap-12">
+                            {Object.entries(t).filter(([k]) => ['library', 'reflection', 'zen', 'connection', 'challenge'].includes(k)).map(([key, label]) => (
+                                <button
+                                    key={key}
+                                    onClick={() => setTab(key)}
+                                    className={`relative text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${activeTab === key ? "text-amberGold active-nav-glow" : "text-sageGray hover:text-platinum"}`}
+                                >
+                                    {label}
+                                    {activeTab === key && <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-10 h-1 bg-amberGold rounded-t-full shadow-gold-glow"></span>}
                                 </button>
                             ))}
                         </nav>
-                        <div className="mt-auto flex flex-col gap-10 items-center">
-                            <button onClick={() => setLang(lang === 'kk' ? 'en' : 'kk')} className="text-[11px] font-black uppercase tracking-tighter w-12 h-12 border border-zenBorder rounded-full hover:bg-zenEbony hover:text-white transition-all shadow-soft">{lang}</button>
-                            <div className="w-[1px] h-24 bg-zenBorder relative rounded-full overflow-hidden">
-                                <div className="absolute bottom-0 left-0 w-full bg-zenGold transition-all duration-1000" style={{ height: `${(xp%1000)/10}%` }}></div>
-                            </div>
-                        </div>
-                    </aside>
 
-                    {/* Elite Content Viewport */}
-                    <main className="flex-1 p-12 lg:p-24 overflow-y-auto">
-                        <header className="flex justify-between items-start mb-48 fade-in">
-                            <div>
-                                <p className="text-[11px] font-black uppercase tracking-[0.8em] text-zenSage mb-6">Ascension Level {Math.floor(xp/1000)} • {Math.floor(xp/1000) > 2 ? 'Philosopher' : 'Seeker'}</p>
-                                <h2 className="text-6xl font-serif italic text-zenEbony tracking-tighter">{nav.find(n=>n.id===tab).label[lang]}</h2>
-                            </div>
-                            <div className="text-right flex flex-col items-end gap-4">
-                                <div className="flex gap-3">
-                                    {badges.map(b => (
-                                        <div key={b} className="px-3 py-1 border border-zenGold text-[8px] font-black uppercase tracking-widest text-zenGold rounded-full flex items-center gap-2">
-                                            <Icon name="award" className="w-2 h-2" /> {b}
-                                        </div>
-                                    ))}
-                                    <div className="px-3 py-1 bg-zenPaper border border-zenBorder text-[8px] font-black uppercase tracking-widest text-zenEbony rounded-full">
-                                        Streak: {streak} Days
-                                    </div>
-                                </div>
-                                <div>
-                                    <p className="text-[11px] font-black uppercase tracking-[0.4em] text-zenGold mb-2">Total Insight</p>
-                                    <p className="text-5xl font-serif italic text-zenEbony">{xp} <span className="text-lg uppercase font-sans font-black tracking-widest text-zenSage">XP</span></p>
+                        <div className="flex items-center gap-6">
+                            <div className="hidden md:flex flex-col items-end">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-sageGray">{t.level} {level}</p>
+                                <div className="w-32 h-1.5 bg-white/5 rounded-full mt-1 overflow-hidden border border-white/5">
+                                    <div className="h-full bg-amberGold transition-all duration-1000 shadow-gold-glow" style={{ width: `${(xp % 1000) / 10}%` }}></div>
                                 </div>
                             </div>
-                        </header>
-
-                        <div className="relative z-10 min-h-[800px]">
-                            {tab === 'heritage' && <HeritageModule lang={lang} addXp={addXp} />}
-                            {tab === 'reflection' && <ReflectionModule lang={lang} addXp={addXp} />}
-                            {tab === 'wisdom' && <WisdomModule addXp={addXp} />}
-                            {tab === 'connection' && <ConnectionModule lang={lang} addXp={addXp} />}
-                            {tab === 'challenge' && <ChallengeModule addXp={addXp} />}
+                            <button onClick={() => setLang(lang === 'kk' ? 'en' : 'kk')} className="w-12 h-12 rounded-2xl glass border border-white/10 text-[10px] font-black uppercase hover:bg-amberGold hover:text-obsidian transition-all duration-500">
+                                {lang}
+                            </button>
                         </div>
+                    </header>
 
-                        <footer className="mt-80 pt-20 border-t border-zenBorder flex flex-col items-center gap-12">
-                            <Ornament className="w-10 h-10 opacity-10" />
-                            <div className="text-center space-y-4">
-                                <p className="text-[10px] font-black text-zenSage uppercase tracking-[0.6em]">Bilmek Professional Studio • MMXVI</p>
-                                <p className="text-[9px] font-medium text-zenSage opacity-40 uppercase tracking-[0.3em]">Sharing the silent heritage of humanity</p>
+                    {/* Content Viewport */}
+                    <main className="flex-1 pt-32 pb-20 px-8 max-w-7xl mx-auto w-full relative z-10">
+                        {activeTab === 'library' && <HeritageModule lang={lang} addXp={addXp} />}
+                        {activeTab === 'reflection' && <ReflectionModule lang={lang} addXp={addXp} />}
+                        {activeTab === 'zen' && <ZenModule lang={lang} addXp={addXp} />}
+                        {activeTab === 'connection' && <ConnectionModule lang={lang} addXp={addXp} />}
+                        {activeTab === 'challenge' && <ChallengeModule lang={lang} addXp={addXp} />}
+                        {!['library', 'reflection', 'zen', 'connection', 'challenge'].includes(activeTab) && (
+                            <div className="flex flex-col items-center justify-center py-40 text-center fade-in">
+                                <KazakhOrnament className="w-16 h-16 opacity-10 mb-12" />
+                                <h2 className="text-6xl font-serif italic mb-6 leading-tight">Syncing Neural Networks...</h2>
+                                <div className="w-24 h-[1px] bg-amberGold opacity-30"></div>
                             </div>
-                        </footer>
+                        )}
                     </main>
+
+                    <footer className="py-12 border-t border-white/5 text-center px-8">
+                         <p className="text-[10px] font-medium text-sageGray uppercase tracking-[0.8em]">© 2026 Bilmek Professional • Neural Intelligence Platform</p>
+                    </footer>
+
+                    {/* Ambient Background Elements */}
+                    <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
+                         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-amberGold/5 rounded-full blur-[120px]"></div>
+                         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-amberGold/5 rounded-full blur-[120px]"></div>
+                    </div>
                 </div>
             );
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<Main />);
+        root.render(<App />);
     </script>
 </body>
 </html>
