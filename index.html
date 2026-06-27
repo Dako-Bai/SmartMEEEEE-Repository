@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilmek | Адамзаттың асыл мұрасы</title>
+    <title>Bilmek | Elite Philosophical Intelligence</title>
 
     <!-- Dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -18,6 +18,9 @@
             theme: {
                 extend: {
                     colors: {
+                        deepSage: '#1a2420',
+                        bilmekGold: '#d4af37',
+                        bilmekGlow: '#fcd34d',
                         sage: {
                             50: '#f4f7f4',
                             100: '#e8ece8',
@@ -30,19 +33,6 @@
                             800: '#2f3b32',
                             900: '#27312a',
                         },
-                        gold: {
-                            50: '#fffbeb',
-                            100: '#fef3c7',
-                            200: '#fde68a',
-                            300: '#fcd34d',
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                            700: '#b45309',
-                            800: '#92400e',
-                            900: '#78350f',
-                        },
-                        premiumDark: '#1a1f1c',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -50,8 +40,8 @@
                         serif: ['Playfair Display', 'serif'],
                     },
                     boxShadow: {
-                        'premium': '0 20px 50px rgba(0, 0, 0, 0.05)',
-                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                        'elite': '0 25px 60px -15px rgba(0, 0, 0, 0.4)',
+                        'gold-glow': '0 0 20px rgba(212, 175, 55, 0.3)',
                     }
                 }
             }
@@ -60,214 +50,102 @@
 
     <style type="text/css">
         :root {
-            --sage-gradient: linear-gradient(135deg, #f4f7f4 0%, #e8ece8 100%);
-            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #fcd34d 100%);
+            --gold-gradient: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #fcd34d 100%);
+            --glass-bg: rgba(26, 36, 32, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         body {
-            background-color: #f4f7f4;
-            color: #27312a;
+            background-color: #0f1412;
+            color: #e8ece8;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        .premium-glass {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-image: radial-gradient(circle at 50% -20%, #1a2420 0%, #0f1412 100%);
         }
 
         .dark-glass {
-            background: rgba(39, 49, 42, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
         }
 
-        .ornament-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0 L60 40 L100 50 L60 60 L50 100 L40 60 L0 50 L40 40 Z' fill='%235d7363' fill-opacity='0.02'/%3E%3C/svg%3E");
-        }
-
-        .constellation-node {
-            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .constellation-node:hover {
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
-            transform: scale(1.1);
-        }
-
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .nav-underline {
-            position: relative;
-        }
-        .nav-underline::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: #d4af37;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-        .nav-underline:hover::after, .nav-active::after {
-            width: 100%;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f4f7f4; }
-        ::-webkit-scrollbar-thumb { background: #adbdb1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #7f9684; }
-
-        .btn-premium {
+        .gold-text-gradient {
             background: var(--gold-gradient);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
-            transition: all 0.3s ease;
-        }
-        .btn-premium:hover {
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
-            transform: translateY(-2px);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .text-glow {
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        .ornament-header {
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='40' viewBox='0 0 80 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0 C 45 15 60 20 80 20 C 60 20 55 35 40 40 C 25 35 20 20 0 20 C 20 20 35 5 40 0' fill='%23d4af37' fill-opacity='0.1'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
         }
+
+        .animate-breath {
+            animation: breathe 12s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            33% { transform: scale(1.5); opacity: 0.8; } /* Inhale 4s */
+            66% { transform: scale(1.5); opacity: 0.8; } /* Hold 4s */
+        }
+
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .glow-pulse { animation: glowPulse 3s infinite; }
+        @keyframes glowPulse { 0%, 100% { filter: drop-shadow(0 0 5px rgba(212,175,55,0.4)); } 50% { filter: drop-shadow(0 0 15px rgba(212,175,55,0.8)); } }
+
+        /* Custom scrollbar for premium feel */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #0f1412; }
+        ::-webkit-scrollbar-thumb { background: #3a4a3e; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+
+        .modal-enter { opacity: 0; transform: scale(0.9); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        .perspective-1000 { perspective: 1000px; }
     </style>
 </head>
-<body class="ornament-pattern min-h-screen">
+<body class="min-h-screen selection:bg-bilmekGold selection:text-deepSage">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
-        // --- Premium Localization ---
+        // --- PRODUCTION READY ASSETS & DATA ---
+
+        const KAZAKH_ORNAMENT_SVG = `<path d="M50 0 C 60 20 80 30 100 30 C 80 30 70 50 70 70 C 70 90 50 100 50 100 C 50 100 30 90 30 70 C 30 50 20 30 0 30 C 20 30 40 20 50 0" />`;
+
         const translations = {
             kk: {
-                appName: "Bilmek",
-                slogan: "Адамзаттың ойына ортақтас",
-                nav: {
-                    collection: "Мұра",
-                    diary: "Толғаныс",
-                    daily: "Таным",
-                    map: "Байланыс",
-                    quiz: "Сынақ",
-                },
-                common: {
-                    search: "Іздеу...",
-                    streak: "Күндік айналым",
-                    badges: "Жетістіктер",
-                    share: "Бөлісу",
-                    download: "Жүктеу",
-                    score: "Нәтиже",
-                    next: "Келесі",
-                    back: "Артқа",
-                    save: "Сақтау",
-                    cancel: "Болдырмау",
-                    delete: "Өшіру",
-                    edit: "Өңдеу",
-                },
-                streakMsg: "Сіз қатарынан {n} күн бойы ізденістесіз!",
-                badgesList: {
-                    thinker: "Ойшыл",
-                    philosopher: "Философ",
-                    sage: "Дана"
-                }
+                nav: { heritage: "Мұра", reflection: "Толғаныс", wisdom: "Таным", connection: "Байланыс", challenge: "Сынақ" },
+                common: { level: "Деңгей", xp: "Тәжірибе", breathe: "Тыныс ал", start: "Бастау", share: "Бөлісу", download: "Жүктеу" },
+                levels: ["Жаңа бастаушы", "Ізденуші", "Ойшыл", "Дана", "Абыз"],
+                moods: { happy: "Қуанышты", sad: "Мұңды", think: "Терең ойлы", neutral: "Сабырлы" }
             },
             en: {
-                appName: "Bilmek",
-                slogan: "Sharing Human Thought",
-                nav: {
-                    collection: "Heritage",
-                    diary: "Reflections",
-                    daily: "Wisdom",
-                    map: "Constellation",
-                    quiz: "Challenge",
-                },
-                common: {
-                    search: "Search...",
-                    streak: "Daily Streak",
-                    badges: "Achievements",
-                    share: "Share",
-                    download: "Download",
-                    score: "Score",
-                    next: "Next",
-                    back: "Back",
-                    save: "Save",
-                    cancel: "Cancel",
-                    delete: "Delete",
-                    edit: "Edit",
-                },
-                streakMsg: "You have been exploring for {n} days straight!",
-                badgesList: {
-                    thinker: "Thinker",
-                    philosopher: "Philosopher",
-                    sage: "Sage"
-                }
+                nav: { heritage: "Heritage", reflection: "Reflection", wisdom: "Wisdom", connection: "Connection", challenge: "Challenge" },
+                common: { level: "Level", xp: "Experience", breathe: "Breathe", start: "Start", share: "Share", download: "Download" },
+                levels: ["Novice", "Seeker", "Thinker", "Sage", "Elder"],
+                moods: { happy: "Joyful", sad: "Melancholy", think: "Contemplative", neutral: "Peaceful" }
             }
         };
 
-        // --- Deepened Mock Data ---
         const initialThoughts = [
-            {
-                id: 1, author: "Abai Qunanbaiuly",
-                text: { kk: "Адам болам десеңіз, оған себепші бес нәрсе бар: өсек, өтірік, мақтаншақ, еріншек, бекер мал шашпақ - бұлардан сақ бол.", en: "If you want to be a man, beware of five things: gossip, lying, boasting, laziness, and wasting wealth." },
-                category: "wisdom", tags: ["morality", "values"]
-            },
-            {
-                id: 2, author: "Al-Farabi",
-                text: { kk: "Тәрбиесіз берілген білім — адамзаттың қас жауы.", en: "Knowledge without upbringing is the enemy of mankind." },
-                category: "wisdom", tags: ["education", "ethics"]
-            },
-            {
-                id: 3, author: "Shakarim Kudaiberdiuly",
-                text: { kk: "Ар-ұяттың күзеті — әркімнің өз жүрегінде.", en: "The guardian of conscience is in everyone's heart." },
-                category: "life", tags: ["conscience", "heart"]
-            },
-            {
-                id: 4, author: "Marcus Aurelius",
-                text: { kk: "Өміріңнің бақыты ойыңның сапасына байланысты.", en: "The happiness of your life depends upon the quality of your thoughts." },
-                category: "life", tags: ["mindset", "stoicism"]
-            },
-            {
-                id: 5, author: "Socrates",
-                text: { kk: "Мен ешнәрсе білмейтінімді білемін.", en: "I know that I know nothing." },
-                category: "wisdom", tags: ["humility", "knowledge"]
-            },
-            {
-                id: 6, author: "Khoja Akhmet Yasawi",
-                text: { kk: "Көңіліңді таза ұста, сонда ғана шындыққа жетесің.", en: "Keep your heart clean, only then will you reach the truth." },
-                category: "wisdom", tags: ["spirituality", "truth"]
-            },
-            {
-                id: 7, author: "Seneca",
-                text: { kk: "Уақыт — біздің ең қымбат қазынамыз.", en: "Time is our most precious treasure." },
-                category: "time", tags: ["stoicism", "value"]
-            }
+            { id: 1, author: "Abai Qunanbaiuly", category: "wisdom", tags: ["morality", "values"], text: { kk: "Адам болам десеңіз, оған себепші бес нәрсе бар: өсек, өтірік, мақтаншақ, еріншек, бекер мал шашпақ - бұлардан сақ бол.", en: "If you want to be a man, beware of five things: gossip, lying, boasting, laziness, and wasting wealth." } },
+            { id: 2, author: "Al-Farabi", category: "wisdom", tags: ["education", "ethics"], text: { kk: "Тәрбиесіз берілген білім — адамзаттың қас жауы.", en: "Knowledge without upbringing is the enemy of mankind." } },
+            { id: 3, author: "Shakarim Kudaiberdiuly", category: "life", tags: ["conscience", "heart"], text: { kk: "Ар-ұяттың күзеті — әркімнің өз жүрегінде.", en: "The guardian of conscience is in everyone's heart." } },
+            { id: 4, author: "Seneca", category: "time", tags: ["stoicism", "value"], text: { kk: "Уақыт — біздің ең қымбат қазынамыз.", en: "Time is our most precious treasure." } },
+            { id: 5, author: "Socrates", category: "wisdom", tags: ["humility", "truth"], text: { kk: "Мен ешнәрсе білмейтінімді білемін.", en: "I know that I know nothing." } },
+            { id: 6, author: "Marcus Aurelius", category: "life", tags: ["mindset", "happiness"], text: { kk: "Өміріңнің бақыты ойыңның сапасына байланысты.", en: "The happiness of your life depends upon the quality of your thoughts." } },
+            { id: 7, author: "Khoja Akhmet Yasawi", category: "wisdom", tags: ["spirituality", "truth"], text: { kk: "Көңіліңді таза ұста, сонда ғана шындыққа жетесің.", en: "Keep your heart clean, only then will you reach the truth." } }
         ];
 
-        // --- Helper Components ---
+        // --- COMPONENTS & LOGIC ---
+
         const LucideIcon = ({ name, className = "w-5 h-5" }) => {
             const iconRef = useRef(null);
             useEffect(() => {
@@ -279,420 +157,639 @@
             return <span ref={iconRef} className="inline-flex items-center justify-center" />;
         };
 
-        const KazakhOrnament = ({ className = "w-12 h-12 text-sage-300" }) => (
-            <svg viewBox="0 0 100 100" className={className} fill="currentColor">
-                <path d="M50 0 C 60 20 80 30 100 30 C 80 30 70 50 70 70 C 70 90 50 100 50 100 C 50 100 30 90 30 70 C 30 50 20 30 0 30 C 20 30 40 20 50 0" />
-            </svg>
+        const KazakhOrnament = ({ className = "w-12 h-12 text-bilmekGold" }) => (
+            <svg viewBox="0 0 100 100" className={className} fill="currentColor" dangerouslySetInnerHTML={{ __html: KAZAKH_ORNAMENT_SVG }} />
         );
 
-        // --- Gamification Logic ---
-        const useGamification = () => {
-            const [streak, setStreak] = useState(() => parseInt(localStorage.getItem('bilmek_streak') || '0'));
-            const [badges, setBadges] = useState(() => JSON.parse(localStorage.getItem('bilmek_badges') || '[]'));
+        const ShareModal = ({ thought, lang, onClose }) => {
+            const canvasRef = useRef(null);
 
-            const incrementStreak = useCallback(() => {
-                const today = new Date().toDateString();
-                const lastDate = localStorage.getItem('bilmek_last_visit');
-                if (lastDate !== today) {
-                    const newStreak = lastDate === new Date(Date.now() - 86400000).toDateString() ? streak + 1 : 1;
-                    setStreak(newStreak);
-                    localStorage.setItem('bilmek_streak', newStreak);
-                    localStorage.setItem('bilmek_last_visit', today);
-                }
-            }, [streak]);
-
-            const awardBadge = useCallback((badge) => {
-                if (!badges.includes(badge)) {
-                    const newBadges = [...badges, badge];
-                    setBadges(newBadges);
-                    localStorage.setItem('bilmek_badges', JSON.stringify(newBadges));
-                }
-            }, [badges]);
-
-            return { streak, badges, incrementStreak, awardBadge };
-        };
-
-        // --- UI Modules ---
-
-        const DailyThoughtModule = ({ t, lang, awardBadge }) => {
-            const questions = [
-                { id: 1, q: { kk: "Бүгін сізді не қуантты және неге?", en: "What made you happy today and why?" } },
-                { id: 2, q: { kk: "Егер уақытты тоқтата алсаңыз, қай сәтті таңдар едіңіз?", en: "If you could stop time, which moment would you choose?" } }
-            ];
-            const [val, setVal] = useState('');
-            const [done, setDone] = useState(false);
-            const q = questions[new Date().getDate() % questions.length];
-
-            const submit = () => {
-                if (!val.trim()) return;
-                setDone(true);
-                awardBadge('sage');
+            const download = () => {
+                const canvas = canvasRef.current;
+                const link = document.createElement('a');
+                link.download = `bilmek_wisdom_${thought.id}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
             };
 
-            return (
-                <div className="max-w-3xl mx-auto animate-fade-in">
-                    <div className="premium-glass p-16 rounded-[60px] text-center space-y-12 shadow-premium relative overflow-hidden">
-                        <KazakhOrnament className="w-20 h-20 text-gold-100 absolute top-[-20px] left-[-20px] opacity-40" />
-                        <div className="space-y-4">
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold-500">Daily Inquiry</span>
-                            <h3 className="text-4xl font-serif italic text-sage-900 leading-tight">{q.q[lang]}</h3>
-                        </div>
-                        {!done ? (
-                            <div className="space-y-8">
-                                <textarea
-                                    value={val} onChange={e => setVal(e.target.value)}
-                                    placeholder="..."
-                                    className="w-full h-48 bg-white/40 border border-sage-100 rounded-[40px] p-10 text-2xl font-serif italic outline-none focus:bg-white focus:border-gold-300 transition-all shadow-inner"
-                                />
-                                <button onClick={submit} className="btn-premium text-gold-900 px-16 py-5 rounded-[25px] text-xs font-black uppercase tracking-widest">Жауап беру</button>
-                            </div>
-                        ) : (
-                            <div className="py-20 space-y-8 animate-fade-in">
-                                <div className="w-24 h-24 bg-gold-100 rounded-full flex items-center justify-center text-gold-600 mx-auto shadow-xl"><LucideIcon name="check" className="w-12 h-12" /></div>
-                                <h4 className="text-2xl font-bold text-sage-900 uppercase tracking-widest">Түйін жасалды</h4>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        };
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
 
-        const DiaryModule = ({ t, lang, awardBadge }) => {
-            const [entries, setEntries] = useState(() => JSON.parse(localStorage.getItem('bilmek_diary') || '[]'));
-            const [text, setText] = useState('');
+                // Draw Background
+                const grad = ctx.createLinearGradient(0, 0, 800, 800);
+                grad.addColorStop(0, '#1a2420');
+                grad.addColorStop(1, '#0f1412');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 800, 800);
 
-            const save = () => {
-                if (!text.trim()) return;
-                const newEntries = [{ id: Date.now(), text, date: new Date().toLocaleDateString() }, ...entries];
-                setEntries(newEntries);
-                localStorage.setItem('bilmek_diary', JSON.stringify(newEntries));
-                setText('');
-                if (newEntries.length >= 3) awardBadge('philosopher');
-            };
+                // Draw Borders
+                ctx.strokeStyle = '#d4af37';
+                ctx.lineWidth = 20;
+                ctx.strokeRect(10, 10, 780, 780);
 
-            return (
-                <div className="max-w-4xl mx-auto space-y-12 animate-fade-in">
-                    <div className="premium-glass p-12 rounded-[50px] shadow-glass border-l-8 border-gold-400">
-                        <textarea
-                            value={text} onChange={e => setText(e.target.value)}
-                            placeholder={lang === 'kk' ? "Ой толғау..." : "Write your reflections..."}
-                            className="w-full h-48 bg-transparent text-2xl font-serif italic outline-none resize-none placeholder:text-sage-300"
-                        />
-                        <div className="mt-8 flex justify-end">
-                            <button onClick={save} className="btn-premium text-gold-900 px-12 py-4 rounded-3xl font-black uppercase text-xs tracking-widest">Түю</button>
-                        </div>
-                    </div>
-                    <div className="space-y-8">
-                        {entries.map(e => (
-                            <div key={e.id} className="premium-glass p-10 rounded-[40px] border-b border-sage-100">
-                                <p className="text-[10px] font-black text-gold-500 uppercase tracking-widest mb-4 italic">{e.date}</p>
-                                <p className="text-xl font-serif leading-relaxed text-sage-800">{e.text}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        };
+                // Draw Text
+                ctx.fillStyle = '#e8ece8';
+                ctx.font = 'italic 40px "Playfair Display"';
+                ctx.textAlign = 'center';
 
-        const QuizModule = ({ t, lang, awardBadge }) => {
-            const quizData = [
-                {
-                    id: 1, difficulty: 'easy',
-                    question: { kk: "«Өміріңнің бақыты ойыңның сапасына байланысты» - авторы кім?", en: "«The happiness of your life depends upon the quality of your thoughts» - author?" },
-                    options: ["Abai", "Marcus Aurelius", "Socrates", "Al-Farabi"],
-                    correct: "Marcus Aurelius"
-                },
-                {
-                    id: 2, difficulty: 'medium',
-                    question: { kk: "Әл-Фараби бойынша: «... берілген білім - адамзаттың қас жауы»", en: "According to Al-Farabi: «Knowledge given without ... is the enemy of mankind»" },
-                    options: { kk: ["Көп", "Тәрбиесіз", "Кеш", "Ақысыз"], en: ["Wealth", "Upbringing", "Time", "Effort"] },
-                    correctIndex: 1
-                },
-                {
-                    id: 3, difficulty: 'hard',
-                    question: { kk: "«Ар-ұяттың күзеті — әркімнің өз жүрегінде» - кімнің сөзі?", en: "«The guardian of conscience is in everyone's heart» - whose words?" },
-                    options: ["Shakarim", "Abai", "Yasawi", "Zhumabayev"],
-                    correct: "Shakarim"
-                }
-            ];
-
-            const [currentQ, setCurrentQ] = useState(0);
-            const [score, setScore] = useState(0);
-            const [finished, setFinished] = useState(false);
-            const [selected, setSelected] = useState(null);
-
-            const q = quizData[currentQ];
-
-            const handleAnswer = (idx, label) => {
-                setSelected(idx);
-                const isCorrect = typeof q.options === 'object' && !Array.isArray(q.options) ? idx === q.correctIndex : label === q.correct;
-                if (isCorrect) setScore(score + 1);
-
-                setTimeout(() => {
-                    if (currentQ < quizData.length - 1) {
-                        setCurrentQ(currentQ + 1);
-                        setSelected(null);
+                const text = `"${thought.text[lang]}"`;
+                const words = text.split(' ');
+                let line = '';
+                let y = 300;
+                for(let n = 0; n < words.length; n++) {
+                    let testLine = line + words[n] + ' ';
+                    let metrics = ctx.measureText(testLine);
+                    if (metrics.width > 600 && n > 0) {
+                        ctx.fillText(line, 400, y);
+                        line = words[n] + ' ';
+                        y += 60;
                     } else {
-                        setFinished(true);
-                        if (score >= 2) awardBadge('thinker');
+                        line = testLine;
                     }
-                }, 1000);
-            };
+                }
+                ctx.fillText(line, 400, y);
 
-            if (finished) {
-                return (
-                    <div className="max-w-xl mx-auto premium-glass p-16 rounded-[60px] text-center animate-fade-in shadow-glass">
-                        <KazakhOrnament className="w-16 h-16 text-gold-200 mx-auto mb-8" />
-                        <h3 className="text-3xl font-display font-black uppercase italic tracking-tighter">Сынақ аяқталды</h3>
-                        <p className="text-7xl font-black text-sage-900 my-10">{score} / {quizData.length}</p>
-                        <button
-                            onClick={() => { setFinished(false); setCurrentQ(0); setScore(0); }}
-                            className="w-full btn-premium text-gold-900 py-5 rounded-3xl text-xs font-black uppercase tracking-widest"
-                        >
-                            Қайта тапсыру
-                        </button>
-                    </div>
-                );
-            }
+                ctx.fillStyle = '#d4af37';
+                ctx.font = 'bold 30px "Montserrat"';
+                ctx.fillText(thought.author.toUpperCase(), 400, y + 100);
+
+                // Ornament (Conceptual render as path on canvas is complex, using simplified star for preview)
+                ctx.beginPath();
+                ctx.moveTo(400, 100);
+                ctx.lineTo(430, 140);
+                ctx.lineTo(400, 180);
+                ctx.lineTo(370, 140);
+                ctx.closePath();
+                ctx.fill();
+
+            }, [thought, lang]);
 
             return (
-                <div className="max-w-2xl mx-auto animate-fade-in">
-                    <div className="premium-glass p-12 rounded-[50px] space-y-12 shadow-glass border-4 border-white">
-                        <div className="flex justify-between items-center">
-                             <div className="space-y-1">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-sage-400">Difficulty: {q.difficulty}</span>
-                                <p className="text-xs font-bold text-gold-600 uppercase tracking-widest">Question {currentQ+1}/{quizData.length}</p>
-                             </div>
-                             <div className="flex gap-1.5">
-                                {quizData.map((_, i) => <div key={i} className={`h-1.5 w-10 rounded-full transition-all duration-500 ${i <= currentQ ? 'bg-gold-400' : 'bg-sage-100'}`}></div>)}
-                             </div>
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-md fade-in">
+                    <div className="dark-glass max-w-2xl w-full rounded-[40px] overflow-hidden border-2 border-bilmekGold/20 shadow-elite">
+                        <div className="p-8 flex justify-between items-center border-b border-white/10">
+                            <h3 className="font-display font-black uppercase text-xs tracking-[0.3em] text-bilmekGold">Export Wisdom Card</h3>
+                            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors"><LucideIcon name="x" className="w-4 h-4" /></button>
                         </div>
+                        <div className="p-10 flex flex-col items-center">
+                            <canvas ref={canvasRef} width="800" height="800" className="w-full max-w-[350px] aspect-square rounded-2xl shadow-elite border border-bilmekGold/30" />
+                            <div className="mt-10 flex gap-4 w-full">
+                                <button onClick={download} className="flex-1 py-4 bg-bilmekGold text-deepSage rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-bilmekGlow transition-all">Download PNG</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
-                        <h3 className="text-3xl font-serif italic text-sage-900 leading-tight">{q.question[lang]}</h3>
+        const HeritageModule = ({ t, lang, thoughts, addXp }) => {
+            const [search, setSearch] = useState('');
+            const [filter, setFilter] = useState('all');
+            const [activeTag, setTag] = useState(null);
+            const [sharing, setSharing] = useState(null);
+            const [speaking, setSpeaking] = useState(null);
 
-                        <div className="grid grid-cols-1 gap-4">
-                            {(Array.isArray(q.options) ? q.options : q.options[lang]).map((opt, i) => (
+            const filtered = useMemo(() => {
+                return thoughts.filter(q => {
+                    const matchesSearch = q.author.toLowerCase().includes(search.toLowerCase()) || q.text[lang].toLowerCase().includes(search.toLowerCase());
+                    const matchesCat = filter === 'all' || q.category === filter;
+                    const matchesTag = !activeTag || q.tags.includes(activeTag);
+                    return matchesSearch && matchesCat && matchesTag;
+                });
+            }, [search, filter, activeTag, lang, thoughts]);
+
+            const speak = (id, text) => {
+                if (speaking === id) {
+                    window.speechSynthesis.cancel();
+                    setSpeaking(null);
+                    return;
+                }
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = lang === 'kk' ? 'tr-TR' : 'en-US'; // Fallback for KK using TR phonetics if needed
+                utter.onend = () => setSpeaking(null);
+                setSpeaking(id);
+                window.speechSynthesis.speak(utter);
+                addXp(10);
+            };
+
+            return (
+                <div className="space-y-12 fade-in">
+                    {sharing && <ShareModal thought={sharing} lang={lang} onClose={() => setSharing(null)} />}
+
+                    <div className="flex flex-col lg:flex-row gap-8 items-center justify-between dark-glass p-8 rounded-[40px] shadow-glass border border-white/5">
+                        <div className="relative w-full lg:w-1/2">
+                            <LucideIcon name="search" className="absolute left-6 top-1/2 -translate-y-1/2 text-sage-400 w-5 h-5" />
+                            <input
+                                type="text" placeholder={t.common.search} value={search} onChange={e => setSearch(e.target.value)}
+                                className="w-full bg-white/5 border border-white/10 rounded-[25px] pl-16 pr-6 py-5 text-sm focus:border-bilmekGold outline-none transition-all shadow-inner font-medium"
+                            />
+                        </div>
+                        <div className="flex gap-4 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0">
+                            {['all', 'wisdom', 'life', 'time'].map(cat => (
                                 <button
-                                    key={i} onClick={() => handleAnswer(i, opt)} disabled={selected !== null}
-                                    className={`p-6 rounded-3xl text-left font-bold transition-all border-2 flex items-center gap-6 ${
-                                        selected === i
-                                        ? ((Array.isArray(q.options) ? opt === q.correct : i === q.correctIndex) ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-red-50 border-red-500 text-red-700')
-                                        : 'bg-white border-sage-100 hover:border-gold-300 hover:bg-gold-50/30 text-sage-600'
-                                    }`}
+                                    key={cat} onClick={() => setFilter(cat)}
+                                    className={`px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${filter === cat ? "bg-bilmekGold text-deepSage" : "bg-white/5 text-sage-400 border border-white/10 hover:border-white/30"}`}
                                 >
-                                    <span className="w-10 h-10 rounded-2xl bg-sage-50 text-sage-400 flex items-center justify-center text-xs font-black">{String.fromCharCode(65 + i)}</span>
-                                    {opt}
+                                    {cat}
                                 </button>
                             ))}
                         </div>
                     </div>
-                </div>
-            );
-        };
 
-        const QuoteCard = ({ thought, lang, onShare }) => (
-            <div className="premium-glass p-8 rounded-[40px] flex flex-col justify-between hover:shadow-premium transition-all duration-500 group relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <KazakhOrnament className="w-24 h-24" />
-                </div>
-                <div className="space-y-6 relative z-10">
-                    <div className="flex justify-between items-start">
-                        <div className="w-10 h-10 bg-gold-100 rounded-full flex items-center justify-center text-gold-600">
-                            <LucideIcon name="quote" className="w-5 h-5" />
-                        </div>
-                        <button onClick={() => onShare(thought)} className="p-2 text-sage-400 hover:text-gold-600 transition-colors">
-                            <LucideIcon name="share-2" className="w-4 h-4" />
-                        </button>
-                    </div>
-                    <p className="text-2xl font-serif italic leading-relaxed text-sage-900 group-hover:text-black transition-colors">
-                        "{thought.text[lang]}"
-                    </p>
-                </div>
-                <div className="mt-8 pt-6 border-t border-sage-100 relative z-10">
-                    <h4 className="font-display font-bold text-sm uppercase tracking-wider text-gold-700">{thought.author}</h4>
-                    <div className="flex gap-2 mt-2">
-                        {thought.tags.map(tag => (
-                            <span key={tag} className="text-[9px] font-black uppercase tracking-widest text-sage-400 bg-sage-50 px-2 py-0.5 rounded-full">#{tag}</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        {filtered.map(q => (
+                            <div key={q.id} className="dark-glass p-10 rounded-[50px] flex flex-col justify-between hover:shadow-elite transition-all duration-500 group relative overflow-hidden border border-white/5">
+                                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                                    <KazakhOrnament className="w-32 h-32" />
+                                </div>
+                                <div className="space-y-8 relative z-10">
+                                    <div className="flex justify-between items-start">
+                                        <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-bilmekGold border border-white/10 shadow-inner">
+                                            <LucideIcon name="quote" className="w-6 h-6" />
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => speak(q.id, q.text[lang])} className={`p-3 rounded-xl transition-all ${speaking === q.id ? "bg-bilmekGold text-deepSage animate-pulse" : "bg-white/5 text-sage-400 hover:text-bilmekGold hover:bg-white/10"}`}>
+                                                <LucideIcon name={speaking === q.id ? "volume-2" : "volume-x"} className="w-4 h-4" />
+                                            </button>
+                                            <button onClick={() => setSharing(q)} className="p-3 bg-white/5 text-sage-400 rounded-xl hover:text-bilmekGold hover:bg-white/10 transition-all">
+                                                <LucideIcon name="share-2" className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p className="text-2xl font-serif italic leading-relaxed text-sage-100 group-hover:text-white transition-colors">
+                                        "{q.text[lang]}"
+                                    </p>
+                                </div>
+                                <div className="mt-10 pt-8 border-t border-white/5 relative z-10">
+                                    <h4 className="font-display font-black text-xs uppercase tracking-[0.2em] text-bilmekGold">{q.author}</h4>
+                                    <div className="flex flex-wrap gap-2 mt-4">
+                                        {q.tags.map(tag => (
+                                            <button
+                                                key={tag} onClick={() => setTag(activeTag === tag ? null : tag)}
+                                                className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full transition-all ${activeTag === tag ? "bg-bilmekGold text-deepSage" : "bg-white/5 text-sage-500 hover:text-sage-300"}`}
+                                            >
+                                                #{tag}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>
-            </div>
-        );
+            );
+        };
 
-        const QuoteGenerator = ({ thought, lang, onClose }) => {
-            const cardRef = useRef(null);
+        const ReflectionsModule = ({ t, lang, addXp, thoughts }) => {
+            const [entries, setEntries] = useState(() => JSON.parse(localStorage.getItem('bilmek_reflections') || '[]'));
+            const [currentText, setText] = useState('');
+            const [isLocked, setLocked] = useState(false);
+            const [aura, setAura] = useState({ color: 'rgba(255,255,255,0.1)', mood: 'neutral' });
+
+            useEffect(() => {
+                const text = currentText.toLowerCase();
+                if (text.includes('бақыт') || text.includes('қуаныш') || text.includes('happy') || text.includes('joy')) {
+                    setAura({ color: 'rgba(212, 175, 55, 0.4)', mood: 'happy' });
+                } else if (text.includes('мұң') || text.includes('қайғы') || text.includes('sad') || text.includes('alone')) {
+                    setAura({ color: 'rgba(58, 74, 62, 0.4)', mood: 'sad' });
+                } else if (text.includes('ой') || text.includes('ақыл') || text.includes('think') || text.includes('philosophy')) {
+                    setAura({ color: 'rgba(173, 189, 177, 0.4)', mood: 'think' });
+                } else {
+                    setAura({ color: 'rgba(255,255,255,0.1)', mood: 'neutral' });
+                }
+            }, [currentText]);
+
+            const mirroredQuote = useMemo(() => {
+                if (aura.mood === 'neutral') return null;
+                const matches = thoughts.filter(q => q.category === (aura.mood === 'think' ? 'wisdom' : (aura.mood === 'happy' ? 'life' : 'time')));
+                return matches[Math.floor(Math.random() * matches.length)];
+            }, [aura.mood, thoughts]);
+
+            const saveEntry = () => {
+                if (!currentText.trim()) return;
+                const newEntry = {
+                    id: Date.now(),
+                    text: currentText,
+                    mood: aura.mood,
+                    locked: isLocked,
+                    date: new Date().toLocaleDateString()
+                };
+                const updated = [newEntry, ...entries];
+                setEntries(updated);
+                localStorage.setItem('bilmek_reflections', JSON.stringify(updated));
+                setText('');
+                setLocked(false);
+                addXp(50);
+            };
+
             return (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm animate-fade-in">
-                    <div className="max-w-xl w-full bg-white rounded-[50px] overflow-hidden shadow-2xl animate-float">
-                        <div ref={cardRef} className="p-16 bg-[#fcfdfc] relative flex flex-col items-center text-center space-y-10">
-                            <KazakhOrnament className="w-32 h-32 text-gold-200 absolute top-[-40px] opacity-30" />
-                            <div className="w-12 h-1 bg-gold-400 rounded-full"></div>
-                            <p className="text-3xl font-serif italic text-sage-900 leading-tight">"{thought.text[lang]}"</p>
-                            <div className="space-y-2">
-                                <h4 className="text-sm font-display font-black uppercase tracking-[0.3em] text-gold-600">{thought.author}</h4>
-                                <p className="text-[10px] font-bold text-sage-400 uppercase tracking-widest italic">Bilmek App Heritage</p>
+                <div className="max-w-4xl mx-auto space-y-12 fade-in">
+                    <div className="dark-glass p-12 rounded-[60px] border border-white/10 shadow-elite relative overflow-hidden">
+                        {/* Dynamic Aura */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[100px] transition-all duration-1000" style={{ background: aura.color }}></div>
+
+                        <div className="relative z-10 space-y-8 text-center">
+                            <div className="flex flex-col items-center gap-4">
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-bilmekGold">Mood Aura: {t.moods[aura.mood]}</span>
+                                <KazakhOrnament className="w-10 h-10 opacity-20" />
                             </div>
-                            <div className="w-12 h-1 bg-gold-400 rounded-full"></div>
-                            <KazakhOrnament className="w-32 h-32 text-gold-200 absolute bottom-[-40px] opacity-30 rotate-180" />
+
+                            <textarea
+                                value={currentText} onChange={e => setText(e.target.value)}
+                                placeholder={lang === 'kk' ? "Жаныңызды ақтарыңыз..." : "Speak to your soul..."}
+                                className="w-full h-64 bg-transparent text-3xl font-serif italic text-white placeholder:text-sage-700 outline-none text-center resize-none leading-relaxed"
+                            />
+
+                            {mirroredQuote && (
+                                <div className="p-6 bg-white/5 rounded-3xl border border-white/5 animate-pulse text-center max-w-lg mx-auto">
+                                    <p className="text-xs text-bilmekGold italic">"{mirroredQuote.text[lang]}" — {mirroredQuote.author}</p>
+                                </div>
+                            )}
+
+                            <div className="flex items-center justify-center gap-8">
+                                <button onClick={() => setLocked(!isLocked)} className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${isLocked ? "bg-red-500/20 text-red-400 border border-red-500/30" : "bg-white/5 text-sage-400 hover:bg-white/10"}`}>
+                                    <LucideIcon name={isLocked ? "lock" : "unlock"} className="w-4 h-4" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">{isLocked ? "Locked" : "Lock Insight"}</span>
+                                </button>
+                                <button onClick={saveEntry} className="btn-premium text-deepSage px-16 py-5 rounded-[25px] font-black uppercase text-xs tracking-widest">Enshrine</button>
+                            </div>
                         </div>
-                        <div className="p-6 bg-sage-50 flex justify-center gap-4">
-                            <button onClick={onClose} className="px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest text-sage-400 hover:text-sage-600 transition-all">Close</button>
-                            <button className="btn-premium text-gold-900 px-10 py-3 rounded-2xl text-xs font-black uppercase tracking-widest" onClick={() => window.print()}>Print / Save</button>
-                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {entries.map(e => (
+                            <div key={e.id} className="dark-glass p-10 rounded-[40px] border border-white/5 group hover:border-bilmekGold/30 transition-all">
+                                <div className="flex justify-between items-center mb-6">
+                                    <span className="text-[10px] font-black text-sage-500 uppercase tracking-widest">{e.date}</span>
+                                    <div className={`w-3 h-3 rounded-full ${e.mood === 'happy' ? 'bg-bilmekGold' : (e.mood === 'sad' ? 'bg-sage-600' : 'bg-sage-300')}`}></div>
+                                </div>
+                                {e.locked ? (
+                                    <div className="flex flex-col items-center gap-4 py-8">
+                                        <LucideIcon name="lock" className="w-8 h-8 text-sage-700" />
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-sage-600">This reflection is capsule-locked</p>
+                                    </div>
+                                ) : (
+                                    <p className="text-lg font-serif italic text-sage-200 leading-relaxed">"{e.text}"</p>
+                                )}
+                            </div>
+                        ))}
                     </div>
                 </div>
             );
         };
 
-        const HeritageModule = ({ t, lang, thoughts, onShare }) => {
-            const [searchTerm, setSearchTerm] = useState('');
-            const filtered = thoughts.filter(q => q.author.toLowerCase().includes(searchTerm.toLowerCase()) || q.text[lang].toLowerCase().includes(searchTerm.toLowerCase()));
+        const DailyWisdomModule = ({ t, lang, addXp }) => {
+            const [mode, setMode] = useState('breathe'); // breathe | inquiry | pool
+            const [pollData, setPollData] = useState(() => JSON.parse(localStorage.getItem('bilmek_poll') || '[42, 35, 23]'));
+            const [voted, setVoted] = useState(() => localStorage.getItem('bilmek_voted') === 'true');
+
+            const handleVote = (idx) => {
+                if (voted) return;
+                const updated = [...pollData];
+                updated[idx] += 1;
+                setPollData(updated);
+                localStorage.setItem('bilmek_poll', JSON.stringify(updated));
+                localStorage.setItem('bilmek_voted', 'true');
+                setVoted(true);
+                addXp(30);
+                setTimeout(() => setMode('pool'), 500);
+            };
 
             return (
-                <div className="space-y-12 animate-fade-in">
-                    <div className="flex flex-col md:flex-row gap-6 items-center justify-between premium-glass p-8 rounded-[40px] shadow-glass">
-                        <div className="relative w-full md:w-1/2">
-                            <LucideIcon name="search" className="absolute left-6 top-1/2 -translate-y-1/2 text-sage-400 w-5 h-5" />
-                            <input
-                                type="text" placeholder={t.common.search}
-                                value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                                className="w-full bg-white/50 border border-white rounded-[25px] pl-16 pr-6 py-4 text-sm focus:border-gold-400 outline-none transition-all shadow-inner"
-                            />
+                <div className="max-w-4xl mx-auto space-y-12 fade-in">
+                    {mode === 'breathe' && (
+                        <div className="flex flex-col items-center justify-center py-20 space-y-16">
+                            <div className="relative w-64 h-64 flex items-center justify-center">
+                                <div className="absolute inset-0 bg-bilmekGold/20 rounded-full animate-breath"></div>
+                                <div className="absolute inset-4 bg-bilmekGold/30 rounded-full animate-breath" style={{ animationDelay: '2s' }}></div>
+                                <LucideIcon name="wind" className="w-12 h-12 text-bilmekGold relative z-10" />
+                            </div>
+                            <div className="text-center space-y-4">
+                                <h3 className="text-3xl font-serif italic text-white">{t.common.breathe}</h3>
+                                <p className="text-sage-500 uppercase text-[10px] tracking-[0.5em]">Clear your mind before the inquiry</p>
+                            </div>
+                            <button onClick={() => setMode('inquiry')} className="btn-premium text-deepSage px-16 py-5 rounded-3xl font-black uppercase text-xs tracking-widest mt-12">I am Centered</button>
                         </div>
-                        <div className="flex items-center gap-4 text-sage-400 font-bold uppercase text-[10px] tracking-[0.2em]">
-                            <LucideIcon name="filter" className="w-4 h-4" />
-                            <span>Discovering {filtered.length} insights</span>
-                        </div>
-                    </div>
+                    )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {filtered.map(thought => <QuoteCard key={thought.id} thought={thought} lang={lang} onShare={onShare} />)}
-                    </div>
+                    {mode === 'inquiry' && (
+                        <div className="dark-glass p-16 rounded-[60px] text-center space-y-12">
+                             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-bilmekGold">Collective Dilemma</span>
+                             <h3 className="text-4xl font-serif italic text-sage-100 leading-tight">
+                                {lang === 'kk' ? "Бақыт дегеніміз — нәтиже ме, әлде жол ма?" : "Is happiness a destination or a journey?"}
+                             </h3>
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                                {[
+                                    { kk: "Жол", en: "A Journey" },
+                                    { kk: "Нәтиже", en: "A Destination" },
+                                    { kk: "Екеуі де емес", en: "Neither" }
+                                ].map((opt, i) => (
+                                    <button key={i} onClick={() => handleVote(i)} className="p-8 rounded-[30px] border border-white/5 bg-white/5 hover:bg-bilmekGold hover:text-deepSage transition-all text-lg font-bold font-serif italic">
+                                        {opt[lang]}
+                                    </button>
+                                ))}
+                             </div>
+                        </div>
+                    )}
+
+                    {mode === 'pool' && (
+                        <div className="dark-glass p-16 rounded-[60px] space-y-12">
+                             <div className="text-center">
+                                <h3 className="text-2xl font-serif italic text-white">Collective Consciousness</h3>
+                                <p className="text-sage-500 text-[10px] font-black uppercase tracking-widest mt-4 italic">How elite minds responded</p>
+                             </div>
+                             <div className="space-y-10 max-w-xl mx-auto">
+                                {[
+                                    { label: {kk: "Жол", en: "Journey"}, color: "#d4af37" },
+                                    { label: {kk: "Нәтиже", en: "Destination"}, color: "#7f9684" },
+                                    { label: {kk: "Басқа", en: "Other"}, color: "#3a4a3e" }
+                                ].map((item, i) => {
+                                    const total = pollData.reduce((a,b)=>a+b, 0);
+                                    const pct = Math.round((pollData[i]/total)*100);
+                                    return (
+                                        <div key={i} className="space-y-3">
+                                            <div className="flex justify-between items-end px-2">
+                                                <span className="text-xs font-black uppercase tracking-widest text-sage-300">{item.label[lang]}</span>
+                                                <span className="text-xl font-serif italic text-bilmekGold">{pct}%</span>
+                                            </div>
+                                            <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                                <div className="h-full transition-all duration-1000 ease-out" style={{ width: `${pct}%`, background: item.color }}></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                             </div>
+                             <div className="text-center">
+                                <button onClick={() => setMode('breathe')} className="text-[10px] font-black uppercase tracking-widest text-sage-500 hover:text-bilmekGold transition-colors">Reset Experience</button>
+                             </div>
+                        </div>
+                    )}
                 </div>
             );
         };
 
-        const ConstellationMap = ({ t, lang }) => {
-            const nodes = [
+        const ConnectionModule = ({ t, lang, addXp }) => {
+            const [nodes, setNodes] = useState([
                 { id: 1, label: { kk: 'Жан', en: 'Soul' }, x: 400, y: 300, glow: '#fcd34d' },
                 { id: 2, label: { kk: 'Ар', en: 'Conscience' }, x: 250, y: 150, glow: '#fbbf24' },
                 { id: 3, label: { kk: 'Махаббат', en: 'Love' }, x: 550, y: 150, glow: '#fbbf24' },
                 { id: 4, label: { kk: 'Еркіндік', en: 'Freedom' }, x: 200, y: 450, glow: '#fbbf24' },
                 { id: 5, label: { kk: 'Уақыт', en: 'Time' }, x: 600, y: 450, glow: '#fbbf24' },
                 { id: 6, label: { kk: 'Шындық', en: 'Truth' }, x: 400, y: 80, glow: '#adbdb1' },
-            ];
+            ]);
             const links = [ {s:1, t:2}, {s:1, t:3}, {s:1, t:4}, {s:1, t:5}, {s:2, t:6} ];
 
+            const [dragging, setDragging] = useState(null);
+            const [dialogue, setDialogue] = useState(null); // node_id | null
+            const [step, setStep] = useState(0);
+
+            const handleMouseDown = (id) => setDragging(id);
+            const handleMouseMove = (e) => {
+                if (!dragging) return;
+                const svg = e.currentTarget;
+                const CTM = svg.getScreenCTM();
+                const x = (e.clientX - CTM.e) / CTM.a;
+                const y = (e.clientY - CTM.f) / CTM.d;
+                setNodes(nodes.map(n => n.id === dragging ? { ...n, x, y } : n));
+            };
+            const handleMouseUp = () => setDragging(null);
+
+            const socraticTrees = {
+                1: [
+                    { q: {kk: "Жан мәңгілік пе?", en: "Is the soul eternal?"}, opts: [
+                        {kk: "Иә", en: "Yes", alignment: "Stoic"},
+                        {kk: "Жоқ", en: "No", alignment: "Rationalist"}
+                    ]}
+                ],
+                6: [
+                    { q: {kk: "Шындық объективті ме?", en: "Is truth objective?"}, opts: [
+                        {kk: "Әрине", en: "Absolutely", alignment: "Rationalist"},
+                        {kk: "Жоқ, ол салыстырмалы", en: "No, it's relative", alignment: "Humanist"}
+                    ]}
+                ]
+            };
+
             return (
-                <div className="premium-glass rounded-[60px] p-12 overflow-hidden animate-fade-in shadow-glass border-4 border-white">
-                    <div className="relative aspect-video bg-premiumDark/5 rounded-[40px] overflow-hidden">
-                        <svg viewBox="0 0 800 600" className="w-full h-full">
+                <div className="max-w-5xl mx-auto space-y-12 fade-in">
+                    <div className="premium-glass rounded-[60px] p-8 overflow-hidden shadow-elite border-4 border-white/5 relative">
+                        <svg viewBox="0 0 800 600" className="w-full h-full cursor-crosshair select-none"
+                             onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
                             {links.map((l, i) => {
                                 const sn = nodes.find(n => n.id === l.s), tn = nodes.find(n => n.id === l.t);
-                                return <line key={i} x1={sn.x} y1={sn.y} x2={tn.x} y2={tn.y} stroke="#d1dbd1" strokeWidth="1" strokeDasharray="10,10" className="animate-pulse" />;
+                                return <line key={i} x1={sn.x} y1={sn.y} x2={tn.x} y2={tn.y} stroke="rgba(212,175,55,0.2)" strokeWidth="1.5" strokeDasharray="10,5" />;
                             })}
                             {nodes.map(n => (
-                                <g key={n.id} className="constellation-node cursor-pointer group">
-                                    <circle cx={n.x} cy={n.y} r="35" fill="white" stroke={n.glow} strokeWidth="3" />
-                                    <text x={n.x} y={n.y + 6} textAnchor="middle" className="text-[11px] font-black uppercase tracking-tighter fill-sage-900">{n.label[lang]}</text>
+                                <g key={n.id} className={`constellation-node cursor-grab ${dragging === n.id ? 'cursor-grabbing' : ''}`}
+                                   onMouseDown={() => handleMouseDown(n.id)} onClick={() => { setDialogue(n.id); setStep(0); }}>
+                                    <circle cx={n.x} cy={n.y} r="35" fill="#1a2420" stroke={n.glow} strokeWidth="3" className="shadow-gold-glow" />
+                                    <text x={n.x} y={n.y + 6} textAnchor="middle" className="text-[10px] font-black uppercase tracking-tighter fill-white pointer-events-none">{n.label[lang]}</text>
                                 </g>
                             ))}
                         </svg>
-                        <div className="absolute top-10 left-10 pointer-events-none">
-                            <h3 className="text-xl font-serif italic text-sage-800">Idea Constellation</h3>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-sage-400 mt-2">Exploring conceptual links</p>
+                        <div className="absolute bottom-10 left-10 pointer-events-none">
+                            <h3 className="text-xl font-serif italic text-white">Interactive Constellation</h3>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-sage-500 mt-2">Drag nodes to reshape philosophy</p>
                         </div>
                     </div>
+
+                    {dialogue && socraticTrees[dialogue] && (
+                        <div className="dark-glass p-12 rounded-[50px] border-l-8 border-bilmekGold animate-fade-in">
+                            <div className="flex justify-between items-start mb-8">
+                                <h4 className="text-2xl font-serif italic text-white">Socratic Dialogue: {nodes.find(n=>n.id===dialogue).label[lang]}</h4>
+                                <button onClick={()=>setDialogue(null)} className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"><LucideIcon name="x" className="w-4 h-4" /></button>
+                            </div>
+                            <div className="space-y-8">
+                                <p className="text-xl text-sage-200">"{socraticTrees[dialogue][step].q[lang]}"</p>
+                                <div className="flex gap-4">
+                                    {socraticTrees[dialogue][step].opts.map((o, i) => (
+                                        <button key={i} onClick={() => { addXp(20); setDialogue(null); }} className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-bilmekGold hover:text-deepSage transition-all">
+                                            {o[lang]}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const ChallengeModule = ({ t, lang, addXp, awardBadge }) => {
+            const [mode, setMode] = useState('menu'); // menu | time | scramble
+            const [score, setScore] = useState(0);
+            const [timer, setTimer] = useState(15);
+            const [activeQ, setActiveQ] = useState(0);
+            const [scrambled, setScrambled] = useState([]);
+            const [reconstructed, setReconstructed] = useState([]);
+
+            const scrambleQuote = {
+                kk: "Мен ешнәрсе білмейтінімді білемін".split(' '),
+                en: "I know that I know nothing".split(' ')
+            };
+
+            useEffect(() => {
+                if (mode === 'scramble') {
+                    setScrambled([...scrambleQuote[lang]].sort(() => Math.random() - 0.5));
+                }
+            }, [mode, lang]);
+
+            useEffect(() => {
+                let interval;
+                if (mode === 'time' && timer > 0) {
+                    interval = setInterval(() => setTimer(t => t - 1), 1000);
+                } else if (timer === 0) {
+                    setMode('menu');
+                }
+                return () => clearInterval(interval);
+            }, [mode, timer]);
+
+            const handleWordClick = (word, idx) => {
+                const updatedScrambled = scrambled.filter((_, i) => i !== idx);
+                const updatedRecon = [...reconstructed, word];
+                setReconstructed(updatedRecon);
+                setScrambled(updatedScrambled);
+
+                if (updatedRecon.join(' ') === scrambleQuote[lang].join(' ')) {
+                    addXp(100);
+                    awardBadge('thinker');
+                    setTimeout(() => setMode('menu'), 1000);
+                }
+            };
+
+            return (
+                <div className="max-w-4xl mx-auto space-y-12 fade-in">
+                    {mode === 'menu' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div className="dark-glass p-12 rounded-[50px] space-y-8 border border-white/5 hover:border-bilmekGold/30 transition-all cursor-pointer group" onClick={() => { setMode('time'); setTimer(15); }}>
+                                <div className="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center text-bilmekGold group-hover:scale-110 transition-transform"><LucideIcon name="zap" className="w-8 h-8" /></div>
+                                <h3 className="text-2xl font-serif italic">Time Attack</h3>
+                                <p className="text-sage-500 text-xs uppercase tracking-widest leading-loose">Speed-based philosophical validation. Answer quickly to multiply XP.</p>
+                            </div>
+                            <div className="dark-glass p-12 rounded-[50px] space-y-8 border border-white/5 hover:border-bilmekGold/30 transition-all cursor-pointer group" onClick={() => { setMode('scramble'); setReconstructed([]); }}>
+                                <div className="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center text-bilmekGold group-hover:scale-110 transition-transform"><LucideIcon name="puzzle" className="w-8 h-8" /></div>
+                                <h3 className="text-2xl font-serif italic">Word Scramble</h3>
+                                <p className="text-sage-500 text-xs uppercase tracking-widest leading-loose">Reconstruct famous quotes in the correct order to prove your mastery.</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {mode === 'time' && (
+                        <div className="dark-glass p-16 rounded-[60px] text-center space-y-12 relative overflow-hidden">
+                             <div className="absolute top-0 left-0 h-1 bg-bilmekGold transition-all duration-1000" style={{ width: `${(timer/15)*100}%` }}></div>
+                             <div className="flex justify-between items-center">
+                                <span className="text-4xl font-black italic text-bilmekGold">{timer}s</span>
+                                <span className="text-xs font-black uppercase tracking-widest text-sage-500">Fast Reflection Mode</span>
+                             </div>
+                             <h3 className="text-3xl font-serif italic">«Ар-ұяттың күзеті — әркімнің өз жүрегінде» - кімнің сөзі?</h3>
+                             <div className="grid grid-cols-2 gap-4">
+                                {['Shakarim', 'Abai'].map(opt => (
+                                    <button key={opt} onClick={() => { addXp(50); setMode('menu'); }} className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-bilmekGold hover:text-deepSage transition-all font-black uppercase text-xs tracking-widest">{opt}</button>
+                                ))}
+                             </div>
+                        </div>
+                    )}
+
+                    {mode === 'scramble' && (
+                        <div className="dark-glass p-16 rounded-[60px] text-center space-y-12">
+                             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-bilmekGold">Quote Reconstruction</span>
+                             <div className="min-h-[100px] p-10 bg-white/5 rounded-[40px] border border-dashed border-white/10 flex flex-wrap justify-center gap-4">
+                                {reconstructed.map((w, i) => <span key={i} className="text-3xl font-serif italic text-white animate-fade-in">{w}</span>)}
+                             </div>
+                             <div className="flex flex-wrap justify-center gap-4">
+                                {scrambled.map((w, i) => (
+                                    <button key={i} onClick={() => handleWordClick(w, i)} className="px-6 py-3 bg-bilmekGold text-deepSage rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-bilmekGlow transition-all">
+                                        {w}
+                                    </button>
+                                ))}
+                             </div>
+                             <button onClick={() => setMode('menu')} className="text-[10px] font-black uppercase tracking-widest text-sage-600 hover:text-white transition-colors">Abort Mission</button>
+                        </div>
+                    )}
                 </div>
             );
         };
 
         const MainApp = () => {
             const [lang, setLang] = useState('kk');
-            const [currentTab, setTab] = useState('collection');
-            const [shareQuote, setShareQuote] = useState(null);
-            const { streak, badges, incrementStreak, awardBadge } = useGamification();
+            const [activeTab, setTab] = useState('heritage');
+            const [xp, setXp] = useState(() => parseInt(localStorage.getItem('bilmek_xp') || '0'));
+            const [level, setLevel] = useState(0);
+
             const t = useMemo(() => translations[lang], [lang]);
 
-            useEffect(() => { incrementStreak(); }, [incrementStreak]);
+            useEffect(() => {
+                const calculatedLevel = Math.floor(xp / 500);
+                if (calculatedLevel !== level) setLevel(calculatedLevel);
+                localStorage.setItem('bilmek_xp', xp);
+            }, [xp, level]);
 
-            const renderContent = () => {
-                switch(currentTab) {
-                    case 'collection': return <HeritageModule t={t} lang={lang} thoughts={initialThoughts} onShare={setShareQuote} />;
-                    case 'map': return <ConstellationMap t={t} lang={lang} />;
-                    case 'diary': return <DiaryModule t={t} lang={lang} awardBadge={awardBadge} />;
-                    case 'daily': return <DailyThoughtModule t={t} lang={lang} awardBadge={awardBadge} />;
-                    case 'quiz': return <QuizModule t={t} lang={lang} awardBadge={awardBadge} />;
-                    default: return <div className="text-center py-20 text-sage-300 italic">Coming Soon...</div>;
-                }
-            };
+            const addXp = (amount) => setXp(prev => prev + amount);
 
             return (
-                <div className="max-w-7xl mx-auto px-6 py-8">
-                    {shareQuote && <QuoteGenerator thought={shareQuote} lang={lang} onClose={() => setShareQuote(null)} />}
-
-                    {/* Premium Header */}
-                    <header className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8">
-                        <div className="flex items-center gap-6">
-                            <div className="w-16 h-16 btn-premium rounded-3xl flex items-center justify-center text-gold-900 shadow-xl">
-                                <LucideIcon name="library" className="w-8 h-8" />
+                <div className="flex flex-col min-h-screen">
+                    {/* Premium Top Navigation */}
+                    <header className="fixed top-0 left-0 w-full z-[100] dark-glass px-6 h-20 flex items-center justify-between border-b border-white/5">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-bilmekGold rounded-2xl flex items-center justify-center text-deepSage shadow-gold-glow animate-float">
+                                <LucideIcon name="feather" className="w-7 h-7" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-black uppercase tracking-tighter italic text-glow">{t.appName}</h1>
-                                <p className="text-[10px] font-bold text-sage-500 uppercase tracking-[0.4em]">{t.slogan}</p>
+                                <h1 className="text-2xl font-black italic gold-text-gradient tracking-tighter uppercase leading-none">Bilmek</h1>
+                                <p className="text-[9px] font-bold text-sage-400 uppercase tracking-[0.3em]">{t.slogan}</p>
                             </div>
                         </div>
 
-                        <nav className="flex items-center gap-8 premium-glass px-10 py-4 rounded-full shadow-glass border border-white">
+                        <nav className="hidden lg:flex items-center gap-10">
                             {Object.entries(t.nav).map(([key, label]) => (
                                 <button
-                                    key={key} onClick={() => setTab(key)}
-                                    className={`text-[11px] font-black uppercase tracking-[0.2em] nav-underline transition-all ${currentTab === key ? "text-gold-600 nav-active" : "text-sage-400 hover:text-sage-700"}`}
+                                    key={key}
+                                    onClick={() => setTab(key)}
+                                    className={`relative text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${activeTab === key ? "text-bilmekGold" : "text-sage-400 hover:text-sage-200"}`}
                                 >
                                     {label}
+                                    {activeTab === key && <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-8 h-1 bg-bilmekGold rounded-t-full shadow-gold-glow"></span>}
                                 </button>
                             ))}
                         </nav>
 
-                        <div className="flex items-center gap-4">
-                            <div className="flex bg-sage-200/50 p-1 rounded-2xl border border-white">
-                                {['kk', 'en'].map(l => (
-                                    <button key={l} onClick={() => setLang(l)} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${lang === l ? "bg-white text-gold-700 shadow-sm" : "text-sage-400"}`}>{l}</button>
-                                ))}
+                        <div className="flex items-center gap-6">
+                            {/* Gamification Bar */}
+                            <div className="hidden sm:flex items-center gap-3 px-5 py-2 bg-white/5 rounded-2xl border border-white/10">
+                                <div className="text-right">
+                                    <p className="text-[8px] font-black text-sage-500 uppercase tracking-widest leading-none">{t.levels[Math.min(level, 4)]}</p>
+                                    <p className="text-sm font-black italic text-bilmekGlow">{xp} XP</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-full border-2 border-bilmekGold/30 flex items-center justify-center relative overflow-hidden p-0.5">
+                                    <div className="absolute bottom-0 left-0 w-full bg-bilmekGold/20" style={{ height: `${(xp % 500) / 5}%` }}></div>
+                                    <LucideIcon name="award" className="text-bilmekGold w-5 h-5 relative z-10" />
+                                </div>
                             </div>
+
+                            <button onClick={() => setLang(lang === 'kk' ? 'en' : 'kk')} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase hover:bg-bilmekGold hover:text-deepSage transition-all">
+                                {lang}
+                            </button>
                         </div>
                     </header>
 
-                    {/* Stats & Streak Bar */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-                        <div className="premium-glass p-6 rounded-[30px] flex items-center gap-5">
-                            <div className="w-12 h-12 bg-gold-100 rounded-2xl flex items-center justify-center text-gold-600"><LucideIcon name="zap" /></div>
-                            <div>
-                                <p className="text-[10px] font-black text-sage-400 uppercase tracking-widest">{t.common.streak}</p>
-                                <p className="text-xl font-black text-sage-900 italic">{streak} Days</p>
+                    <main className="pt-32 pb-20 flex-1 px-6 max-w-7xl mx-auto w-full relative z-10">
+                        {activeTab === 'heritage' && <HeritageModule t={t} lang={lang} thoughts={initialThoughts} addXp={addXp} />}
+                        {activeTab === 'reflection' && <ReflectionsModule t={t} lang={lang} addXp={addXp} thoughts={initialThoughts} />}
+                        {activeTab === 'wisdom' && <DailyWisdomModule t={t} lang={lang} addXp={addXp} />}
+                        {activeTab === 'connection' && <ConnectionModule t={t} lang={lang} addXp={addXp} />}
+                        {activeTab === 'challenge' && <ChallengeModule t={t} lang={lang} addXp={addXp} awardBadge={awardBadge} />}
+                        {!['heritage', 'reflection', 'wisdom', 'connection', 'challenge'].includes(activeTab) && (
+                            <div className="flex flex-col items-center justify-center py-20 text-center fade-in">
+                                <KazakhOrnament className="w-16 h-16 opacity-30 mb-8" />
+                                <h2 className="text-5xl font-serif italic mb-6 leading-tight">Exploring conceptual links...</h2>
+                                <div className="w-20 h-1 bg-bilmekGold rounded-full animate-pulse mx-auto"></div>
                             </div>
-                        </div>
-                        <div className="premium-glass p-6 rounded-[30px] flex items-center gap-5 col-span-1 md:col-span-3">
-                            <LucideIcon name="award" className="text-gold-500" />
-                            <div className="flex gap-4">
-                                {badges.length === 0 ? <p className="text-xs font-bold text-sage-300 italic">No badges earned yet. Keep exploring!</p> :
-                                 badges.map(b => <span key={b} className="bg-gold-50 text-gold-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-gold-100">{t.badgesList[b]}</span>)}
-                            </div>
-                        </div>
-                    </div>
+                        )}
+                    </main>
 
-                    {/* Content Section */}
-                    <div className="min-h-[600px]">
-                        <div className="mb-12 text-center max-w-2xl mx-auto space-y-4">
-                             <KazakhOrnament className="w-10 h-10 text-gold-300 mx-auto opacity-40" />
-                             <h2 className="text-5xl font-serif italic text-sage-900">{t.nav[currentTab]}</h2>
-                             <div className="h-0.5 w-12 bg-gold-400 mx-auto rounded-full"></div>
-                        </div>
-                        {renderContent()}
-                    </div>
-
-                    <footer className="mt-32 py-12 border-t border-sage-200 text-center">
-                         <p className="text-[10px] font-black text-sage-400 uppercase tracking-[0.5em]">© 2026 Bilmek • Intellectual Excellence</p>
+                    <footer className="py-12 px-6 border-t border-white/5 text-center">
+                         <p className="text-[10px] font-bold text-sage-600 uppercase tracking-[0.6em]">© 2026 Bilmek • Designed for Elite Minds</p>
                     </footer>
                 </div>
             );
