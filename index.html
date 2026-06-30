@@ -1,576 +1,1364 @@
 <!DOCTYPE html>
 <html lang="kk" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Mercury Energy - Management Hub</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Mercury Energy - Энергетикалық Хаб және Басқару Панелі</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- CSS & Icon Libraries -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-  <!-- Tailwind Configuration -->
-  <script>
-    window.tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            cosmic: {
-              deep: '#0b1329',
-              slate: '#121f3d',
-              gold: '#fbbf24',
-              royal: '#2563eb',
-              emerald: '#34d399',
-              danger: '#f87171',
-            }
-          }
+    <style>
+        :root {
+            --cosmic-deep: #0B1329;
+            --cosmic-slate: #121F3D;
+            --cosmic-accent: #3B82F6;
+            --cosmic-gold: #FBBF24;
+            --cosmic-emerald: #10B981;
+            --cosmic-rose: #F43F5E;
         }
-      }
-    }
-  </script>
 
-  <!-- Core Libraries -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--cosmic-deep);
+            color: #F8FAFC;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
-  <style>
-    body {
-      background-color: #0b1329;
-      color: #f1f5f9;
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      overflow-x: hidden;
-    }
-    .glass {
-      background: rgba(18, 31, 61, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Глассморфизм стильдері */
+        .glass-panel {
+            background: rgba(18, 31, 61, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+        }
 
-    .barrel {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        background: #0f172a;
-        border-radius: 10% / 50%;
-        overflow: hidden;
-        border: 2px solid rgba(255,255,255,0.1);
-        box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-    }
-    .barrel-fill {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
-    }
-  </style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.6);
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.2) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            border-color: var(--cosmic-accent) !important;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        /* 3D Barrel Effect */
+        .barrel {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(to right, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .barrel-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(to top, rgba(59, 130, 246, 0.8), rgba(59, 130, 246, 0.4));
+        }
+        .fluid-wave {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 200%;
+            height: 20px;
+            background: radial-gradient(circle at 50% 100%, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: waveMove 3s infinite linear;
+        }
+        @keyframes waveMove {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Арнайы Скроллбар */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--cosmic-deep); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .shine { position: relative; overflow: hidden; }
+        .shine::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.05) 50%, transparent 55%);
+            animation: shineMove 4s infinite;
+        }
+        @keyframes shineMove {
+            0% { transform: translate(-30%, -30%); }
+            100% { transform: translate(30%, 30%); }
+        }
+    </style>
 </head>
-<body class="bg-[#0b1329] text-slate-100 min-h-screen">
-  <div id="root"></div>
+<body class="min-h-screen flex flex-col pt-16">
 
-  <script type="text/babel">
-    const { useState, useEffect, createContext, useContext, useMemo, useRef } = React;
-
-    const dictionary = {
-      KZ: {
-        home: "Басты бет",
-        monitoring: "Мониторинг",
-        prices: "Бағалар",
-        contacts: "Компания",
-        admin: "Басқару",
-        calculator: "Мұнайбаза калькуляторы",
-        calculate: "Есептеу",
-        spotRates: "Ұшқыр спот бағалары",
-        logout: "Шығу",
-        login: "Кіру",
-        auditLogs: "Аудит журналы",
-        results: "Нәтиже",
-        all: "Барлығы",
-        autoFuel: "Автомобиль отыны",
-        aviaFuel: "Авиациялық отын",
-        fuelType: "Отын түрі",
-        volume: "Көлем",
-        totalPrice: "Жалпы құны",
-        withVAT: "ҚҚС-пен",
-        withoutVAT: "ҚҚС-сыз",
-        region: "Аймақ",
-        depotStorage: "13 Резервуар паркі",
-        directors: "Директорлар кеңесі",
-        logistics: "ЖД Тұйығы мен Логистика",
-        feedback: "Кері байланыс",
-        waterLevel: "Су деңгейі",
-        temp: "Температура",
-        gasStations: "Бекеттер",
-        users: "Пайдаланушылар",
-        save: "Сақтау",
-        edit: "Өңдеу",
-        delete: "Өшіру",
-        bannerCMS: "Баннер CMS",
-        clearLogs: "Тазарту",
-        search: "Іздеу",
-        action: "Әрекет",
-        user: "Пайдаланушы",
-        time: "Уақыт",
-        role: "Рөлі",
-        spotCMS: "Спот-бағалар",
-        regionalCMS: "Тарифтер",
-        imageURL: "Сурет URL",
-        desc: "Сипаттама",
-        name: "Аты-жөні",
-        send: "Жіберу",
-        message: "Хабарлама"
-      },
-      RU: {
-        home: "Главная",
-        monitoring: "Мониторинг",
-        prices: "Цены",
-        contacts: "О компании",
-        admin: "Управление",
-        calculator: "Калькулятор нефтебазы",
-        calculate: "Рассчитать",
-        spotRates: "Спот цены",
-        logout: "Выход",
-        login: "Вход",
-        auditLogs: "Журнал аудита",
-        results: "Результат",
-        all: "Все",
-        autoFuel: "Автомобильное топливо",
-        aviaFuel: "Авиационное топливо",
-        fuelType: "Тип топлива",
-        volume: "Объем",
-        totalPrice: "Общая стоимость",
-        withVAT: "с НДС",
-        withoutVAT: "без НДС",
-        region: "Регион",
-        depotStorage: "Парк из 13 резервуаров",
-        directors: "Совет директоров",
-        logistics: "ЖД Тупик и Логистика",
-        feedback: "Обратная связь",
-        waterLevel: "Уровень воды",
-        temp: "Температура",
-        gasStations: "Станции",
-        users: "Пользователи",
-        save: "Сохранить",
-        edit: "Правка",
-        delete: "Удалить",
-        bannerCMS: "Баннер CMS",
-        clearLogs: "Очистить",
-        search: "Поиск",
-        action: "Действие",
-        user: "Пользователь",
-        time: "Время",
-        role: "Роль",
-        spotCMS: "Спот-цены",
-        regionalCMS: "Тарифы",
-        imageURL: "URL изображения",
-        desc: "Описание",
-        name: "ФИО",
-        send: "Отправить",
-        message: "Сообщение"
-      },
-      EN: {
-        home: "Home",
-        monitoring: "Monitoring",
-        prices: "Prices",
-        contacts: "Company",
-        admin: "Admin",
-        calculator: "Depot Calculator",
-        calculate: "Calculate",
-        spotRates: "Spot Rates",
-        logout: "Logout",
-        login: "Login",
-        auditLogs: "Audit Logs",
-        results: "Result",
-        all: "All",
-        autoFuel: "Automotive Fuel",
-        aviaFuel: "Aviation Fuel",
-        fuelType: "Fuel Type",
-        volume: "Volume",
-        totalPrice: "Total Price",
-        withVAT: "incl. VAT",
-        withoutVAT: "excl. VAT",
-        region: "Region",
-        depotStorage: "13 Reservoir Park",
-        directors: "Board of Directors",
-        logistics: "Railway & Logistics",
-        feedback: "Feedback",
-        waterLevel: "Water Level",
-        temp: "Temperature",
-        gasStations: "Stations",
-        users: "Users",
-        save: "Save",
-        edit: "Edit",
-        delete: "Delete",
-        bannerCMS: "Banner CMS",
-        clearLogs: "Clear",
-        search: "Search",
-        action: "Action",
-        user: "User",
-        time: "Time",
-        role: "Role",
-        spotCMS: "Spot Prices",
-        regionalCMS: "Rates",
-        imageURL: "Image URL",
-        desc: "Description",
-        name: "Name",
-        send: "Send",
-        message: "Message"
-      }
-    };
-
-    const AppContext = createContext();
-
-    function AppProvider({ children }) {
-      const [state, setState] = useState(() => {
-        const saved = localStorage.getItem('sme_master_state_v2');
-        return saved ? JSON.parse(saved) : {
-          user: null,
-          language: 'KZ',
-          currentPath: '/home',
-          banner: {
-            url: "https://images.unsplash.com/photo-1542060748-10c28b629f6f?auto=format&fit=crop&q=80&w=1200",
-            title: { KZ: "Smart Mercury Energy - Басқару Хабы", RU: "Smart Mercury Energy - Хаб Управления", EN: "Smart Mercury Energy - Management Hub" },
-            desc: { KZ: "Мұнай өнімдері мен авиаотынды басқарудың кешенді жүйесі.", RU: "Комплексная система управления нефтепродуктами и авиатопливом.", EN: "Integrated petroleum and aviation fuel management system." }
-          },
-          spotPrices: [
-            { id: 1, name: "АИ-92", standard: "EURO-5", price: 245, trend: 1.5, status: "up" },
-            { id: 2, name: "АИ-95", standard: "EURO-5", price: 285, trend: 0.8, status: "up" },
-            { id: 3, name: "ТС-1", standard: "JIG-2", price: 410, trend: -0.4, status: "down" },
-            { id: 4, name: "JET A-1", standard: "JIG-2", price: 425, trend: 2.1, status: "up" },
-          ],
-          regionalRates: [
-            { id: 1, region: "Алматы", fuel: "АИ-95", price: 275000, cat: "auto" },
-            { id: 2, region: "Астана", fuel: "ДТ (Лето)", price: 295000, cat: "auto" },
-            { id: 3, region: "Шымкент", fuel: "JET A-1", price: 380000, cat: "avia" },
-            { id: 4, region: "Атырау", fuel: "ТС-1", price: 375000, cat: "avia" },
-          ],
-          reservoirs: Array.from({ length: 13 }, (_, i) => ({
-            id: i + 1,
-            name: `RES-${String(i + 1).padStart(2, '0')}`,
-            volume: 40 + Math.floor(Math.random() * 50),
-            water: 1.2 + Math.random(),
-            temp: 14 + Math.floor(Math.random() * 8),
-            fuelType: i < 5 ? "Авиаотын" : i < 9 ? "Керосин" : "Автоотын"
-          })),
-          stations: [
-            { id: 1, code: "ALA-04", volume: 12000, limit: 20000 },
-            { id: 2, code: "AST-12", volume: 8500, limit: 15000 },
-            { id: 3, code: "SHY-02", volume: 14000, limit: 20000 },
-          ],
-          users: [
-            { id: 1, name: "Arman Admin", email: "admin@sme.kz", role: "Admin" },
-            { id: 2, name: "Public User", email: "user@sme.kz", role: "User" }
-          ],
-          directors: [
-            { id: 1, name: "Ерсұлтан Ахметов", role: "CEO", img: "https://i.pravatar.cc/150?u=ersultan" },
-            { id: 2, name: "Марат Сәдібеков", role: "COO", img: "https://i.pravatar.cc/150?u=marat" },
-          ],
-          auditLogs: []
-        };
-      });
-
-      useEffect(() => {
-        localStorage.setItem('sme_master_state_v2', JSON.stringify(state));
-      }, [state]);
-
-      useEffect(() => {
-        const handleHash = () => setState(s => ({ ...s, currentPath: window.location.hash.replace('#', '') || '/home' }));
-        window.addEventListener('hashchange', handleHash);
-        handleHash();
-        return () => window.removeEventListener('hashchange', handleHash);
-      }, []);
-
-      const t = (key) => dictionary[state.language][key] || key;
-
-      const log = (action) => {
-        const newLog = { id: Date.now(), user: state.user?.name || "System", action, time: new Date().toLocaleTimeString() };
-        setState(s => ({ ...s, auditLogs: [newLog, ...s.auditLogs].slice(0, 50) }));
-      };
-
-      return <AppContext.Provider value={{ state, setState, t, log }}>{children}</AppContext.Provider>;
-    }
-
-    const HomeView = () => {
-      const { state, t } = useContext(AppContext);
-      const [calc, setCalc] = useState({ id: state.regionalRates[0].id, vol: 1000 });
-      const rate = state.regionalRates.find(r => r.id == calc.id);
-      const total = (rate?.price || 0) * (calc.vol / 1000);
-
-      return (
-        <div className="fade-in space-y-16">
-          <div className="relative h-[500px] rounded-[40px] overflow-hidden group shadow-2xl">
-            <img src={state.banner.url} className="w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0b1329] via-transparent to-transparent flex flex-col justify-center px-12">
-              <h1 className="text-6xl font-black mb-6 max-w-4xl leading-tight text-white">{state.banner.title[state.language]}</h1>
-              <p className="text-xl text-slate-300 max-w-2xl font-medium">{state.banner.desc[state.language]}</p>
+    <!-- 1. ЖОҒАРҒЫ НАВИГАЦИЯЛЫҚ ПАНЕЛЬ (NAVBAR) -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-panel px-6 h-16 flex items-center justify-between border-b border-white/5">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
+                <i class="fa-solid fa-bolt text-white"></i>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {state.spotPrices.map(p => (
-              <div key={p.id} className="glass p-8 rounded-3xl border-t-4 border-amber-400 hover:scale-[1.02] transition-transform">
-                <div className="flex justify-between mb-4">
-                  <span className="text-[10px] font-black text-slate-500 uppercase">{p.standard}</span>
-                  <span className={`text-[10px] font-black ${p.status==='up'?'text-emerald-400':'text-danger'}`}>{p.status==='up'?'▲':'▼'} {p.trend}%</span>
-                </div>
-                <h4 className="text-2xl font-black text-white">{p.name}</h4>
-                <p className="text-3xl font-black text-amber-300 mt-2">{p.price} <span className="text-xs text-slate-500">KZT/L</span></p>
-              </div>
-            ))}
-          </div>
-
-          <div className="glass p-12 rounded-[40px] grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h3 className="text-3xl font-black mb-8">{t('calculator')}</h3>
-              <div className="space-y-6">
-                <div>
-                  <label className="text-xs font-black text-slate-500 uppercase mb-2 block">{t('fuelType')}</label>
-                  <select value={calc.id} onChange={e=>setCalc({...calc,id:e.target.value})} className="w-full bg-[#0b1329] border border-white/10 p-4 rounded-2xl text-white outline-none">
-                    {state.regionalRates.map(r=><option key={r.id} value={r.id}>{r.region} - {r.fuel}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-black text-slate-500 uppercase mb-2 block">{t('volume')} (L)</label>
-                  <input type="number" value={calc.vol} onChange={e=>setCalc({...calc,vol:e.target.value})} className="w-full bg-[#0b1329] border border-white/10 p-4 rounded-2xl text-white outline-none" />
-                </div>
-              </div>
+            <div class="flex flex-col leading-none">
+                <span class="text-xl font-black tracking-tight text-white uppercase">SmartME</span>
+                <span class="text-[8px] font-bold text-blue-400 uppercase tracking-widest">Mercury Energy</span>
             </div>
-            <div className="bg-blue-600/10 border border-blue-600/20 p-10 rounded-[40px] text-center">
-              <p className="text-xs font-black text-blue-400 uppercase mb-4">{t('results')}</p>
-              <div className="space-y-4">
-                <p className="text-sm text-slate-400">{t('withoutVAT')}: <span className="text-xl font-black text-white">{total.toLocaleString()} KZT</span></p>
-                <p className="text-sm text-slate-400">{t('withVAT')} (12%): <span className="text-4xl font-black text-amber-300">{(total*1.12).toLocaleString()} KZT</span></p>
-              </div>
-            </div>
-          </div>
         </div>
-      );
-    };
 
-    const MonitoringView = () => {
-      const { state, t } = useContext(AppContext);
-      const [sel, setSel] = useState(null);
-      return (
-        <div className="fade-in space-y-12">
-          <h2 className="text-4xl font-black">{t('depotStorage')}</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
-            {state.reservoirs.map(r => (
-              <div key={r.id} onClick={()=>setSel(r)} className={`glass p-4 rounded-3xl cursor-pointer transition-all ${sel?.id===r.id?'ring-2 ring-amber-400':''}`}>
-                <div className="barrel h-32 mb-4">
-                  <div className={`barrel-fill ${r.volume<30?'bg-danger':r.volume<60?'bg-amber-400':'bg-emerald-400'}`} style={{height:`${r.volume}%`}}></div>
-                </div>
-                <p className="text-center text-xs font-black">{r.name}</p>
-                <p className="text-center text-[10px] text-slate-500 uppercase">{r.fuelType}</p>
-              </div>
-            ))}
-          </div>
-          {sel && (
-            <div className="glass p-10 rounded-[40px] grid md:grid-cols-4 gap-8 text-center animate-fade-in border-amber-400/20">
-              <div><p className="text-[10px] font-black text-slate-500 uppercase">{t('volume')}</p><p className="text-2xl font-black text-white">{sel.volume}%</p></div>
-              <div><p className="text-[10px] font-black text-slate-500 uppercase">{t('waterLevel')}</p><p className="text-2xl font-black text-blue-400">{sel.water.toFixed(2)} cm</p></div>
-              <div><p className="text-[10px] font-black text-slate-500 uppercase">{t('temp')}</p><p className="text-2xl font-black text-emerald-400">{sel.temp}°C</p></div>
-              <div><p className="text-[10px] font-black text-slate-500 uppercase">Status</p><p className="text-2xl font-black text-emerald-400">Normal</p></div>
-            </div>
-          )}
-        </div>
-      );
-    };
-
-    const PricesView = () => {
-      const { state, t } = useContext(AppContext);
-      const [cat, setCat] = useState('all');
-      const filtered = state.regionalRates.filter(r => cat === 'all' || r.cat === cat);
-
-      return (
-        <div className="fade-in space-y-12">
-          <header className="flex justify-between items-end">
-            <div><h2 className="text-4xl font-black mb-4">{t('prices')}</h2><p className="text-slate-500">{t('regionalCMS')}</p></div>
-            <div className="flex bg-white/5 p-1 rounded-xl">
-              {['all','auto','avia'].map(x => <button key={x} onClick={()=>setCat(x)} className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${cat===x?'bg-amber-400 text-black':'text-slate-500 hover:text-white'}`}>{t(x)}</button>)}
-            </div>
-          </header>
-          <div className="glass rounded-[32px] overflow-hidden">
-            <table className="w-full text-left">
-              <thead className="bg-white/5 border-b border-white/10">
-                <tr>
-                  <th className="px-8 py-6 text-[10px] font-black uppercase text-slate-500">{t('region')}</th>
-                  <th className="px-8 py-6 text-[10px] font-black uppercase text-slate-500">{t('fuelType')}</th>
-                  <th className="px-8 py-6 text-[10px] font-black uppercase text-slate-500 text-right">{t('totalPrice')} (T/Tonne)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {filtered.map(r => (
-                  <tr key={r.id} className="hover:bg-white/[0.02]">
-                    <td className="px-8 py-6 font-bold">{r.region}</td>
-                    <td className="px-8 py-6"><span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${r.cat==='auto'?'bg-blue-600/10 text-blue-400':'bg-amber-400/10 text-amber-400'}`}>{r.fuel}</span></td>
-                    <td className="px-8 py-6 text-right font-black text-xl text-white">{r.price.toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      );
-    };
-
-    const ContactsView = () => {
-      const { state, t } = useContext(AppContext);
-      return (
-        <div className="fade-in space-y-24">
-          <section>
-            <h2 className="text-4xl font-black mb-12 text-center">{t('directors')}</h2>
-            <div className="grid md:grid-cols-2 gap-12">
-              {state.directors.map(d => (
-                <div key={d.id} className="glass p-8 rounded-[40px] flex items-center gap-8 border-white/5 hover:border-amber-400/20 transition-all">
-                  <img src={d.img} className="w-32 h-32 rounded-[32px] object-cover ring-4 ring-white/5" />
-                  <div><h3 className="text-2xl font-black">{d.name}</h3><p className="text-amber-400 font-bold uppercase text-xs tracking-widest">{d.role}</p></div>
-                </div>
-              ))}
-            </div>
-          </section>
-          <section className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h3 className="text-3xl font-black mb-6">{t('logistics')}</h3>
-              <p className="text-slate-400 text-lg leading-relaxed mb-8">Smart Mercury Energy facilities are strategic hubs located 6km from the airport terminal, offering superior rail and road logistics.</p>
-              <div className="glass p-8 rounded-3xl flex items-center gap-6"><div className="w-16 h-16 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-400"><i data-lucide="map-pin"></i></div><div><p className="font-black">Airport Hub Zone</p><p className="text-slate-500 text-xs font-black uppercase">6 KM Range</p></div></div>
-            </div>
-            <div className="glass p-8 rounded-[40px] space-y-6">
-              <h3 className="text-xl font-black">{t('feedback')}</h3>
-              <div className="space-y-4">
-                <input placeholder={t('name')} className="w-full bg-[#0b1329] p-4 rounded-xl outline-none" />
-                <textarea placeholder={t('message')} className="w-full bg-[#0b1329] p-4 rounded-xl outline-none h-32" />
-                <button className="w-full bg-amber-400 text-black font-black py-4 rounded-xl">{t('send')}</button>
-              </div>
-            </div>
-          </section>
-        </div>
-      );
-    };
-
-    const AdminView = () => {
-      const { state, setState, t, log } = useContext(AppContext);
-      const [tab, setTab] = useState('banner');
-      const [s, setS] = useState('');
-      const filteredLogs = state.auditLogs.filter(l => l.action.toLowerCase().includes(s.toLowerCase()));
-
-      return (
-        <div className="fade-in flex flex-col lg:flex-row gap-12 min-h-[600px]">
-          <aside className="lg:w-64 space-y-2">
-            {['banner','spot','rates','stations','users','logs'].map(x => (
-              <button key={x} onClick={()=>setTab(x)} className={`w-full text-left px-8 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${tab===x?'bg-blue-600 shadow-xl text-white':'hover:bg-white/5 text-slate-500'}`}>
-                {t(x==='banner'?'bannerCMS':x==='spot'?'spotCMS':x==='rates'?'regionalCMS':x==='stations'?'gasStations':x==='users'?'users':'auditLogs')}
-              </button>
-            ))}
-          </aside>
-          <div className="flex-1 glass p-12 rounded-[40px]">
-            {tab === 'banner' && (
-              <div className="space-y-8 animate-fade-in">
-                <h3 className="text-3xl font-black">{t('bannerCMS')}</h3>
-                <div className="grid gap-6">
-                  <div><label className="text-[10px] font-black text-slate-500 uppercase">Image URL</label><input value={state.banner.url} onChange={e=>setState({...state,banner:{...state.banner,url:e.target.value}})} className="w-full bg-[#0b1329] p-4 rounded-xl mt-2 outline-none" /></div>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    {['KZ','RU','EN'].map(l => <div key={l}><label className="text-[10px] font-black text-slate-500 uppercase">Title ({l})</label><input value={state.banner.title[l]} onChange={e=>{const b={...state.banner};b.title[l]=e.target.value;setState({...state,banner:b});}} className="w-full bg-[#0b1329] p-4 rounded-xl mt-2 outline-none" /></div>)}
-                  </div>
-                </div>
-                <button onClick={()=>log("Updated Banner")} className="bg-amber-400 text-black font-black px-10 py-4 rounded-xl">SAVE</button>
-              </div>
-            )}
-            {tab === 'spot' && (
-              <div className="space-y-8 animate-fade-in">
-                <h3 className="text-3xl font-black">{t('spotCMS')}</h3>
-                <div className="space-y-4">
-                  {state.spotPrices.map(p => (
-                    <div key={p.id} className="flex items-center gap-4 bg-white/5 p-4 rounded-xl">
-                      <span className="w-20 font-black">{p.name}</span>
-                      <input type="number" value={p.price} onChange={e=>{const list=[...state.spotPrices];list.find(x=>x.id===p.id).price=e.target.value;setState({...state,spotPrices:list});}} className="bg-[#0b1329] p-2 rounded-lg w-24 outline-none" />
-                      <button onClick={()=>log(`Updated ${p.name} price`)} className="text-[10px] font-black text-blue-400">{t('save')}</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {tab === 'logs' && (
-              <div className="space-y-8 animate-fade-in">
-                <div className="flex justify-between items-center"><h3 className="text-3xl font-black">{t('auditLogs')}</h3><button onClick={()=>setState({...state,auditLogs:[]})} className="text-danger text-xs font-black">{t('clearLogs')}</button></div>
-                <input placeholder={t('search')} value={s} onChange={e=>setS(e.target.value)} className="w-full bg-[#0b1329] p-4 rounded-xl outline-none" />
-                <div className="space-y-3">{filteredLogs.map(l => <div key={l.id} className="p-4 bg-white/5 rounded-2xl flex justify-between text-xs"><span><b className="text-amber-400">{l.user}:</b> {l.action}</span><span className="text-slate-500">{l.time}</span></div>)}</div>
-              </div>
-            )}
-            {tab === 'users' && (
-               <div className="space-y-8 animate-fade-in">
-                  <h3 className="text-3xl font-black">{t('users')}</h3>
-                  <div className="glass rounded-2xl overflow-hidden">
-                    <table className="w-full text-left">
-                      <thead className="bg-white/5"><tr><th className="p-4 text-[10px] uppercase text-slate-500">{t('user')}</th><th className="p-4 text-[10px] uppercase text-slate-500">{t('role')}</th></tr></thead>
-                      <tbody>{state.users.map(u=>(<tr key={u.id} className="border-t border-white/5"><td className="p-4">{u.name}</td><td className="p-4"><select value={u.role} onChange={e=>{const us=[...state.users];us.find(x=>x.id===u.id).role=e.target.value;setState({...state,users:us});log(`Role change for ${u.name}`);}} className="bg-transparent text-amber-400 font-bold"><option value="User">User</option><option value="Admin">Admin</option></select></td></tr>))}</tbody>
-                    </table>
-                  </div>
-               </div>
-            )}
-          </div>
-        </div>
-      );
-    };
-
-    const App = () => {
-      const { state, setState, t } = useContext(AppContext);
-      useEffect(() => { if (window.lucide) window.lucide.createIcons(); });
-
-      const Nav = () => (
-        <nav className="fixed top-0 w-full z-50 glass px-12 py-5 flex justify-between items-center shadow-2xl">
-          <div className="flex items-center gap-4 cursor-pointer" onClick={()=>window.location.hash='#/home'}>
-            <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center shadow-lg shadow-amber-400/20"><i data-lucide="zap" className="text-[#0b1329]"></i></div>
-            <span className="text-2xl font-black uppercase tracking-tighter">Smart <span className="text-amber-400">Mercury</span></span>
-          </div>
-          <div className="hidden lg:flex gap-10 text-[10px] font-black uppercase tracking-widest">
-            {['home','monitoring','prices','contacts'].map(x=>(
-              <a key={x} href={`#/${x}`} className={`transition-all hover:text-amber-400 ${state.currentPath==='/'+x?'text-amber-400 border-b-2 border-amber-400 pb-1':''}`}>{t(x)}</a>
-            ))}
-          </div>
-          <div className="flex items-center gap-6">
-            <select value={state.language} onChange={e=>setState({...state,language:e.target.value})} className="bg-transparent text-white font-black outline-none"><option value="KZ">KZ</option><option value="RU">RU</option><option value="EN">EN</option></select>
-            {state.user ? (
-              <div className="flex items-center gap-4 border-l border-white/10 pl-6">
-                <span className="text-[10px] font-black uppercase text-amber-400">{state.user.role}</span>
-                {state.user.role==='Admin' && <a href="#/admin" className={`text-[10px] font-black transition-all ${state.currentPath==='/admin'?'text-blue-400':'text-slate-500'}`}>ADMIN</a>}
-                <button onClick={()=>setState({...state,user:null})} className="text-slate-500"><i data-lucide="log-out" className="w-4 h-4"></i></button>
-              </div>
-            ) : (
-              <button onClick={()=>setState({...state,user:state.users[0]})} className="bg-blue-600 px-6 py-2 rounded-xl text-[10px] font-black shadow-lg shadow-blue-600/20">LOGIN</button>
-            )}
-          </div>
+        <nav class="hidden lg:flex items-center gap-1 bg-white/5 p-1 rounded-xl" id="main-nav">
+            <!-- JS арқылы толтырылады -->
         </nav>
-      );
 
-      const View = () => {
-        if (state.currentPath === '/admin' && state.user?.role === 'Admin') return <AdminView />;
-        if (state.currentPath === '/monitoring') return <MonitoringView />;
-        if (state.currentPath === '/prices') return <PricesView />;
-        if (state.currentPath === '/contacts') return <ContactsView />;
-        return <HomeView />;
-      };
+        <div class="flex items-center gap-4">
+            <div class="flex gap-2 text-[10px] font-black text-blue-400">
+                <span class="cursor-pointer hover:text-white" onclick="changeLang('KZ')">KZ</span>
+                <span class="text-slate-600">/</span>
+                <span class="cursor-pointer hover:text-white" onclick="changeLang('RU')">RU</span>
+                <span class="text-slate-600">/</span>
+                <span class="cursor-pointer hover:text-white" onclick="changeLang('EN')">EN</span>
+            </div>
 
-      return (
-        <div className="min-h-screen flex flex-col">
-          <Nav />
-          <main className="flex-grow pt-32 px-12 max-w-7xl mx-auto w-full pb-20"><View /></main>
-          <footer className="py-12 border-t border-white/5 text-center text-[10px] text-slate-500 font-black uppercase tracking-[0.5em]">© 2026 Smart Mercury Energy Hub</footer>
+            <div id="auth-zone" class="flex items-center gap-3 border-l border-white/10 pl-4">
+                <!-- JS арқылы Login батырмасы немесе Профиль шығады -->
+            </div>
         </div>
-      );
-    };
+    </header>
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<AppProvider><App /></AppProvider>);
-  </script>
+    <!-- НЕГІЗГІ ПОРТАЛ МАМЫНЫ -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-10" id="main-content">
+        <!-- Секциялар осында рендерингтеледі -->
+    </main>
+
+    <!-- ТӨМЕНГІ ФУТЕР -->
+    <footer class="py-16 border-t border-white/5 text-center bg-black/20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col items-center gap-4">
+                <span class="text-xl font-black text-white tracking-tighter uppercase">Smart <span class="text-blue-500">Mercury</span></span>
+                <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">© 2026 Smart Mercury Energy • Intelligent Hub Solutions</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[60] flex flex-col gap-3"></div>
+
+    <!-- MODAL SYSTEM -->
+    <div id="modal-overlay" class="hidden fixed inset-0 z-[100] bg-cosmic-deep/80 backdrop-blur-md flex items-center justify-center p-6">
+        <div id="modal-content" class="glass-panel max-w-2xl w-full p-12 rounded-[48px] shadow-2xl border-t-4 border-blue-500 scale-95 transition-transform duration-300">
+            <!-- Modal Body injected by JS -->
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 1. STATE & DATA
+        let state = {
+            lang: 'KZ',
+            activeTab: 'home',
+            adminTab: 'dashboard',
+            user: null,
+            banner: {
+                url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1600&q=80",
+                title: {
+                    KZ: "Smart Mercury Energy",
+                    RU: "Smart Mercury Energy",
+                    EN: "Smart Mercury Energy"
+                },
+                desc: {
+                    KZ: "Алматы өңіріндегі авиациялық және автокөлік отындарының сапасын бақылау, сақтау және тасымалдау жөніндегі жетекші энергетикалық хаб.",
+                    RU: "Ведущий энергетический хаб по контролю качества, хранению и транспортировке авиационного и автомобильного топлива в Алматинской регионе.",
+                    EN: "Leading energy hub for quality control, storage and transportation of aviation and motor fuels in the Almaty region."
+                }
+            },
+            news: [
+                {
+                    id: 1,
+                    title: { KZ: "Navarro Trade — Алматы өңіріндегі сенімді отын жеткізушісі", RU: "Navarro Trade — надежный поставщик топлива в Алматинском регионе", EN: "Navarro Trade — a reliable fuel supplier in the Almaty region" },
+                    subtitle: { KZ: "«Navarro Trade» ЖШС — Алматы өңіріндегі жанар-жағармай материалдарын көтерме жеткізу нарығындағы көшбасшы...", RU: "ТОО «Navarro Trade» — лидер на рынке оптовых поставок горюче-смазочных материалов...", EN: "LLP «Navarro Trade» is a leader in the wholesale market of fuels and lubricants..." },
+                    date: "2026-06-12",
+                    img: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80"
+                },
+                {
+                    id: 2,
+                    title: { KZ: "Жаңа мұнай базасының іске қосылуы", RU: "Запуск новой нефтебазы", EN: "Launch of a new oil depot" },
+                    subtitle: { KZ: "Алматы облысында сыйымдылығы 24 000 тонналық заманауи жаңа мұнай базасының ресми ашылуы өтті.", RU: "В Алматинской области состоялось официальное открытие новой современной нефтебазы мощностью 24 000 тонн.", EN: "The official opening of a new modern oil depot with a capacity of 24,000 tons took place in the Almaty region." },
+                    date: "2026-06-09",
+                    img: "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80"
+                }
+            ],
+            prices: {
+                spot: [
+                    { id: 1, name: "AI-92", price: 245000, trend: 1.2, status: "up" },
+                    { id: 2, name: "AI-95", price: 285000, trend: -0.5, status: "down" },
+                    { id: 3, name: "Jet A-1", price: 410000, trend: 2.1, status: "up" }
+                ],
+                regional: [
+                    { id: 1, region: "Almaty", fuel: "AI-92", price: 250000, cat: 'auto' },
+                    { id: 2, region: "Astana", fuel: "AI-95", price: 290000, cat: 'auto' },
+                    { id: 3, region: "Shymkent", fuel: "Jet A-1", price: 420000, cat: 'avia' }
+                ]
+            },
+            reservoirs: Array.from({ length: 13 }, (_, i) => ({
+                id: i + 1, name: `RES-${String(i + 1).padStart(2, '0')}`,
+                level: 40 + Math.floor(Math.random() * 50),
+                water: 1.2 + Math.random(), temp: 14 + Math.floor(Math.random() * 8),
+                fuelType: i < 5 ? "Jet A-1" : i < 9 ? "AI-95" : "AI-92"
+            })),
+            users: [
+                { id: 1, name: "Admin", email: "admin@sme.kz", role: "Admin", status: "Active" },
+                { id: 2, name: "Arman", email: "arman@example.com", role: "User", status: "Active", balance: 15400200, orders: [
+                    { id: 501, fuel: 'AI-95', mass: 20, cost: 5800000, date: '2026-06-20', status: 'Delivered' },
+                    { id: 502, fuel: 'Jet A-1', mass: 15, cost: 6150000, date: '2026-06-15', status: 'Delivered' }
+                ] }
+            ],
+            registrations: [
+                { id: 101, name: "TechnoFuel Ltd", email: "info@techno.kz", bin: "123456789012", status: "Pending", time: "2026-06-25 14:00" }
+            ],
+            auditLogs: [],
+            metrics: { cpu: 12, ram: 34, latency: 45 }
+        };
+
+        const dict = {
+            KZ: {
+                home: "Басты бет", monitoring: "Мониторинг", prices: "Бағалар", contacts: "Байланыс", admin: "Басқару",
+                login: "Кіру", logout: "Шығу", news: "Жаңалықтар", calc: "Калькулятор", requests: "Сұраныстар",
+                metrics: "Көрсеткіштер", users: "Пайдаланушылар", audit: "Аудит", bio: "Өмірбаян",
+                overview: "Шолу", cms: "Контент", registrations: "Тіркелулер", security: "Қауіпсіздік",
+                details: "Толығырақ", approve: "Растау", reject: "Қабылдамау", density: "Тығыздық",
+                volume: "Көлем", price: "Баға", mass: "Масса", total: "Жалпы",
+                cabinet: "Жеке кабинет", balance: "Теңгерім", orders: "Тапсырыстар", history: "Тарихы",
+                placeOrder: "Тапсырыс беру", fuel: "Отын"
+            },
+            RU: {
+                home: "Главная", monitoring: "Мониторинг", prices: "Цены", contacts: "Контакты", admin: "Управление",
+                login: "Вход", logout: "Выход", news: "Новости", calc: "Калькулятор", requests: "Запросы",
+                metrics: "Метрики", users: "Пользователи", audit: "Аудит", bio: "Биография",
+                overview: "Обзор", cms: "Контент", registrations: "Регистрации", security: "Безопасность",
+                details: "Подробнее", approve: "Одобрить", reject: "Отклонить", density: "Плотность",
+                volume: "Объем", price: "Цена", mass: "Масса", total: "Итого",
+                cabinet: "Личный кабинет", balance: "Баланс", orders: "Заказы", history: "История",
+                placeOrder: "Оформить заказ", fuel: "Топливо"
+            },
+            EN: {
+                home: "Home", monitoring: "Monitoring", prices: "Prices", contacts: "Contacts", admin: "Admin",
+                login: "Login", logout: "Logout", news: "News", calc: "Calculator", requests: "Requests",
+                metrics: "Metrics", users: "Users", audit: "Audit", bio: "Biography",
+                overview: "Overview", cms: "Content", registrations: "Registrations", security: "Security",
+                details: "Details", approve: "Approve", reject: "Reject", density: "Density",
+                volume: "Volume", price: "Price", mass: "Mass", total: "Total",
+                cabinet: "Client Cabinet", balance: "Balance", orders: "Orders", history: "History",
+                placeOrder: "Place Order", fuel: "Fuel"
+            }
+        };
+
+        // 2. CORE FUNCTIONS
+        function init() {
+            renderNav();
+            renderAuth();
+            switchTab(state.activeTab);
+        }
+
+        function renderNav() {
+            const nav = document.getElementById('main-nav');
+            const tabs = ['home', 'monitoring', 'prices', 'contacts'];
+            if (state.user?.role === 'Admin') tabs.push('admin');
+            else if (state.user?.role === 'User') tabs.push('cabinet');
+
+            nav.innerHTML = tabs.map(tab => `
+                <button onclick="switchTab('${tab}')" class="px-4 py-2 rounded-lg text-xs font-black uppercase transition-all ${state.activeTab === tab ? 'bg-blue-600 text-white shadow-lg' : (tab==='admin'||tab==='cabinet'?'text-amber-500 hover:text-amber-400':'text-slate-400 hover:text-slate-200')}">
+                    ${dict[state.lang][tab] || tab}
+                </button>
+            `).join('');
+        }
+
+        function renderAuth() {
+            const zone = document.getElementById('auth-zone');
+            if (state.user) {
+                zone.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="flex flex-col items-end leading-none">
+                            <span class="text-[11px] font-black text-white">${state.user.name}</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase">${state.user.role}</span>
+                        </div>
+                        <button onclick="logout()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-rose-500/20 hover:text-rose-400 transition-colors"><i class="fa-solid fa-power-off text-xs"></i></button>
+                    </div>
+                `;
+            } else {
+                zone.innerHTML = `
+                    <button onclick="switchTab('login')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-xs font-black shadow-lg shadow-blue-900/40 uppercase tracking-tighter">
+                        ${dict[state.lang].login}
+                    </button>
+                `;
+            }
+        }
+
+        function switchTab(tab) {
+            state.activeTab = tab;
+            renderNav();
+            const content = document.getElementById('main-content');
+            content.className = "flex-grow max-w-7xl mx-auto w-full px-6 py-10 fade-in";
+
+            if (tab === 'home') renderHome();
+            else if (tab === 'monitoring') renderMonitoring();
+            else if (tab === 'prices') renderPrices();
+            else if (tab === 'contacts') renderContacts();
+            else if (tab === 'login') renderLogin();
+            else if (tab === 'register') renderRegister();
+            else if (tab === 'admin') renderAdmin();
+            else if (tab === 'cabinet') renderCabinet();
+
+            window.location.hash = `#/${tab}`;
+        }
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `glass-panel px-8 py-4 rounded-2xl flex items-center gap-4 shadow-2xl min-w-[320px] border-l-4 transition-all duration-300 fade-in ${type === 'error' ? 'border-rose-500' : type === 'success' ? 'border-emerald-500' : 'border-blue-500'}`;
+            toast.innerHTML = `
+                <div class="w-8 h-8 rounded-full flex items-center justify-center ${type==='error'?'bg-rose-500/20 text-rose-400':type==='success'?'bg-emerald-500/20 text-emerald-400':'bg-blue-500/20 text-blue-400'}">
+                    <i class="fa-solid ${type==='error'?'fa-triangle-exclamation':type==='success'?'fa-circle-check':'fa-info-circle'} text-xs"></i>
+                </div>
+                <span class="text-sm font-black text-white">${msg}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        window.openModal = function(html) {
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            content.innerHTML = html;
+            overlay.classList.remove('hidden');
+            setTimeout(() => content.classList.remove('scale-95'), 10);
+        };
+
+        window.closeModal = function() {
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            content.classList.add('scale-95');
+            setTimeout(() => { overlay.classList.add('hidden'); }, 300);
+        };
+
+        function logAction(action) {
+            state.auditLogs.unshift({ id: Date.now(), user: state.user?.name || "Guest", action, time: new Date().toLocaleString() });
+        }
+
+        // 3. VIEWS
+        function renderHome() {
+            const content = document.getElementById('main-content');
+            content.innerHTML = `
+                <div class="space-y-16">
+                    <!-- Hero Banner -->
+                    <section class="relative h-[550px] rounded-[48px] overflow-hidden group shadow-2xl shine">
+                        <img src="${state.banner.url}" class="w-full h-full object-cover opacity-70 transition-transform duration-1000 group-hover:scale-105" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-cosmic-deep via-transparent to-transparent flex flex-col justify-center px-16">
+                            <div class="max-w-4xl space-y-6">
+                                <span class="bg-blue-600 text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-[0.2em] shadow-lg shadow-blue-900/40">Official Hub</span>
+                                <h1 class="text-7xl font-black leading-tight text-white uppercase tracking-tighter drop-shadow-2xl">
+                                    ${state.banner.title[state.lang]}
+                                </h1>
+                                <p class="text-2xl text-slate-200 max-w-2xl font-medium leading-relaxed drop-shadow-lg">
+                                    ${state.banner.desc[state.lang]}
+                                </p>
+                                <div class="pt-8 flex gap-4">
+                                    <button onclick="switchTab('monitoring')" class="bg-white text-cosmic-deep px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-blue-400 transition-all shadow-xl">Get Started</button>
+                                    <button onclick="switchTab('prices')" class="bg-white/10 text-white border border-white/20 backdrop-blur-md px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-white/20 transition-all">Market Rates</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Price Overlay Ticker -->
+                        <div class="absolute bottom-8 right-16 hidden lg:block">
+                            <div class="glass-panel p-8 rounded-[32px] w-80 space-y-6 border-l-4 border-cosmic-gold shadow-2xl">
+                                <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live Market</span>
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                </div>
+                                <div class="space-y-4">
+                                    ${state.prices.spot.slice(0, 3).map(p => `
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-xs font-black text-white uppercase">${p.name}</span>
+                                            <div class="text-right leading-none">
+                                                <div class="text-sm font-black text-cosmic-gold">${p.price.toLocaleString()}</div>
+                                                <div class="text-[8px] font-bold ${p.status==='up'?'text-emerald-400':'text-rose-400'} mt-1">${p.status==='up'?'▲':'▼'} ${p.trend}%</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Feature Grid -->
+                    <div class="grid md:grid-cols-3 gap-8">
+                        ${state.prices.spot.map(p => `
+                            <div class="glass-card p-10 rounded-[40px] border-t-4 border-cosmic-gold relative overflow-hidden">
+                                <div class="absolute -right-4 -top-4 opacity-5 text-8xl font-black italic">SPOT</div>
+                                <div class="flex justify-between mb-6">
+                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">KZT Index / T</span>
+                                    <span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest">Global Standard</span>
+                                </div>
+                                <h4 class="text-3xl font-black text-white mb-2 uppercase tracking-tighter">${p.name}</h4>
+                                <div class="flex items-end gap-3">
+                                    <p class="text-4xl font-black text-cosmic-gold tracking-tighter">${p.price.toLocaleString()}</p>
+                                    <span class="text-xs font-bold text-slate-500 pb-2 uppercase tracking-widest">KZT</span>
+                                </div>
+                                <div class="mt-8 pt-8 border-t border-white/5 flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400"><i class="fa-solid fa-chart-line"></i></div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-slate-400 uppercase">24h Change</p>
+                                        <p class="text-xs font-black ${p.status==='up'?'text-emerald-400':'text-rose-400'}">${p.status==='up'?'Growth':'Fall'} ${p.trend}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- News Section -->
+                    <section class="space-y-10">
+                        <div class="flex justify-between items-center px-4">
+                            <div class="space-y-1">
+                                <h3 class="text-4xl font-black uppercase tracking-tighter text-white">${dict[state.lang].news}</h3>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Market Insights & Company Updates</p>
+                            </div>
+                            <button class="glass-panel px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">View All Articles</button>
+                        </div>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                            ${state.news.map(n => `
+                                <div class="glass-card rounded-[48px] overflow-hidden group border-white/5 hover:border-blue-500/30">
+                                    <div class="h-64 overflow-hidden relative">
+                                        <img src="${n.img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                        <div class="absolute top-6 left-6 bg-cosmic-deep/60 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/10">
+                                            <span class="text-[10px] font-black text-white uppercase">${n.date}</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-10 space-y-6">
+                                        <h4 class="text-2xl font-black text-white leading-tight uppercase tracking-tighter group-hover:text-blue-400 transition-colors">${n.title[state.lang]}</h4>
+                                        <p class="text-sm text-slate-400 font-medium leading-relaxed line-clamp-3 italic opacity-80">
+                                            Innovative solutions driving the future of energy logistics in Kazakhstan and beyond.
+                                        </p>
+                                        <div class="pt-4 flex items-center justify-between">
+                                            <button class="text-[10px] font-black text-blue-400 uppercase tracking-widest border-b-2 border-blue-400/20 pb-1 hover:border-blue-400 transition-all">Details →</button>
+                                            <div class="flex -space-x-2">
+                                                <div class="w-6 h-6 rounded-full border-2 border-cosmic-deep bg-blue-500"></div>
+                                                <div class="w-6 h-6 rounded-full border-2 border-cosmic-deep bg-indigo-500"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                </div>
+            `;
+        }
+
+        function renderMonitoring() {
+            const content = document.getElementById('main-content');
+            const selectedId = state.selectedReservoirId || state.reservoirs[0].id;
+            const sel = state.reservoirs.find(r => r.id === selectedId);
+
+            content.innerHTML = `
+                <div class="space-y-12 fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                        <div class="space-y-2">
+                            <h2 class="text-5xl font-black uppercase tracking-tighter text-white">Depot <span class="text-blue-500">Monitor</span></h2>
+                            <p class="text-slate-500 font-bold uppercase text-xs tracking-[0.2em]">Real-time Telemetry • 13 Reservoirs active</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="glass-panel px-6 py-4 rounded-2xl flex items-center gap-4">
+                                <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                                <span class="text-[10px] font-black uppercase text-white tracking-widest italic">Live Feed Connected</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
+                        ${state.reservoirs.map(r => `
+                            <div onclick="selectReservoir(${r.id})" class="glass-card p-6 rounded-[32px] cursor-pointer transition-all ${sel.id === r.id ? 'ring-2 ring-blue-500 bg-blue-500/10 shadow-2xl' : 'hover:bg-white/5'}">
+                                <div class="barrel mb-6 shadow-inner">
+                                    <div class="barrel-fill ${r.level < 20 ? 'bg-rose-500' : r.level < 50 ? 'bg-cosmic-gold' : 'bg-cosmic-emerald'}" style="height: ${r.level}%">
+                                        <div class="fluid-wave"></div>
+                                    </div>
+                                    <div class="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white mix-blend-difference">${r.level}%</div>
+                                </div>
+                                <div class="text-center space-y-1">
+                                    <p class="text-xs font-black text-white uppercase">${r.name}</p>
+                                    <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">${r.fuelType}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Detailed Analytics Card -->
+                    <div class="glass-panel p-12 rounded-[48px] border-white/5 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-12 opacity-5"><i class="fa-solid fa-flask-vial text-9xl"></i></div>
+                        <div class="grid lg:grid-cols-4 gap-12 text-center">
+                            <div class="space-y-4">
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Available Volume</p>
+                                <div class="flex flex-col items-center">
+                                    <p class="text-5xl font-black text-white tracking-tighter">${sel.level}%</p>
+                                    <div class="w-48 bg-white/5 h-2 rounded-full mt-6 overflow-hidden">
+                                        <div class="bg-blue-600 h-full rounded-full transition-all duration-1000" style="width: ${sel.level}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bottom Water (Подтоварная)</p>
+                                <div class="flex flex-col items-center">
+                                    <p class="text-5xl font-black text-blue-400 tracking-tighter">${sel.water.toFixed(2)} <span class="text-lg uppercase">cm</span></p>
+                                    <div class="w-48 bg-white/5 h-2 rounded-full mt-6 overflow-hidden">
+                                        <div class="bg-blue-400 h-full rounded-full transition-all duration-1000" style="width: ${(sel.water/15)*100}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Current Temp</p>
+                                <p class="text-5xl font-black text-emerald-400 tracking-tighter">${sel.temp} <span class="text-lg">°C</span></p>
+                                <p class="text-[9px] font-bold text-slate-500 uppercase mt-4 italic">Sensors: Active (Calibration: OK)</p>
+                            </div>
+                            <div class="space-y-4">
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Product Info</p>
+                                <div class="inline-block px-6 py-3 rounded-2xl bg-white/5 border border-white/10">
+                                    <p class="text-xl font-black text-cosmic-gold uppercase tracking-tighter">${sel.fuelType}</p>
+                                    <p class="text-[9px] font-black text-slate-500 uppercase mt-1">Density: 0.7750</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.selectReservoir = function(id) {
+            state.selectedReservoirId = id;
+            renderMonitoring();
+        };
+
+        function renderPrices() {
+            const content = document.getElementById('main-content');
+            const calc = state.calc || { dens: 0.775, vol: 24000, price: 410000 };
+            const mass = (calc.vol * calc.dens) / 1000;
+            const total = mass * calc.price;
+
+            content.innerHTML = `
+                <div class="space-y-16 fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                        <div class="space-y-2">
+                            <h2 class="text-5xl font-black uppercase tracking-tighter text-white">Market <span class="text-blue-500">Indices</span></h2>
+                            <p class="text-slate-500 font-bold uppercase text-xs tracking-[0.2em]">Official Regional Rates & Fuel Calculator</p>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-3 gap-12">
+                        <!-- Table Section -->
+                        <div class="lg:col-span-2 space-y-8">
+                            <div class="glass-card p-10 rounded-[48px] h-64 relative overflow-hidden flex flex-col justify-between">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-xl font-black uppercase tracking-tighter text-white">Market Volatility Map</h3>
+                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Real-time Flux</span>
+                                </div>
+                                <svg class="w-full h-32 opacity-30" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                                    <path d="M0,50 Q100,20 200,60 T400,40 T600,70 T800,30 T1000,50" fill="none" stroke="#3B82F6" stroke-width="4" />
+                                    <path d="M0,50 Q100,80 200,40 T400,60 T600,30 T800,70 T1000,50" fill="none" stroke="#FBBF24" stroke-width="2" stroke-dasharray="8,4" />
+                                </svg>
+                                <div class="flex gap-8">
+                                    <div class="flex items-center gap-2 text-[10px] font-black text-blue-400 uppercase"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Primary Hubs</div>
+                                    <div class="flex items-center gap-2 text-[10px] font-black text-cosmic-gold uppercase"><span class="w-2 h-2 rounded-full bg-cosmic-gold"></span> Secondary Flows</div>
+                                </div>
+                            </div>
+                            <div class="glass-panel rounded-[48px] overflow-hidden shadow-2xl">
+                                <div class="bg-white/5 p-8 border-b border-white/5 flex justify-between items-center">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Regional Distribution</span>
+                                    <div class="flex gap-2">
+                                        <button class="bg-blue-600/10 text-blue-400 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase border border-blue-500/20">All</button>
+                                        <button class="text-slate-500 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase hover:text-white transition-all">Auto</button>
+                                        <button class="text-slate-500 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase hover:text-white transition-all">Aviation</button>
+                                    </div>
+                                </div>
+                                <table class="w-full text-left">
+                                    <thead class="bg-black/20">
+                                        <tr>
+                                            <th class="px-10 py-6 text-[10px] font-black uppercase text-slate-500 tracking-widest">Region</th>
+                                            <th class="px-10 py-6 text-[10px] font-black uppercase text-slate-500 tracking-widest">Product</th>
+                                            <th class="px-10 py-6 text-[10px] font-black uppercase text-slate-500 tracking-widest text-right">Rate (KZT/T)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-white/5 font-bold">
+                                        ${state.prices.regional.map(r => `
+                                            <tr class="hover:bg-white/[0.03] transition-all group">
+                                                <td class="px-10 py-8">
+                                                    <div class="flex items-center gap-4">
+                                                        <div class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                                                        <span class="text-lg text-white tracking-tight">${r.region}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-10 py-8">
+                                                    <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${r.cat==='auto'?'bg-blue-500/10 text-blue-400 border border-blue-500/20':'bg-cosmic-gold/10 text-cosmic-gold border border-cosmic-gold/20'}">${r.fuel}</span>
+                                                </td>
+                                                <td class="px-10 py-8 text-right">
+                                                    <span class="text-3xl font-black text-white tracking-tighter group-hover:text-blue-400 transition-colors">${r.price.toLocaleString()}</span>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Calculator Section -->
+                        <div class="space-y-8">
+                            <div class="glass-panel p-10 rounded-[48px] border-l-4 border-cosmic-accent shadow-2xl relative overflow-hidden">
+                                <div class="absolute -right-4 -top-4 opacity-5 text-9xl font-black italic">CALC</div>
+                                <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">Fuel Calculator</h3>
+                                <div class="space-y-6">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Density (ρ) <span class="text-slate-700 ml-1">g/cm³</span></label>
+                                        <input type="number" step="0.001" value="${calc.dens}" oninput="updateCalc('dens', this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg outline-none" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Volume (V) <span class="text-slate-700 ml-1">Litres</span></label>
+                                        <input type="number" value="${calc.vol}" oninput="updateCalc('vol', this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg outline-none" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Price <span class="text-slate-700 ml-1">KZT / Tonne</span></label>
+                                        <input type="number" value="${calc.price}" oninput="updateCalc('price', this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg outline-none" />
+                                    </div>
+                                </div>
+
+                                <div class="mt-12 pt-10 border-t border-white/10 space-y-6">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Net Mass (m)</span>
+                                        <span class="text-2xl font-black text-blue-400 tracking-tighter">${mass.toFixed(3)} <span class="text-xs uppercase ml-1">T</span></span>
+                                    </div>
+                                    <div class="bg-blue-600/10 p-6 rounded-[32px] border border-blue-500/20">
+                                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Total Estimated Cost</p>
+                                        <p class="text-4xl font-black text-cosmic-gold tracking-tighter">${Math.round(total).toLocaleString()} <span class="text-sm uppercase ml-1">KZT</span></p>
+                                    </div>
+                                    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl uppercase tracking-[0.2em] text-xs shadow-xl transition-all shine">Export Result</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.updateCalc = function(key, val) {
+            if (!state.calc) state.calc = { dens: 0.775, vol: 24000, price: 410000 };
+            state.calc[key] = parseFloat(val) || 0;
+            renderPrices();
+        };
+
+        function renderContacts() {
+            const content = document.getElementById('main-content');
+            content.innerHTML = `
+                <div class="space-y-20 fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                        <div class="space-y-2">
+                            <h2 class="text-5xl font-black uppercase tracking-tighter text-white">Global <span class="text-blue-500">Contacts</span></h2>
+                            <p class="text-slate-500 font-bold uppercase text-xs tracking-[0.2em]">Strategy • Logistics • Management</p>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-16">
+                        <div class="space-y-12">
+                            <div class="glass-card p-12 rounded-[48px] border-l-4 border-blue-500 shadow-2xl relative overflow-hidden">
+                                <div class="absolute -right-8 -bottom-8 opacity-5 text-9xl font-black italic">SME</div>
+                                <div class="flex items-center gap-4 mb-8">
+                                    <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/40"><i class="fa-solid fa-industry"></i></div>
+                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">Headquarters</h3>
+                                </div>
+                                <div class="space-y-8">
+                                    <div class="space-y-2">
+                                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Physical Address</p>
+                                        <p class="text-xl text-slate-200 font-bold leading-relaxed">Қазақстан, Алматы қаласы, Түрксіб ауданы, Свободная көшесі, 136/2</p>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-8">
+                                        <div class="space-y-2">
+                                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">General Inquiries</p>
+                                            <div class="flex items-center gap-3 text-blue-400 font-black text-lg"><i class="fa-solid fa-phone"></i><span>+7 (727) 355-10-10</span></div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Support Email</p>
+                                            <div class="flex items-center gap-3 text-emerald-400 font-black text-lg"><i class="fa-solid fa-envelope"></i><span>info@sme.kz</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="pt-8 border-t border-white/5 flex gap-6">
+                                        <div class="flex flex-col">
+                                            <span class="text-4xl font-black text-white">19,000</span>
+                                            <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Cubic Meters Capacity</span>
+                                        </div>
+                                        <div class="flex flex-col border-l border-white/10 pl-6">
+                                            <span class="text-4xl font-black text-white">13</span>
+                                            <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Active Reservoirs</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-12 rounded-[48px] shadow-2xl relative">
+                            <h3 class="text-3xl font-black uppercase tracking-tighter text-white mb-10">Direct Feedback</h3>
+                            <div class="space-y-8">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Full Name</label>
+                                        <input placeholder="John Doe" class="glass-input w-full p-5 rounded-2xl font-bold outline-none" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Contact Phone</label>
+                                        <input placeholder="+7 701 ..." class="glass-input w-full p-5 rounded-2xl font-bold outline-none" />
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Message Brief</label>
+                                    <textarea placeholder="How can we help your business?" class="glass-input w-full p-5 rounded-2xl font-bold outline-none h-40 resize-none"></textarea>
+                                </div>
+                                <button onclick="showToast('Message sent successfully', 'success')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl uppercase tracking-[0.3em] text-xs shadow-xl transition-all shine">Dispatch Message</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leadership Section (Requested in style) -->
+                    <section class="space-y-12">
+                        <div class="text-center space-y-2">
+                            <h3 class="text-4xl font-black uppercase tracking-tighter text-white">Board of <span class="text-blue-500">Directors</span></h3>
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.4em]">Industrial Excellence • Scientific Leadership</p>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-8">
+                            ${[
+                                { name: "Makshat Akhmetzhanov", role: "General Director", badge: "PhD • CEO" },
+                                { name: "Talgat Tazhibayev", role: "Head of Operations", badge: "Expert • JIG" },
+                                { name: "Vera Shashkova", role: "Head of Laboratory", badge: "Technical Lead" }
+                            ].map((leader, i) => `
+                                <div class="glass-card p-10 rounded-[40px] text-center space-y-6 hover:scale-[1.02] transition-all group">
+                                    <div class="w-32 h-32 rounded-[32px] bg-gradient-to-br from-blue-500/20 to-indigo-600/20 mx-auto flex items-center justify-center border border-white/5 relative overflow-hidden">
+                                        <i class="fa-solid fa-user-tie text-5xl text-blue-400 group-hover:text-blue-300 transition-colors"></i>
+                                        <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
+                                    </div>
+                                    <div>
+                                        <span class="bg-cosmic-gold/10 text-cosmic-gold text-[9px] font-black uppercase px-3 py-1 rounded-full border border-cosmic-gold/20 tracking-widest">${leader.badge}</span>
+                                        <h4 class="text-2xl font-black text-white mt-4 uppercase tracking-tighter">${leader.name}</h4>
+                                        <p class="text-xs font-bold text-slate-500 uppercase mt-1 tracking-widest">${leader.role}</p>
+                                    </div>
+                                    <button onclick="openLeaderBio(${i})" class="text-[10px] font-black text-blue-400 uppercase tracking-widest hover:text-white transition-colors">View Biography →</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                </div>
+            `;
+        }
+
+        function renderLogin() {
+            const content = document.getElementById('main-content');
+            content.innerHTML = `
+                <div class="min-h-[60vh] flex items-center justify-center">
+                    <div class="glass-panel p-12 rounded-[40px] w-full max-w-md space-y-8 border-t-4 border-blue-500 shadow-2xl">
+                        <div class="text-center">
+                            <h2 class="text-4xl font-black uppercase tracking-tighter mb-2">${dict[state.lang].login}</h2>
+                            <p class="text-slate-500 font-bold uppercase text-[10px] tracking-[0.3em]">Access Management Hub</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Email Address</label>
+                                <input id="login-email" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="admin@sme.kz" />
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Password</label>
+                                <input id="login-pass" type="password" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="••••••••" />
+                            </div>
+                            <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl uppercase tracking-widest text-xs shadow-lg shadow-blue-900/40 transition-all">
+                                ${dict[state.lang].login} Dashboard
+                            </button>
+                        </div>
+                        <div class="text-center text-xs font-bold text-slate-500 uppercase">
+                            Don't have an account? <button onclick="switchTab('register')" class="text-blue-400 hover:underline">Register Now</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRegister() {
+            const content = document.getElementById('main-content');
+            content.innerHTML = `
+                <div class="min-h-[70vh] flex items-center justify-center">
+                    <div class="glass-panel p-12 rounded-[40px] w-full max-w-lg space-y-8 border-t-4 border-emerald-500 shadow-2xl">
+                        <div class="text-center">
+                            <h2 class="text-4xl font-black uppercase tracking-tighter mb-2">Registration</h2>
+                            <p class="text-slate-500 font-bold uppercase text-[10px] tracking-[0.3em]">Request Enterprise Access</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="col-span-2">
+                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Company Name</label>
+                                <input id="reg-name" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="LLP Smart Energy" />
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">BIN</label>
+                                <input id="reg-bin" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="123456789012" />
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Phone</label>
+                                <input id="reg-phone" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="+7 700 000 0000" />
+                            </div>
+                            <div class="col-span-2">
+                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Corporate Email</label>
+                                <input id="reg-email" type="email" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="info@company.kz" />
+                            </div>
+                        </div>
+                        <button onclick="registerRequest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-xl uppercase tracking-widest text-xs shadow-lg shadow-emerald-900/40 transition-all">
+                            Submit Request
+                        </button>
+                        <div class="text-center text-xs font-bold text-slate-500 uppercase">
+                            Already have an account? <button onclick="switchTab('login')" class="text-blue-400 hover:underline">Sign In</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCabinet() {
+            if (state.user?.role !== 'User') { switchTab('home'); return; }
+            const content = document.getElementById('main-content');
+            content.innerHTML = `
+                <div class="space-y-16 fade-in">
+                    <div class="flex justify-between items-end">
+                        <div class="space-y-2">
+                            <h2 class="text-5xl font-black uppercase tracking-tighter text-white">${dict[state.lang].cabinet}</h2>
+                            <p class="text-slate-500 font-bold uppercase text-xs tracking-[0.2em]">Client ID: SME-${state.user.id} • Verified Account</p>
+                        </div>
+                        <div class="glass-panel px-8 py-4 rounded-[28px] border-l-4 border-emerald-500">
+                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">${dict[state.lang].balance}</p>
+                            <p class="text-3xl font-black text-white tracking-tighter">${state.user.balance.toLocaleString()} <span class="text-sm text-slate-500">KZT</span></p>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-3 gap-12">
+                        <div class="lg:col-span-2 space-y-12">
+                            <div class="glass-card p-10 rounded-[48px] space-y-8">
+                                <h3 class="text-2xl font-black uppercase tracking-tighter text-white">${dict[state.lang].history}</h3>
+                                <div class="space-y-4">
+                                    ${state.user.orders.map(o => `
+                                        <div class="p-6 bg-white/5 rounded-[32px] border border-white/5 flex justify-between items-center group hover:bg-white/10 transition-all">
+                                            <div class="flex items-center gap-6">
+                                                <div class="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-400 font-black text-xs">#${o.id}</div>
+                                                <div>
+                                                    <p class="text-sm font-black text-white uppercase">${o.fuel} • ${o.mass} T</p>
+                                                    <p class="text-[10px] text-slate-500 font-bold uppercase mt-1">${o.date}</p>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-lg font-black text-white tracking-tighter">${o.cost.toLocaleString()} ₸</p>
+                                                <span class="text-[9px] font-black uppercase text-emerald-400">● ${o.status}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div class="glass-panel p-10 rounded-[48px] border-t-4 border-cosmic-gold shadow-2xl relative overflow-hidden">
+                                <div class="absolute -right-8 -top-8 opacity-5 text-9xl font-black italic">ORDER</div>
+                                <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">${dict[state.lang].placeOrder}</h3>
+                                <div class="space-y-6">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Product Grade</label>
+                                        <select id="order-fuel" class="glass-input w-full p-4 rounded-2xl font-bold outline-none">
+                                            <option value="AI-92">AI-92 Standard</option>
+                                            <option value="AI-95">AI-95 Premium</option>
+                                            <option value="Jet A-1">Jet A-1 Aviation</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Mass (Tonnes)</label>
+                                        <input id="order-mass" type="number" placeholder="0.00" oninput="updateOrderEst(this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg outline-none" />
+                                    </div>
+                                    <div class="bg-blue-600/10 p-6 rounded-[32px] border border-blue-500/20">
+                                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Estimated Charge</p>
+                                        <p id="order-est" class="text-3xl font-black text-cosmic-gold tracking-tighter">0 ₸</p>
+                                    </div>
+                                    <button onclick="submitOrder()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl uppercase tracking-[0.3em] text-xs shadow-xl transition-all shine">Confirm Order</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.submitOrder = function() {
+            const fuel = document.getElementById('order-fuel').value;
+            const mass = parseFloat(document.getElementById('order-mass').value);
+            if (!mass || mass <= 0) { showToast("Invalid mass", 'error'); return; }
+
+            const cost = mass * 410000; // Mock price
+            if (cost > state.user.balance) { showToast("Insufficient balance", 'error'); return; }
+
+            state.user.balance -= cost;
+            state.user.orders.unshift({ id: Math.floor(Math.random()*1000), fuel, mass, cost, date: new Date().toISOString().split('T')[0], status: 'Processing' });
+            logAction(`Placed order: ${fuel} x ${mass}T`);
+            showToast("Order Placed Successfully", 'success');
+            renderCabinet();
+        };
+
+        window.updateOrderEst = function(val) {
+            const mass = parseFloat(val) || 0;
+            const est = mass * 410000;
+            document.getElementById('order-est').innerText = Math.round(est).toLocaleString() + ' ₸';
+        };
+
+        function renderAdmin() {
+            if (state.user?.role !== 'Admin') { switchTab('home'); return; }
+            const content = document.getElementById('main-content');
+            const subTab = state.adminTab || 'dashboard';
+
+            content.innerHTML = `
+                <div class="flex flex-col lg:flex-row gap-12 min-h-[70vh]">
+                    <aside class="lg:w-72 space-y-2">
+                        <div class="p-4 mb-4">
+                            <h3 class="text-2xl font-black uppercase tracking-tighter text-amber-500 leading-none">Enterprise <br/><span class="text-white text-3xl">Suite</span></h3>
+                        </div>
+                        ${[
+                            { id: 'dashboard', icon: 'fa-chart-pie', label: 'Overview' },
+                            { id: 'cms', icon: 'fa-pen-to-square', label: 'Content CMS' },
+                            { id: 'prices', icon: 'fa-tags', label: 'Pricing CRUD' },
+                            { id: 'requests', icon: 'fa-user-plus', label: 'Registrations' },
+                            { id: 'users', icon: 'fa-users', label: 'Users' },
+                            { id: 'audit', icon: 'fa-shield-halved', label: 'Security Logs' }
+                        ].map(item => `
+                            <button onclick="switchAdminTab('${item.id}')" class="w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${subTab === item.id ? 'bg-blue-600 shadow-xl text-white' : 'text-slate-500 hover:bg-white/5 hover:text-slate-300'}">
+                                <i class="fa-solid ${item.icon} w-5 text-center"></i><span>${item.label}</span>
+                            </button>
+                        `).join('')}
+                    </aside>
+                    <div class="flex-1 glass-panel p-12 rounded-[40px] border-white/5">
+                        ${subTab === 'dashboard' ? `
+                            <div class="space-y-12 fade-in">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">System <span class="text-blue-500">Overview</span></h3>
+                                    <div class="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                                        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                                        <span class="text-[9px] font-black uppercase text-emerald-400 tracking-widest">Global Status: Optimal</span>
+                                    </div>
+                                </div>
+                                <div class="grid md:grid-cols-4 gap-6">
+                                    <div class="glass-card p-8 rounded-[32px] border-t-4 border-blue-500">
+                                        <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">Active Users</p>
+                                        <div class="flex items-end gap-2">
+                                            <p class="text-5xl font-black text-white tracking-tighter">${state.users.length}</p>
+                                            <span class="text-blue-500 text-xs font-bold pb-1 underline decoration-dotted">Live</span>
+                                        </div>
+                                    </div>
+                                    <div class="glass-card p-8 rounded-[32px] border-t-4 border-amber-500">
+                                        <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">Requests</p>
+                                        <div class="flex items-end gap-2">
+                                            <p class="text-5xl font-black text-amber-500 tracking-tighter">${state.registrations.length}</p>
+                                            <span class="text-slate-500 text-[10px] font-bold pb-1">Wait</span>
+                                        </div>
+                                    </div>
+                                    <div class="glass-card p-8 rounded-[32px] border-t-4 border-emerald-500">
+                                        <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">DB Latency</p>
+                                        <div class="flex items-end gap-2">
+                                            <p class="text-5xl font-black text-emerald-400 tracking-tighter">${state.metrics.latency}</p>
+                                            <span class="text-slate-500 text-[10px] font-bold pb-1">ms</span>
+                                        </div>
+                                    </div>
+                                    <div class="glass-card p-8 rounded-[32px] border-t-4 border-indigo-500">
+                                        <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">Stations</p>
+                                        <div class="flex items-end gap-2">
+                                            <p class="text-5xl font-black text-indigo-400 tracking-tighter">42</p>
+                                            <span class="text-slate-500 text-[10px] font-bold pb-1">Sync</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid lg:grid-cols-2 gap-8">
+                                    <div class="glass-card p-10 rounded-[48px] space-y-8 border-white/5">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="text-xl font-black uppercase tracking-tighter text-white">Cloud Resources</h4>
+                                            <i class="fa-solid fa-server text-blue-500/50"></i>
+                                        </div>
+                                        <div class="space-y-10">
+                                            <div>
+                                                <div class="flex justify-between text-[10px] font-black uppercase mb-3 tracking-widest text-slate-400">
+                                                    <span>Core CPU Architecture</span>
+                                                    <span class="${state.metrics.cpu > 80 ? 'text-rose-400' : 'text-blue-400'}">${state.metrics.cpu}%</span>
+                                                </div>
+                                                <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden border border-white/5 p-[2px]">
+                                                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(59,130,246,0.3)]" style="width:${state.metrics.cpu}%"></div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between text-[10px] font-black uppercase mb-3 tracking-widest text-slate-400">
+                                                    <span>Shared Memory Cluster</span>
+                                                    <span class="text-amber-400">${state.metrics.ram}%</span>
+                                                </div>
+                                                <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden border border-white/5 p-[2px]">
+                                                    <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(245,158,11,0.3)]" style="width:${state.metrics.ram}%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="glass-card p-10 rounded-[48px] border-white/5 flex flex-col justify-between">
+                                        <div class="space-y-2">
+                                            <h4 class="text-xl font-black uppercase tracking-tighter text-white">Quick Actions</h4>
+                                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">One-click enterprise commands</p>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4 mt-8">
+                                            <button onclick="showToast('Global backup started', 'info')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-cloud-arrow-up text-blue-400 text-lg"></i>Backup</button>
+                                            <button onclick="showToast('Cache cleared', 'success')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-broom text-emerald-400 text-lg"></i>Flush</button>
+                                            <button onclick="showToast('Alerts silenced for 1h', 'warning')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-bell-slash text-amber-400 text-lg"></i>Silence</button>
+                                            <button onclick="window.location.reload()" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-rotate text-rose-400 text-lg"></i>Reboot</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+                        ${subTab === 'cms' ? `
+                            <div class="space-y-12 fade-in">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">Content <span class="text-blue-500">CMS</span></h3>
+                                    <button onclick="showToast('New slide added', 'success')" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase px-6 py-3 rounded-2xl transition-all shadow-lg shadow-blue-900/40">+ Add Banner Slide</button>
+                                </div>
+                                <div class="grid lg:grid-cols-2 gap-8">
+                                    <div class="glass-card p-10 rounded-[48px] space-y-8">
+                                        <h4 class="text-xl font-black uppercase tracking-tighter text-white">Main Banner Configuration</h4>
+                                        <div class="space-y-6">
+                                            <div class="space-y-2"><label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Background Image URL</label><input value="${state.banner.url}" class="glass-input w-full p-4 rounded-xl outline-none" /></div>
+                                            <div class="space-y-2"><label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Main Title (KZ)</label><input value="${state.banner.title.KZ}" class="glass-input w-full p-4 rounded-xl outline-none" /></div>
+                                            <div class="space-y-2"><label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Subtitle (KZ)</label><textarea class="glass-input w-full p-4 rounded-xl outline-none h-24 resize-none">${state.banner.desc.KZ}</textarea></div>
+                                            <button onclick="showToast('Banner saved', 'success'); logAction('Updated main banner');" class="bg-blue-600 text-white font-black text-[10px] uppercase py-4 rounded-xl w-full tracking-[0.2em] shadow-lg transition-all">Save Changes</button>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-8">
+                                        <h4 class="text-xl font-black uppercase tracking-tighter text-white">Corporate News Feed</h4>
+                                        <div class="space-y-4 max-h-[500px] overflow-y-auto pr-4 no-scrollbar">
+                                            ${state.news.map(n => `
+                                                <div class="glass-card p-6 rounded-[32px] flex gap-4">
+                                                    <img src="${n.img}" class="w-20 h-20 rounded-2xl object-cover border border-white/10" />
+                                                    <div class="flex-1 flex flex-col justify-between">
+                                                        <h5 class="text-xs font-black text-white line-clamp-1">${n.title[state.lang]}</h5>
+                                                        <p class="text-[10px] text-slate-500 font-bold">${n.date}</p>
+                                                        <div class="flex gap-2 mt-2">
+                                                            <button class="text-[9px] font-black text-blue-400 uppercase">Edit</button>
+                                                            <button class="text-[9px] font-black text-rose-400 uppercase">Delete</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${subTab === 'prices' ? `
+                            <div class="space-y-12 fade-in">
+                                <h3 class="text-3xl font-black uppercase tracking-tighter text-white">Pricing <span class="text-blue-500">Engine</span></h3>
+                                <div class="glass-panel rounded-[48px] overflow-hidden border-white/5">
+                                    <div class="p-8 bg-white/5 border-b border-white/5 flex justify-between items-center">
+                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Managed Regional Rates</span>
+                                        <button class="bg-blue-600 text-white text-[9px] font-black uppercase px-4 py-2 rounded-xl">+ New Rate</button>
+                                    </div>
+                                    <table class="w-full text-left">
+                                        <thead class="bg-black/20">
+                                            <tr><th class="p-6 text-[10px] uppercase font-black text-slate-500">Region</th><th class="p-6 text-[10px] uppercase font-black text-slate-500">Product</th><th class="p-6 text-[10px] uppercase font-black text-slate-500">Current Rate</th><th class="p-6 text-[10px] uppercase font-black text-slate-500 text-right">Action</th></tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-white/5 font-bold">
+                                            ${state.prices.regional.map(r => `
+                                                <tr>
+                                                    <td class="p-6 text-white text-sm">${r.region}</td>
+                                                    <td class="p-6"><span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[9px] uppercase tracking-widest border border-blue-500/20">${r.fuel}</span></td>
+                                                    <td class="p-6 text-cosmic-gold text-xl tracking-tighter">${r.price.toLocaleString()}</td>
+                                                    <td class="p-6 text-right"><button onclick="showToast('Edit mode activated', 'info')" class="text-slate-500 hover:text-white transition-colors"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="grid lg:grid-cols-2 gap-8">
+                                    <div class="glass-card p-10 rounded-[48px] space-y-8 border-white/5">
+                                        <h4 class="text-xl font-black uppercase tracking-tighter text-white">Spot Market CRUD</h4>
+                                        <div class="space-y-4">
+                                            ${state.prices.spot.map(s => `
+                                                <div class="flex items-center justify-between p-6 bg-white/5 rounded-[32px] border border-white/5">
+                                                    <div><p class="text-sm font-black text-white uppercase">${s.name}</p><p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Live Trend: ${s.trend}% ${s.status}</p></div>
+                                                    <div class="flex items-center gap-4">
+                                                        <input type="number" value="${s.price}" class="glass-input w-28 p-2 rounded-xl text-center font-black text-cosmic-gold" />
+                                                        <button onclick="showToast('${s.name} Updated', 'success'); logAction('Updated spot price: ${s.name}');" class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white hover:bg-blue-700 transition-all shadow-lg"><i class="fa-solid fa-check"></i></button>
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    <div class="glass-card p-10 rounded-[48px] border-white/5 flex flex-col justify-center items-center text-center space-y-6">
+                                        <div class="w-20 h-20 rounded-full bg-cosmic-gold/10 flex items-center justify-center text-cosmic-gold text-3xl shadow-[0_0_30px_rgba(245,158,11,0.2)]"><i class="fa-solid fa-bolt-lightning"></i></div>
+                                        <div><h4 class="text-xl font-black uppercase tracking-tighter text-white">Auto-Pricing Engine</h4><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-2 max-w-xs">Synchronization with Singapore & Argus indices is currently ACTIVE.</p></div>
+                                        <button class="bg-cosmic-gold text-cosmic-deep px-8 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Configure API</button>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${subTab === 'requests' ? `
+                            <div class="space-y-8 fade-in">
+                                <h3 class="text-3xl font-black uppercase tracking-tighter">Registration Requests</h3>
+                                <div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-white/5 border-b border-white/5"><tr><th class="p-6 text-[10px] uppercase font-black text-slate-500">Company / Email</th><th class="p-6 text-[10px] uppercase font-black text-slate-500">BIN</th><th class="p-6 text-[10px] uppercase font-black text-slate-500 text-right">Actions</th></tr></thead><tbody class="divide-y divide-white/5">
+                                    ${state.registrations.map(r => `
+                                        <tr class="hover:bg-white/[0.02]">
+                                            <td class="p-6"><div><p class="font-black text-white">${r.name}</p><p class="text-[10px] text-slate-500 font-bold lowercase">${r.email}</p></div></td>
+                                            <td class="p-6 text-xs font-bold">${r.bin}</td>
+                                            <td class="p-6 flex justify-end gap-3">
+                                                <button onclick="approveUser(${r.id})" class="bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase border border-emerald-500/30 px-4 py-2 rounded-xl hover:bg-emerald-500 hover:text-black transition-all">Approve</button>
+                                                <button onclick="rejectUser(${r.id})" class="bg-rose-500/10 text-rose-400 text-[10px] font-black uppercase border border-rose-500/30 px-4 py-2 rounded-xl hover:bg-rose-500 hover:text-black transition-all">Reject</button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                    ${state.registrations.length === 0 ? '<tr><td colspan="3" class="p-12 text-center text-slate-500 font-black uppercase text-xs tracking-widest">No pending requests</td></tr>' : ''}
+                                </tbody></table></div>
+                            </div>
+                        ` : ''}
+                        ${subTab === 'users' ? `
+                            <div class="space-y-12 fade-in">
+                                <div class="flex justify-between items-center px-2">
+                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">User <span class="text-blue-500">Privileges</span></h3>
+                                    <button onclick="showToast('Feature restricted in demo', 'warning')" class="bg-blue-600 text-white text-[10px] font-black uppercase px-6 py-3 rounded-2xl shadow-lg">+ New Employee</button>
+                                </div>
+                                <div class="glass-panel rounded-[48px] overflow-hidden border-white/5">
+                                    <table class="w-full text-left">
+                                        <thead class="bg-black/20">
+                                            <tr>
+                                                <th class="p-8 text-[10px] uppercase font-black text-slate-500">Identity</th>
+                                                <th class="p-8 text-[10px] uppercase font-black text-slate-500">Role & Security</th>
+                                                <th class="p-8 text-[10px] uppercase font-black text-slate-500">Permissions</th>
+                                                <th class="p-8 text-[10px] uppercase font-black text-slate-500 text-right">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-white/5 font-bold">
+                                            ${state.users.map(u => `
+                                                <tr class="hover:bg-white/[0.02] transition-colors group">
+                                                    <td class="p-8">
+                                                        <div class="flex items-center gap-4">
+                                                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-xs text-white border border-white/10 uppercase">${u.name.charAt(0)}</div>
+                                                            <div><p class="text-sm font-black text-white">${u.name}</p><p class="text-[10px] text-slate-500 lowercase font-bold">${u.email}</p></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="p-8">
+                                                        <div class="flex flex-col gap-2">
+                                                            <span class="inline-block px-3 py-1 rounded-lg ${u.role==='Admin'?'bg-amber-500/10 text-amber-500 border border-amber-500/20':'bg-blue-500/10 text-blue-500 border border-blue-500/20'} text-[9px] font-black uppercase w-fit tracking-widest">${u.role}</span>
+                                                            <p class="text-[8px] text-slate-600 uppercase">Auth: Biometric/2FA</p>
+                                                        </div>
+                                                    </td>
+                                                    <td class="p-8">
+                                                        <div class="flex gap-2">
+                                                            ${['CMS', 'TELE', 'CRUD'].map(p => `<span class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[8px] text-slate-500 hover:text-blue-400 cursor-help" title="${p}">${p}</span>`).join('')}
+                                                        </div>
+                                                    </td>
+                                                    <td class="p-8 text-right">
+                                                        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[9px] uppercase tracking-widest border border-emerald-500/20">● Operational</span>
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ` : ''}
+                        ${subTab === 'audit' ? `
+                            <div class="space-y-12 fade-in">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">Security <span class="text-blue-500">Audit</span></h3>
+                                    <div class="flex gap-3">
+                                        <button onclick="showToast('Audit report exported', 'success')" class="bg-white/5 border border-white/10 text-white text-[9px] font-black uppercase px-6 py-3 rounded-2xl hover:bg-white/10">Export PDF</button>
+                                        <button onclick="state.auditLogs=[]; renderAdmin(); showToast('Logs Purged', 'success')" class="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[9px] font-black uppercase px-6 py-3 rounded-2xl hover:bg-rose-500 hover:text-white transition-all">Purge All</button>
+                                    </div>
+                                </div>
+
+                                <div class="glass-panel p-4 rounded-[32px] border-white/5 flex gap-4 items-center">
+                                    <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500"><i class="fa-solid fa-magnifying-glass"></i></div>
+                                    <input id="audit-search" placeholder="Search system movements, user actions or timestamps..." class="bg-transparent flex-1 outline-none text-sm font-bold text-white tracking-tight" oninput="filterAudit(this.value)" />
+                                </div>
+
+                                <div class="space-y-4 max-h-[600px] overflow-y-auto pr-4 no-scrollbar" id="audit-list-container">
+                                    ${state.auditLogs.map(l => `
+                                        <div class="glass-card p-8 rounded-[32px] flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-white/5 hover:border-blue-500/20 transition-all">
+                                            <div class="flex items-center gap-6">
+                                                <div class="w-14 h-14 rounded-2xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center text-blue-400 shadow-inner">
+                                                    <i class="fa-solid ${l.action.includes('Approved') ? 'fa-user-check' : l.action.includes('Updated') ? 'fa-pen-to-square' : 'fa-bolt-lightning'}"></i>
+                                                </div>
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-black text-white uppercase tracking-tight">${l.user}</p>
+                                                    <p class="text-xs text-slate-400 font-bold leading-relaxed">${l.action}</p>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">${l.time}</p>
+                                                <p class="text-[8px] text-emerald-500 font-bold uppercase mt-1 tracking-widest">Verified Log</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                    ${state.auditLogs.length === 0 ? `
+                                        <div class="py-20 text-center space-y-6">
+                                            <div class="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mx-auto text-slate-700 text-4xl"><i class="fa-solid fa-box-open"></i></div>
+                                            <p class="text-slate-500 font-black uppercase text-xs tracking-[0.3em]">No movements documented</p>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 4. HANDLERS
+        window.login = function() {
+            const email = document.getElementById('login-email').value;
+            const user = state.users.find(u => u.email === email);
+            if (user) {
+                state.user = user;
+                showToast(`Welcome back, ${user.name}!`, 'success');
+                logAction("Logged in");
+                switchTab('home');
+                renderAuth();
+            } else {
+                showToast("User not found", 'error');
+            }
+        };
+
+        window.logout = function() {
+            logAction("Logged out");
+            state.user = null;
+            showToast("Logged out");
+            switchTab('home');
+            renderAuth();
+        };
+
+        window.registerRequest = function() {
+            const name = document.getElementById('reg-name').value;
+            const bin = document.getElementById('reg-bin').value;
+            const email = document.getElementById('reg-email').value;
+
+            if (!name || !bin || !email) { showToast("All fields required", 'error'); return; }
+
+            state.registrations.push({
+                id: Date.now(), name, bin, email, status: 'Pending', time: new Date().toLocaleString()
+            });
+            showToast("Request submitted for approval", 'success');
+            logAction(`New registration request from: ${name}`);
+            switchTab('home');
+        };
+
+        window.approveUser = function(id) {
+            const req = state.registrations.find(r => r.id === id);
+            if (req) {
+                state.users.push({ id: Date.now(), name: req.name, email: req.email, role: 'User', status: 'Active', bin: req.bin });
+                state.registrations = state.registrations.filter(r => r.id !== id);
+                showToast(`User Approved: ${req.name}`, 'success');
+                logAction(`Approved user request: ${req.name}`);
+                renderAdmin();
+            }
+        };
+
+        window.rejectUser = function(id) {
+            const req = state.registrations.find(r => r.id === id);
+            if (req) {
+                state.registrations = state.registrations.filter(r => r.id !== id);
+                showToast(`Request Rejected`, 'error');
+                logAction(`Rejected user request: ${req.name}`);
+                renderAdmin();
+            }
+        };
+
+        window.switchAdminTab = function(tab) {
+            state.adminTab = tab;
+            renderAdmin();
+        };
+
+        window.filterAudit = function(val) {
+            const list = document.getElementById('audit-list-container');
+            const items = list.querySelectorAll('.glass-card');
+            const query = val.toLowerCase();
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        };
+
+        window.openLeaderBio = function(idx) {
+            const leader = state.leaders[idx];
+            openModal(`
+                <div class="space-y-8">
+                    <div class="flex items-center gap-6">
+                        <div class="w-24 h-24 rounded-3xl bg-blue-600/10 flex items-center justify-center text-4xl text-blue-400 border border-blue-500/20"><i class="fa-solid fa-user-tie"></i></div>
+                        <div>
+                            <span class="bg-cosmic-gold/10 text-cosmic-gold text-[9px] font-black uppercase px-3 py-1 rounded-full border border-cosmic-gold/20 tracking-widest">${leader.badge}</span>
+                            <h3 class="text-3xl font-black text-white mt-2 uppercase tracking-tighter">${leader.name}</h3>
+                            <p class="text-xs font-bold text-blue-400 uppercase tracking-widest">${leader.role}</p>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-8 rounded-[32px] border border-white/5 space-y-4">
+                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Biography / Exp</p>
+                        <p class="text-slate-300 leading-relaxed font-medium">${leader.bio}</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-4">
+                        <div class="flex items-center gap-3 text-emerald-400 text-xs font-bold"><i class="fa-solid fa-envelope"></i><span>${leader.email}</span></div>
+                        <button onclick="closeModal()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Close Bio</button>
+                    </div>
+                </div>
+            `);
+        };
+
+        window.changeLang = function(l) { state.lang = l; init(); };
+
+        // 5. LIVE MARKET SIMULATION
+        setInterval(() => {
+            state.prices.spot.forEach(p => {
+                const change = (Math.random() - 0.5) * 500;
+                p.price += change;
+                p.trend = Math.abs(((change / p.price) * 100).toFixed(2));
+                p.status = change > 0 ? 'up' : 'down';
+            });
+            if (state.activeTab === 'home') renderHome();
+            if (state.activeTab === 'admin' && state.adminTab === 'prices') renderAdmin();
+        }, 5000);
+
+        // INITIALIZE
+        init();
+    </script>
 </body>
 </html>
