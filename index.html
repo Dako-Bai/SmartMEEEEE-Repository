@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mercury Energy - Энергетикалық Хаб және Басқару Панелі</title>
+    <title>Smart Mercury Energy - Intelligent Energy Hub</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -29,7 +31,7 @@
             overflow-x: hidden;
         }
 
-        /* Глассморфизм стильдері */
+        /* Glassmorphism Styles */
         .glass-panel {
             background: rgba(18, 31, 61, 0.75);
             backdrop-filter: blur(16px);
@@ -51,10 +53,6 @@
             box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.6);
         }
 
-        button:active {
-            transform: scale(0.96);
-        }
-
         .glass-input {
             background: rgba(0, 0, 0, 0.2) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -71,7 +69,7 @@
         .barrel {
             position: relative;
             width: 100%;
-            height: 120px;
+            height: 140px;
             background: linear-gradient(to right, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             border-radius: 12px;
             overflow: hidden;
@@ -86,10 +84,10 @@
         }
         .fluid-wave {
             position: absolute;
-            top: -10px;
+            top: -15px;
             left: 0;
             width: 200%;
-            height: 20px;
+            height: 30px;
             background: radial-gradient(circle at 50% 100%, rgba(255,255,255,0.2) 0%, transparent 70%);
             animation: waveMove 3s infinite linear;
         }
@@ -98,32 +96,31 @@
             to { transform: translateX(-50%); }
         }
 
+        /* Animations */
         .fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Арнайы Скроллбар */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--cosmic-deep); }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-        .shine { position: relative; overflow: hidden; }
-        .shine::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.05) 50%, transparent 55%);
-            animation: shineMove 4s infinite;
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Mobile Sidebar */
+        #mobile-sidebar {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(-100%);
         }
-        @keyframes shineMove {
-            0% { transform: translate(-30%, -30%); }
-            100% { transform: translate(30%, 30%); }
+        #mobile-sidebar.open {
+            transform: translateX(0);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col pt-16">
 
-    <!-- 1. ЖОҒАРҒЫ НАВИГАЦИЯЛЫҚ ПАНЕЛЬ (NAVBAR) -->
+    <!-- 1. NAVIGATION BAR -->
     <header class="fixed top-0 left-0 right-0 z-50 glass-panel px-6 h-16 flex items-center justify-between border-b border-white/5">
         <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
             <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
@@ -135,47 +132,72 @@
             </div>
         </div>
 
-        <nav class="hidden lg:flex items-center gap-1 bg-white/5 p-1 rounded-xl" id="main-nav">
-            <!-- JS арқылы толтырылады -->
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-1 bg-white/5 p-1 rounded-xl" id="desktop-nav">
+            <!-- Injected by JS -->
         </nav>
 
         <div class="flex items-center gap-4">
-            <div class="flex gap-2 text-[10px] font-black text-blue-400">
-                <span class="cursor-pointer hover:text-white" onclick="changeLang('KZ')">KZ</span>
+            <!-- Language Toggle -->
+            <div class="hidden sm:flex gap-2 text-[10px] font-black text-blue-400">
+                <span class="cursor-pointer hover:text-white transition-colors" onclick="changeLang('KZ')">KZ</span>
                 <span class="text-slate-600">/</span>
-                <span class="cursor-pointer hover:text-white" onclick="changeLang('RU')">RU</span>
+                <span class="cursor-pointer hover:text-white transition-colors" onclick="changeLang('RU')">RU</span>
                 <span class="text-slate-600">/</span>
-                <span class="cursor-pointer hover:text-white" onclick="changeLang('EN')">EN</span>
+                <span class="cursor-pointer hover:text-white transition-colors" onclick="changeLang('EN')">EN</span>
             </div>
 
             <div id="auth-zone" class="flex items-center gap-3 border-l border-white/10 pl-4">
-                <!-- JS арқылы Login батырмасы немесе Профиль шығады -->
+                <!-- Injected by JS -->
             </div>
+
+            <!-- Hamburger Button -->
+            <button class="lg:hidden text-white text-xl" onclick="toggleMobileSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </div>
     </header>
 
-    <!-- НЕГІЗГІ ПОРТАЛ МАМЫНЫ -->
+    <!-- 2. MOBILE SIDEBAR -->
+    <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden" onclick="toggleMobileSidebar()"></div>
+    <aside id="mobile-sidebar" class="fixed top-0 left-0 bottom-0 w-72 glass-panel z-[70] p-8 flex flex-col gap-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-bolt text-xs"></i></div>
+                <span class="text-lg font-black">SmartME</span>
+            </div>
+            <button onclick="toggleMobileSidebar()" class="text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <div class="flex flex-col gap-2" id="mobile-nav">
+            <!-- Injected by JS -->
+        </div>
+        <div class="mt-auto flex justify-center gap-4 text-xs font-black text-blue-400">
+            <span onclick="changeLang('KZ')">KZ</span>
+            <span onclick="changeLang('RU')">RU</span>
+            <span onclick="changeLang('EN')">EN</span>
+        </div>
+    </aside>
+
+    <!-- 3. MAIN CONTENT -->
     <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-10" id="main-content">
-        <!-- Секциялар осында рендерингтеледі -->
+        <!-- Rendered Sections -->
     </main>
 
-    <!-- ТӨМЕНГІ ФУТЕР -->
+    <!-- 4. FOOTER -->
     <footer class="py-16 border-t border-white/5 text-center bg-black/20">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col items-center gap-4">
                 <span class="text-xl font-black text-white tracking-tighter uppercase">Smart <span class="text-blue-500">Mercury</span></span>
-                <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">© 2026 Smart Mercury Energy • Intelligent Hub Solutions</p>
+                <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">© 2026 Smart Mercury Energy • Intelligent Energy Logistics Hub</p>
             </div>
         </div>
     </footer>
 
-    <!-- TOAST NOTIFICATIONS -->
-    <div id="toast-container" class="fixed bottom-6 right-6 z-[60] flex flex-col gap-3"></div>
-
-    <!-- MODAL SYSTEM -->
+    <!-- TOASTS & MODALS -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3"></div>
     <div id="modal-overlay" class="hidden fixed inset-0 z-[100] bg-cosmic-deep/80 backdrop-blur-md flex items-center justify-center p-6">
-        <div id="modal-content" class="glass-panel max-w-2xl w-full p-12 rounded-[48px] shadow-2xl border-t-4 border-blue-500 scale-95 transition-transform duration-300">
-            <!-- Modal Body injected by JS -->
+        <div id="modal-content" class="glass-panel max-w-2xl w-full p-8 md:p-12 rounded-[48px] shadow-2xl scale-95 transition-transform duration-300 relative overflow-hidden">
+            <!-- Injected by JS -->
         </div>
     </div>
 
@@ -189,29 +211,25 @@
             user: null,
             banner: {
                 url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1600&q=80",
-                title: {
-                    KZ: "Smart Mercury Energy",
-                    RU: "Smart Mercury Energy",
-                    EN: "Smart Mercury Energy"
-                },
+                title: { KZ: "Smart Mercury Energy", RU: "Smart Mercury Energy", EN: "Smart Mercury Energy" },
                 desc: {
                     KZ: "Алматы өңіріндегі авиациялық және автокөлік отындарының сапасын бақылау, сақтау және тасымалдау жөніндегі жетекші энергетикалық хаб.",
-                    RU: "Ведущий энергетический хаб по контролю качества, хранению и транспортировке авиационного и автомобильного топлива в Алматинской регионе.",
+                    RU: "Ведущий энергетический хаб по контролю качества, хранению и транспортировке авиационного и автомобильного топлива в Алматинском регионе.",
                     EN: "Leading energy hub for quality control, storage and transportation of aviation and motor fuels in the Almaty region."
                 }
             },
             news: [
                 {
                     id: 1,
-                    title: { KZ: "Navarro Trade — Алматы өңіріндегі сенімді отын жеткізушісі", RU: "Navarro Trade — надежный поставщик топлива в Алматинском регионе", EN: "Navarro Trade — a reliable fuel supplier in the Almaty region" },
-                    subtitle: { KZ: "«Navarro Trade» ЖШС — Алматы өңіріндегі жанар-жағармай материалдарын көтерме жеткізу нарығындағы көшбасшы...", RU: "ТОО «Navarro Trade» — лидер на рынке оптовых поставок горюче-смазочных материалов...", EN: "LLP «Navarro Trade» is a leader in the wholesale market of fuels and lubricants..." },
+                    title: { KZ: "Navarro Trade — сенімді отын жеткізушісі", RU: "Navarro Trade — надежный поставщик", EN: "Navarro Trade — Reliable Supplier" },
+                    subtitle: { KZ: "Алматы өңіріндегі жанар-жағармай нарығындағы көшбасшылық позиция.", RU: "Лидирующие позиции на рынке ГСМ в Алматинском регионе.", EN: "Leadership in the fuel market of the Almaty region." },
                     date: "2026-06-12",
                     img: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 2,
-                    title: { KZ: "Жаңа мұнай базасының іске қосылуы", RU: "Запуск новой нефтебазы", EN: "Launch of a new oil depot" },
-                    subtitle: { KZ: "Алматы облысында сыйымдылығы 24 000 тонналық заманауи жаңа мұнай базасының ресми ашылуы өтті.", RU: "В Алматинской области состоялось официальное открытие новой современной нефтебазы мощностью 24 000 тонн.", EN: "The official opening of a new modern oil depot with a capacity of 24,000 tons took place in the Almaty region." },
+                    title: { KZ: "Жаңа мұнай базасы іске қосылды", RU: "Запущена новая нефтебаза", EN: "New Oil Depot Launched" },
+                    subtitle: { KZ: "24,000 тонналық заманауи хаб ресми ашылды.", RU: "Официальное открытие хаба на 24,000 тонн.", EN: "Official launch of 24,000-ton modern hub." },
                     date: "2026-06-09",
                     img: "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80"
                 }
@@ -229,20 +247,57 @@
                 ]
             },
             reservoirs: Array.from({ length: 13 }, (_, i) => ({
-                id: i + 1, name: `RES-${String(i + 1).padStart(2, '0')}`,
+                id: i + 1,
+                name: `RES-${String(i + 1).padStart(2, '0')}`,
                 level: 40 + Math.floor(Math.random() * 50),
-                water: 1.2 + Math.random(), temp: 14 + Math.floor(Math.random() * 8),
+                water: 1.2 + Math.random(),
+                temp: 14 + Math.floor(Math.random() * 8),
                 fuelType: i < 5 ? "Jet A-1" : i < 9 ? "AI-95" : "AI-92"
             })),
             users: [
-                { id: 1, name: "Admin", email: "admin@sme.kz", role: "Admin", status: "Active" },
-                { id: 2, name: "Arman", email: "arman@example.com", role: "User", status: "Active", balance: 15400200, orders: [
-                    { id: 501, fuel: 'AI-95', mass: 20, cost: 5800000, date: '2026-06-20', status: 'Delivered' },
-                    { id: 502, fuel: 'Jet A-1', mass: 15, cost: 6150000, date: '2026-06-15', status: 'Delivered' }
-                ] }
+                { id: 1, name: "Admin", email: "admin@sme.kz", bin: "000000000000", role: "Admin", status: "Active" },
+                { id: 2, name: "Arman Energy", email: "arman@example.com", bin: "123456789012", role: "User", status: "Active", balance: 15400200, orders: [] }
             ],
             registrations: [
-                { id: 101, name: "TechnoFuel Ltd", email: "info@techno.kz", bin: "123456789012", status: "Pending", time: "2026-06-25 14:00" }
+                { id: 101, name: "TechnoFuel Ltd", email: "info@techno.kz", bin: "999888777666", status: "Pending", time: "2026-06-25 14:00" }
+            ],
+            leaders: [
+                {
+                    name: "Ахметжанов Мақсат",
+                    role: { KZ: "Бас директор", RU: "Генеральный директор", EN: "General Director" },
+                    badge: "PhD • CEO",
+                    bio: {
+                        KZ: "Мақсат Ақанұлы — басқару саласында 15 жылдық тәжірибесі бар маман, математика және компьютерлік модельдеу бойынша PhD докторы. Ол стратегиялық жоспарлау мен инновациялық технологияларды енгізуге жауапты.",
+                        RU: "Максат Аканович — эксперт с 15-летним стажем управления, доктор PhD по математике и компьютерному моделированию. Ответственен за стратегическое планирование и внедрение инноваций.",
+                        EN: "Maksat Akanovich — expert with 15 years of management experience, PhD in mathematics and computer modeling. Responsible for strategic planning and implementation of innovations."
+                    },
+                    email: "m.akhmetzhanov@sme.kz",
+                    img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80"
+                },
+                {
+                    name: "Тәжібаев Талғат",
+                    role: { KZ: "Техникалық директор", RU: "Технический директор", EN: "Technical Director" },
+                    badge: "JIG Expert",
+                    bio: {
+                        KZ: "Талғат Тағыбергенұлы авиациялық отын саласында 20 жылдан астам тәжірибесі бар білікті маман, JIG халықаралық сарапшысы. Ол терминалдың техникалық қауіпсіздігін қадағалайды.",
+                        RU: "Талгат Тагыбергенович — квалифицированный специалист с 20-летним опытом в авиатопливной сфере, эксперт JIG. Курирует техническую безопасность терминала.",
+                        EN: "Talgat Tagybergenovich — qualified specialist with over 20 years of experience in aviation fuel, JIG expert. Oversees the technical safety of the terminal."
+                    },
+                    email: "t.tazhibayev@sme.kz",
+                    img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=800&q=80"
+                },
+                {
+                    name: "Шашкова Вера",
+                    role: { KZ: "Зертхана меңгерушісі", RU: "Заведующая лабораторией", EN: "Head of Laboratory" },
+                    badge: "Quality Lead",
+                    bio: {
+                        KZ: "Вера Алексеевна мұнай өнімдерінің сапасын бақылау саласында 18 жылдық өтілі бар маман, авиаотын комиссиясының мүшесі. Өнімнің халықаралық стандарттарға сәйкестігін қамтамасыз етеді.",
+                        RU: "Вера Алексеевна — специалист с 18-летним стажем в области контроля качества ГСМ, член комиссии по авиатопливу. Обеспечивает соответствие продукции мировым стандартам.",
+                        EN: "Vera Alekseevna — specialist with 18 years of experience in fuel quality control, member of the aviation fuel commission. Ensures product compliance with international standards."
+                    },
+                    email: "v.shashkova@sme.kz",
+                    img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80"
+                }
             ],
             auditLogs: [],
             metrics: { cpu: 12, ram: 34, latency: 45 }
@@ -251,54 +306,108 @@
         const dict = {
             KZ: {
                 home: "Басты бет", monitoring: "Мониторинг", prices: "Бағалар", contacts: "Байланыс", admin: "Басқару",
-                login: "Кіру", logout: "Шығу", news: "Жаңалықтар", calc: "Калькулятор", requests: "Сұраныстар",
+                login: "Кіру", register: "Тіркелу", logout: "Шығу", news: "Жаңалықтар", calc: "Калькулятор", requests: "Сұраныстар",
                 metrics: "Көрсеткіштер", users: "Пайдаланушылар", audit: "Аудит", bio: "Өмірбаян",
                 overview: "Шолу", cms: "Контент", registrations: "Тіркелулер", security: "Қауіпсіздік",
                 details: "Толығырақ", approve: "Растау", reject: "Қабылдамау", density: "Тығыздық",
                 volume: "Көлем", price: "Баға", mass: "Масса", total: "Жалпы",
                 cabinet: "Жеке кабинет", balance: "Теңгерім", orders: "Тапсырыстар", history: "Тарихы",
-                placeOrder: "Тапсырыс беру", fuel: "Отын"
+                placeOrder: "Тапсырыс беру", fuel: "Отын", status: "Мәртебе", action: "Әрекет",
+                welcome: "Қош келдіңіз", authErr: "Қолданушы табылмады", success: "Сәтті", error: "Қате",
+                insufficient: "Баланс жеткіліксіз", orderPlaced: "Тапсырыс қабылданды", regSubmitted: "Тіркелуге сұраныс жіберілді",
+                save: "Сақтау", add: "Қосу", delete: "Өшіру", edit: "Өзгерту",
+                export: "Экспорттау", contactInfo: "Байланыс деректері", feedback: "Кері байланыс",
+                send: "Жіберу", company: "Компания", bin: "БИН", phone: "Телефон", email: "Пошта",
+                identity: "Тұлға", role: "Рөлі", authDetail: "Деректер", time: "Уақыты",
+                sysOverview: "Жүйені шолу", globalStatus: "Жалпы күй", latency: "Кідіріс", activeStations: "Белсенді станциялар",
+                resourceAlloc: "Ресурстарды бөлу", quickCmds: "Жылдам пәрмендер", heroConfig: "Баннерді баптау",
+                corpNews: "Компания жаңалықтары", marketSync: "Нарықпен синхрондау", spotCtrl: "Споттық басқару",
+                pricingEngine: "Бағалау жүйесі"
             },
             RU: {
                 home: "Главная", monitoring: "Мониторинг", prices: "Цены", contacts: "Контакты", admin: "Управление",
-                login: "Вход", logout: "Выход", news: "Новости", calc: "Калькулятор", requests: "Запросы",
+                login: "Вход", register: "Регистрация", logout: "Выход", news: "Новости", calc: "Калькулятор", requests: "Запросы",
                 metrics: "Метрики", users: "Пользователи", audit: "Аудит", bio: "Биография",
                 overview: "Обзор", cms: "Контент", registrations: "Регистрации", security: "Безопасность",
                 details: "Подробнее", approve: "Одобрить", reject: "Отклонить", density: "Плотность",
                 volume: "Объем", price: "Цена", mass: "Масса", total: "Итого",
                 cabinet: "Личный кабинет", balance: "Баланс", orders: "Заказы", history: "История",
-                placeOrder: "Оформить заказ", fuel: "Топливо"
+                placeOrder: "Оформить заказ", fuel: "Топливо", status: "Статус", action: "Действие",
+                welcome: "Добро пожаловать", authErr: "Пользователь не найден", success: "Успешно", error: "Ошибка",
+                insufficient: "Недостаточно средств", orderPlaced: "Заказ оформлен", regSubmitted: "Запрос на регистрацию отправлен",
+                save: "Сохранить", add: "Добавить", delete: "Удалить", edit: "Изменить",
+                export: "Экспортировать", contactInfo: "Контактная информация", feedback: "Обратная связь",
+                send: "Отправить", company: "Компания", bin: "БИН", phone: "Телефон", email: "Почта",
+                identity: "Личность", role: "Роль", authDetail: "Данные", time: "Время",
+                sysOverview: "Обзор системы", globalStatus: "Глобальный статус", latency: "Задержка", activeStations: "Активные станции",
+                resourceAlloc: "Распределение ресурсов", quickCmds: "Быстрые команды", heroConfig: "Настройка баннера",
+                corpNews: "Новости компании", marketSync: "Синхронизация с рынком", spotCtrl: "Спот управление",
+                pricingEngine: "Система цен"
             },
             EN: {
                 home: "Home", monitoring: "Monitoring", prices: "Prices", contacts: "Contacts", admin: "Admin",
-                login: "Login", logout: "Logout", news: "News", calc: "Calculator", requests: "Requests",
+                login: "Login", register: "Register", logout: "Logout", news: "News", calc: "Calculator", requests: "Requests",
                 metrics: "Metrics", users: "Users", audit: "Audit", bio: "Biography",
                 overview: "Overview", cms: "Content", registrations: "Registrations", security: "Security",
                 details: "Details", approve: "Approve", reject: "Reject", density: "Density",
                 volume: "Volume", price: "Price", mass: "Mass", total: "Total",
                 cabinet: "Client Cabinet", balance: "Balance", orders: "Orders", history: "History",
-                placeOrder: "Place Order", fuel: "Fuel"
+                placeOrder: "Place Order", fuel: "Fuel", status: "Status", action: "Action",
+                welcome: "Welcome", authErr: "User not found", success: "Success", error: "Error",
+                insufficient: "Insufficient balance", orderPlaced: "Order placed", regSubmitted: "Registration request submitted",
+                save: "Save", add: "Add", delete: "Delete", edit: "Edit",
+                export: "Export", contactInfo: "Contact Info", feedback: "Feedback",
+                send: "Send", company: "Company", bin: "BIN", phone: "Phone", email: "Email",
+                identity: "Identity", role: "Role", authDetail: "Details", time: "Time",
+                sysOverview: "System Overview", globalStatus: "Global Status", latency: "Latency", activeStations: "Active Stations",
+                resourceAlloc: "Resource Allocation", quickCmds: "Quick Commands", heroConfig: "Hero Config",
+                corpNews: "Corporate News", marketSync: "Market Sync", spotCtrl: "Spot Control",
+                pricingEngine: "Pricing Engine"
             }
         };
 
-        // 2. CORE FUNCTIONS
+        // 2. NAVIGATION & TABS
         function init() {
             renderNav();
             renderAuth();
+
+            // Hash Router
+            const hash = window.location.hash.replace('#/', '') || 'home';
+            if (['home', 'monitoring', 'prices', 'contacts', 'admin', 'cabinet', 'login', 'register'].includes(hash)) {
+                state.activeTab = hash;
+            }
+
             switchTab(state.activeTab);
+            logAction("System initialized");
+
+            window.onpopstate = () => {
+                const newHash = window.location.hash.replace('#/', '') || 'home';
+                if (newHash !== state.activeTab) switchTab(newHash);
+            };
+        }
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('mobile-sidebar');
+            const overlay = document.getElementById('mobile-sidebar-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('hidden');
         }
 
         function renderNav() {
-            const nav = document.getElementById('main-nav');
             const tabs = ['home', 'monitoring', 'prices', 'contacts'];
             if (state.user?.role === 'Admin') tabs.push('admin');
             else if (state.user?.role === 'User') tabs.push('cabinet');
 
-            nav.innerHTML = tabs.map(tab => `
-                <button onclick="switchTab('${tab}')" class="px-4 py-2 rounded-lg text-xs font-black uppercase transition-all ${state.activeTab === tab ? 'bg-blue-600 text-white shadow-lg' : (tab==='admin'||tab==='cabinet'?'text-amber-500 hover:text-amber-400':'text-slate-400 hover:text-slate-200')}">
-                    ${dict[state.lang][tab] || tab}
-                </button>
-            `).join('');
+            const render = (containerId) => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = tabs.map(tab => `
+                    <button onclick="switchTab('${tab}')" class="px-4 py-2 rounded-lg text-xs font-black uppercase transition-all ${state.activeTab === tab ? 'bg-blue-600 text-white shadow-lg' : (tab==='admin'||tab==='cabinet'?'text-amber-500 hover:text-amber-400':'text-slate-400 hover:text-slate-200')}">
+                        ${dict[state.lang][tab] || tab}
+                    </button>
+                `).join('');
+            };
+            render('desktop-nav');
+            render('mobile-nav');
         }
 
         function renderAuth() {
@@ -306,16 +415,18 @@
             if (state.user) {
                 zone.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="flex flex-col items-end leading-none">
+                        <div class="hidden sm:flex flex-col items-end leading-none">
                             <span class="text-[11px] font-black text-white">${state.user.name}</span>
                             <span class="text-[9px] font-bold text-slate-400 uppercase">${state.user.role}</span>
                         </div>
-                        <button onclick="logout()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-rose-500/20 hover:text-rose-400 transition-colors"><i class="fa-solid fa-power-off text-xs"></i></button>
+                        <button onclick="logout()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-rose-500/20 hover:text-rose-400 transition-colors">
+                            <i class="fa-solid fa-power-off text-xs"></i>
+                        </button>
                     </div>
                 `;
             } else {
                 zone.innerHTML = `
-                    <button onclick="switchTab('login')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-xs font-black shadow-lg shadow-blue-900/40 uppercase tracking-tighter">
+                    <button onclick="switchTab('login')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-xs font-black shadow-lg shadow-blue-900/40 uppercase tracking-tighter transition-all">
                         ${dict[state.lang].login}
                     </button>
                 `;
@@ -337,13 +448,31 @@
             else if (tab === 'admin') renderAdmin();
             else if (tab === 'cabinet') renderCabinet();
 
-            window.location.hash = `#/${tab}`;
+            const sidebar = document.getElementById('mobile-sidebar');
+            if (sidebar.classList.contains('open')) toggleMobileSidebar();
+
+            if (window.location.hash !== '#/' + tab) {
+                window.history.pushState(null, null, '#/' + tab);
+            }
+            window.scrollTo(0,0);
         }
 
+        function switchAdminTab(tab) {
+            state.adminTab = tab;
+            renderAdmin();
+        }
+
+        function changeLang(l) {
+            state.lang = l;
+            init();
+            showToast(`${dict[l].success}: ${l}`, 'info');
+        }
+
+        // 3. TOASTS & UTILS
         function showToast(msg, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = `glass-panel px-8 py-4 rounded-2xl flex items-center gap-4 shadow-2xl min-w-[320px] border-l-4 transition-all duration-300 fade-in ${type === 'error' ? 'border-rose-500' : type === 'success' ? 'border-emerald-500' : 'border-blue-500'}`;
+            toast.className = `glass-panel px-6 py-4 rounded-2xl flex items-center gap-4 shadow-2xl min-w-[280px] border-l-4 transition-all duration-300 fade-in ${type === 'error' ? 'border-rose-500' : type === 'success' ? 'border-emerald-500' : 'border-blue-500'}`;
             toast.innerHTML = `
                 <div class="w-8 h-8 rounded-full flex items-center justify-center ${type==='error'?'bg-rose-500/20 text-rose-400':type==='success'?'bg-emerald-500/20 text-emerald-400':'bg-blue-500/20 text-blue-400'}">
                     <i class="fa-solid ${type==='error'?'fa-triangle-exclamation':type==='success'?'fa-circle-check':'fa-info-circle'} text-xs"></i>
@@ -357,125 +486,94 @@
             }, 4000);
         }
 
-        window.openModal = function(html) {
+        function logAction(action) {
+            const log = {
+                id: Date.now(),
+                user: state.user?.name || "Guest",
+                action: action,
+                time: new Date().toLocaleString()
+            };
+            state.auditLogs.unshift(log);
+            if (state.activeTab === 'admin' && state.adminTab === 'audit') renderAdmin();
+        }
+
+        function openModal(html) {
             const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
-            content.innerHTML = html;
+            content.innerHTML = `<button onclick="closeModal()" class="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors z-10"><i class="fa-solid fa-xmark text-2xl"></i></button>` + html;
             overlay.classList.remove('hidden');
             setTimeout(() => content.classList.remove('scale-95'), 10);
-        };
+        }
 
-        window.closeModal = function() {
+        function closeModal() {
             const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
             content.classList.add('scale-95');
-            setTimeout(() => { overlay.classList.add('hidden'); }, 300);
-        };
-
-        function logAction(action) {
-            state.auditLogs.unshift({ id: Date.now(), user: state.user?.name || "Guest", action, time: new Date().toLocaleString() });
+            setTimeout(() => overlay.classList.add('hidden'), 300);
         }
 
-        // 3. VIEWS
+        // 4. VIEWS: HOME
         function renderHome() {
             const content = document.getElementById('main-content');
             content.innerHTML = `
                 <div class="space-y-16">
-                    <!-- Hero Banner -->
-                    <section class="relative h-[550px] rounded-[48px] overflow-hidden group shadow-2xl shine">
+                    <!-- Hero -->
+                    <section class="relative h-[500px] md:h-[600px] rounded-[48px] overflow-hidden group shadow-2xl">
                         <img src="${state.banner.url}" class="w-full h-full object-cover opacity-70 transition-transform duration-1000 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-cosmic-deep via-transparent to-transparent flex flex-col justify-center px-16">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cosmic-deep via-transparent to-transparent flex flex-col justify-center px-8 md:px-16">
                             <div class="max-w-4xl space-y-6">
-                                <span class="bg-blue-600 text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-[0.2em] shadow-lg shadow-blue-900/40">Official Hub</span>
-                                <h1 class="text-7xl font-black leading-tight text-white uppercase tracking-tighter drop-shadow-2xl">
-                                    ${state.banner.title[state.lang]}
-                                </h1>
-                                <p class="text-2xl text-slate-200 max-w-2xl font-medium leading-relaxed drop-shadow-lg">
-                                    ${state.banner.desc[state.lang]}
-                                </p>
-                                <div class="pt-8 flex gap-4">
+                                <span class="bg-blue-600 text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-[0.2em] shadow-lg">Official Hub</span>
+                                <h1 class="text-5xl md:text-7xl font-black leading-tight text-white uppercase tracking-tighter">${state.banner.title[state.lang]}</h1>
+                                <p class="text-lg md:text-2xl text-slate-200 max-w-2xl font-medium leading-relaxed">${state.banner.desc[state.lang]}</p>
+                                <div class="pt-8 flex flex-wrap gap-4">
                                     <button onclick="switchTab('monitoring')" class="bg-white text-cosmic-deep px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-blue-400 transition-all shadow-xl">Get Started</button>
                                     <button onclick="switchTab('prices')" class="bg-white/10 text-white border border-white/20 backdrop-blur-md px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-white/20 transition-all">Market Rates</button>
                                 </div>
                             </div>
                         </div>
-                        <!-- Price Overlay Ticker -->
-                        <div class="absolute bottom-8 right-16 hidden lg:block">
-                            <div class="glass-panel p-8 rounded-[32px] w-80 space-y-6 border-l-4 border-cosmic-gold shadow-2xl">
-                                <div class="flex items-center justify-between border-b border-white/5 pb-4">
-                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live Market</span>
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                </div>
-                                <div class="space-y-4">
-                                    ${state.prices.spot.slice(0, 3).map(p => `
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-xs font-black text-white uppercase">${p.name}</span>
-                                            <div class="text-right leading-none">
-                                                <div class="text-sm font-black text-cosmic-gold">${p.price.toLocaleString()}</div>
-                                                <div class="text-[8px] font-bold ${p.status==='up'?'text-emerald-400':'text-rose-400'} mt-1">${p.status==='up'?'▲':'▼'} ${p.trend}%</div>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
                     </section>
 
-                    <!-- Feature Grid -->
+                    <!-- Features -->
                     <div class="grid md:grid-cols-3 gap-8">
                         ${state.prices.spot.map(p => `
-                            <div class="glass-card p-10 rounded-[40px] border-t-4 border-cosmic-gold relative overflow-hidden">
-                                <div class="absolute -right-4 -top-4 opacity-5 text-8xl font-black italic">SPOT</div>
+                            <div class="glass-card p-8 rounded-[40px] border-t-4 border-cosmic-gold relative overflow-hidden">
+                                <div class="absolute -right-4 -top-4 opacity-5 text-7xl font-black italic">SPOT</div>
                                 <div class="flex justify-between mb-6">
-                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">KZT Index / T</span>
-                                    <span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest">Global Standard</span>
+                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">KZT Index / T</span>
+                                    <span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest">Live Feed</span>
                                 </div>
-                                <h4 class="text-3xl font-black text-white mb-2 uppercase tracking-tighter">${p.name}</h4>
+                                <h4 class="text-2xl font-black text-white mb-2 uppercase tracking-tighter">${p.name}</h4>
                                 <div class="flex items-end gap-3">
-                                    <p class="text-4xl font-black text-cosmic-gold tracking-tighter">${p.price.toLocaleString()}</p>
+                                    <p class="text-4xl font-black text-cosmic-gold tracking-tighter">${Math.round(p.price).toLocaleString()}</p>
                                     <span class="text-xs font-bold text-slate-500 pb-2 uppercase tracking-widest">KZT</span>
                                 </div>
-                                <div class="mt-8 pt-8 border-t border-white/5 flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400"><i class="fa-solid fa-chart-line"></i></div>
-                                    <div>
-                                        <p class="text-[10px] font-black text-slate-400 uppercase">24h Change</p>
-                                        <p class="text-xs font-black ${p.status==='up'?'text-emerald-400':'text-rose-400'}">${p.status==='up'?'Growth':'Fall'} ${p.trend}%</p>
-                                    </div>
+                                <div class="mt-6 pt-6 border-t border-white/5 flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400"><i class="fa-solid fa-chart-line"></i></div>
+                                    <p class="text-[10px] font-black ${p.status==='up'?'text-emerald-400':'text-rose-400'} uppercase">Trend: ${p.status==='up'?'▲':'▼'} ${p.trend}%</p>
                                 </div>
                             </div>
                         `).join('')}
                     </div>
 
-                    <!-- News Section -->
+                    <!-- News -->
                     <section class="space-y-10">
-                        <div class="flex justify-between items-center px-4">
-                            <div class="space-y-1">
-                                <h3 class="text-4xl font-black uppercase tracking-tighter text-white">${dict[state.lang].news}</h3>
-                                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Market Insights & Company Updates</p>
-                            </div>
-                            <button class="glass-panel px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">View All Articles</button>
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-3xl font-black uppercase tracking-tighter text-white">${dict[state.lang].news}</h3>
+                            <button onclick="switchTab('prices')" class="text-xs font-black text-blue-400 uppercase tracking-widest hover:text-white transition-colors">${dict[state.lang].details} →</button>
                         </div>
-                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="home-news-grid">
                             ${state.news.map(n => `
-                                <div class="glass-card rounded-[48px] overflow-hidden group border-white/5 hover:border-blue-500/30">
-                                    <div class="h-64 overflow-hidden relative">
+                                <div class="glass-card rounded-[40px] overflow-hidden group">
+                                    <div class="h-56 overflow-hidden relative">
                                         <img src="${n.img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                        <div class="absolute top-6 left-6 bg-cosmic-deep/60 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/10">
+                                        <div class="absolute top-4 left-4 bg-cosmic-deep/60 backdrop-blur-xl px-3 py-1.5 rounded-xl border border-white/10">
                                             <span class="text-[10px] font-black text-white uppercase">${n.date}</span>
                                         </div>
                                     </div>
-                                    <div class="p-10 space-y-6">
-                                        <h4 class="text-2xl font-black text-white leading-tight uppercase tracking-tighter group-hover:text-blue-400 transition-colors">${n.title[state.lang]}</h4>
-                                        <p class="text-sm text-slate-400 font-medium leading-relaxed line-clamp-3 italic opacity-80">
-                                            Innovative solutions driving the future of energy logistics in Kazakhstan and beyond.
-                                        </p>
-                                        <div class="pt-4 flex items-center justify-between">
-                                            <button class="text-[10px] font-black text-blue-400 uppercase tracking-widest border-b-2 border-blue-400/20 pb-1 hover:border-blue-400 transition-all">Details →</button>
-                                            <div class="flex -space-x-2">
-                                                <div class="w-6 h-6 rounded-full border-2 border-cosmic-deep bg-blue-500"></div>
-                                                <div class="w-6 h-6 rounded-full border-2 border-cosmic-deep bg-indigo-500"></div>
-                                            </div>
-                                        </div>
+                                    <div class="p-8 space-y-4">
+                                        <h4 class="text-xl font-black text-white leading-tight uppercase tracking-tighter group-hover:text-blue-400 transition-colors">${n.title[state.lang]}</h4>
+                                        <p class="text-xs text-slate-400 font-medium leading-relaxed line-clamp-3">${n.subtitle[state.lang]}</p>
+                                        <button class="text-[10px] font-black text-blue-400 uppercase tracking-widest border-b-2 border-blue-400/20 pb-1 hover:border-blue-400 transition-all">Read More</button>
                                     </div>
                                 </div>
                             `).join('')}
@@ -485,74 +583,63 @@
             `;
         }
 
+        // 5. VIEWS: MONITORING
         function renderMonitoring() {
             const content = document.getElementById('main-content');
-            const selectedId = state.selectedReservoirId || state.reservoirs[0].id;
+            const selectedId = state.selectedReservoirId || 1;
             const sel = state.reservoirs.find(r => r.id === selectedId);
 
             content.innerHTML = `
-                <div class="space-y-12 fade-in">
+                <div class="space-y-12">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                         <div class="space-y-2">
-                            <h2 class="text-5xl font-black uppercase tracking-tighter text-white">Depot <span class="text-blue-500">Monitor</span></h2>
-                            <p class="text-slate-500 font-bold uppercase text-xs tracking-[0.2em]">Real-time Telemetry • 13 Reservoirs active</p>
+                            <h2 class="text-4xl font-black uppercase tracking-tighter text-white">Hub <span class="text-blue-500">Monitoring</span></h2>
+                            <p class="text-slate-500 font-bold uppercase text-xs tracking-widest">Real-time Terminal Data • 13 Reservoirs</p>
                         </div>
-                        <div class="flex gap-4">
-                            <div class="glass-panel px-6 py-4 rounded-2xl flex items-center gap-4">
-                                <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
-                                <span class="text-[10px] font-black uppercase text-white tracking-widest italic">Live Feed Connected</span>
-                            </div>
+                        <div class="glass-panel px-6 py-4 rounded-2xl flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <span class="text-[10px] font-black uppercase text-white tracking-widest italic">Live Telemetry Active</span>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
                         ${state.reservoirs.map(r => `
                             <div onclick="selectReservoir(${r.id})" class="glass-card p-6 rounded-[32px] cursor-pointer transition-all ${sel.id === r.id ? 'ring-2 ring-blue-500 bg-blue-500/10 shadow-2xl' : 'hover:bg-white/5'}">
-                                <div class="barrel mb-6 shadow-inner">
+                                <div class="barrel mb-4 shadow-inner">
                                     <div class="barrel-fill ${r.level < 20 ? 'bg-rose-500' : r.level < 50 ? 'bg-cosmic-gold' : 'bg-cosmic-emerald'}" style="height: ${r.level}%">
-                                        <div class="fluid-wave"></div>
+                                        <div class="fluid-wave" style="animation-duration: ${4 - (r.level/25)}s"></div>
                                     </div>
                                     <div class="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white mix-blend-difference">${r.level}%</div>
                                 </div>
-                                <div class="text-center space-y-1">
-                                    <p class="text-xs font-black text-white uppercase">${r.name}</p>
-                                    <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">${r.fuelType}</p>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-white uppercase">${r.name}</p>
+                                    <p class="text-[8px] text-slate-500 font-bold uppercase mt-1">${r.fuelType}</p>
                                 </div>
                             </div>
                         `).join('')}
                     </div>
 
-                    <!-- Detailed Analytics Card -->
-                    <div class="glass-panel p-12 rounded-[48px] border-white/5 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-12 opacity-5"><i class="fa-solid fa-flask-vial text-9xl"></i></div>
-                        <div class="grid lg:grid-cols-4 gap-12 text-center">
-                            <div class="space-y-4">
-                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Available Volume</p>
-                                <div class="flex flex-col items-center">
-                                    <p class="text-5xl font-black text-white tracking-tighter">${sel.level}%</p>
-                                    <div class="w-48 bg-white/5 h-2 rounded-full mt-6 overflow-hidden">
-                                        <div class="bg-blue-600 h-full rounded-full transition-all duration-1000" style="width: ${sel.level}%"></div>
-                                    </div>
-                                </div>
+                    <div class="glass-panel p-10 rounded-[48px] relative overflow-hidden">
+                        <div class="grid lg:grid-cols-4 gap-10 text-center">
+                            <div class="space-y-2">
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Volume (Available)</p>
+                                <p class="text-5xl font-black text-white tracking-tighter">${sel.level}%</p>
+                                <div class="w-32 bg-white/5 h-1.5 rounded-full mx-auto mt-4 overflow-hidden"><div class="bg-blue-600 h-full rounded-full" style="width:${sel.level}%"></div></div>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bottom Water</p>
+                                <p class="text-5xl font-black text-blue-400 tracking-tighter">${sel.water.toFixed(2)}<span class="text-sm ml-1 uppercase">cm</span></p>
+                                <p class="text-[8px] font-bold text-slate-600 uppercase mt-2">Critical limit: 20.00cm</p>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Temperature</p>
+                                <p class="text-5xl font-black text-emerald-400 tracking-tighter">${sel.temp}<span class="text-sm ml-1">°C</span></p>
+                                <p class="text-[8px] font-bold text-slate-600 uppercase mt-2">Sensors: Nominal</p>
                             </div>
                             <div class="space-y-4">
-                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bottom Water (Подтоварная)</p>
-                                <div class="flex flex-col items-center">
-                                    <p class="text-5xl font-black text-blue-400 tracking-tighter">${sel.water.toFixed(2)} <span class="text-lg uppercase">cm</span></p>
-                                    <div class="w-48 bg-white/5 h-2 rounded-full mt-6 overflow-hidden">
-                                        <div class="bg-blue-400 h-full rounded-full transition-all duration-1000" style="width: ${(sel.water/15)*100}%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Current Temp</p>
-                                <p class="text-5xl font-black text-emerald-400 tracking-tighter">${sel.temp} <span class="text-lg">°C</span></p>
-                                <p class="text-[9px] font-bold text-slate-500 uppercase mt-4 italic">Sensors: Active (Calibration: OK)</p>
-                            </div>
-                            <div class="space-y-4">
-                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Product Info</p>
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Product Details</p>
                                 <div class="inline-block px-6 py-3 rounded-2xl bg-white/5 border border-white/10">
-                                    <p class="text-xl font-black text-cosmic-gold uppercase tracking-tighter">${sel.fuelType}</p>
+                                    <p class="text-lg font-black text-cosmic-gold uppercase">${sel.fuelType}</p>
                                     <p class="text-[9px] font-black text-slate-500 uppercase mt-1">Density: 0.7750</p>
                                 </div>
                             </div>
@@ -562,11 +649,12 @@
             `;
         }
 
-        window.selectReservoir = function(id) {
+        function selectReservoir(id) {
             state.selectedReservoirId = id;
             renderMonitoring();
-        };
+        }
 
+        // 6. VIEWS: PRICES & CALCULATOR
         function renderPrices() {
             const content = document.getElementById('main-content');
             const calc = state.calc || { dens: 0.775, vol: 24000, price: 410000 };
@@ -574,63 +662,41 @@
             const total = mass * calc.price;
 
             content.innerHTML = `
-                <div class="space-y-16 fade-in">
+                <div class="space-y-16">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                         <div class="space-y-2">
-                            <h2 class="text-5xl font-black uppercase tracking-tighter text-white">Market <span class="text-blue-500">Indices</span></h2>
-                            <p class="text-slate-500 font-bold uppercase text-xs tracking-[0.2em]">Official Regional Rates & Fuel Calculator</p>
+                            <h2 class="text-4xl font-black uppercase tracking-tighter text-white">Market <span class="text-blue-500">Rates</span></h2>
+                            <p class="text-slate-500 font-bold uppercase text-xs tracking-widest">Spot Pricing • Fuel Calculator • Global Indices</p>
                         </div>
                     </div>
 
-                    <div class="grid lg:grid-cols-3 gap-12">
-                        <!-- Table Section -->
-                        <div class="lg:col-span-2 space-y-8">
-                            <div class="glass-card p-10 rounded-[48px] h-64 relative overflow-hidden flex flex-col justify-between">
-                                <div class="flex justify-between items-center">
-                                    <h3 class="text-xl font-black uppercase tracking-tighter text-white">Market Volatility Map</h3>
-                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Real-time Flux</span>
-                                </div>
-                                <svg class="w-full h-32 opacity-30" viewBox="0 0 1000 100" preserveAspectRatio="none">
-                                    <path d="M0,50 Q100,20 200,60 T400,40 T600,70 T800,30 T1000,50" fill="none" stroke="#3B82F6" stroke-width="4" />
-                                    <path d="M0,50 Q100,80 200,40 T400,60 T600,30 T800,70 T1000,50" fill="none" stroke="#FBBF24" stroke-width="2" stroke-dasharray="8,4" />
-                                </svg>
-                                <div class="flex gap-8">
-                                    <div class="flex items-center gap-2 text-[10px] font-black text-blue-400 uppercase"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Primary Hubs</div>
-                                    <div class="flex items-center gap-2 text-[10px] font-black text-cosmic-gold uppercase"><span class="w-2 h-2 rounded-full bg-cosmic-gold"></span> Secondary Flows</div>
-                                </div>
+                    <div class="grid lg:grid-cols-3 gap-10">
+                        <div class="lg:col-span-2 space-y-10">
+                            <!-- Live Chart -->
+                            <div class="glass-panel p-8 rounded-[48px] h-96 relative shadow-2xl">
+                                <h3 class="text-xl font-black uppercase tracking-tighter text-white mb-6">Market Volatility Map (Live)</h3>
+                                <canvas id="marketChart" class="w-full h-full"></canvas>
                             </div>
-                            <div class="glass-panel rounded-[48px] overflow-hidden shadow-2xl">
-                                <div class="bg-white/5 p-8 border-b border-white/5 flex justify-between items-center">
-                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Regional Distribution</span>
-                                    <div class="flex gap-2">
-                                        <button class="bg-blue-600/10 text-blue-400 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase border border-blue-500/20">All</button>
-                                        <button class="text-slate-500 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase hover:text-white transition-all">Auto</button>
-                                        <button class="text-slate-500 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase hover:text-white transition-all">Aviation</button>
-                                    </div>
+
+                            <!-- Regional Table -->
+                            <div class="glass-panel rounded-[40px] overflow-hidden">
+                                <div class="bg-white/5 p-6 border-b border-white/5 flex justify-between items-center">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Regional Rates (Managed)</span>
                                 </div>
                                 <table class="w-full text-left">
                                     <thead class="bg-black/20">
                                         <tr>
-                                            <th class="px-10 py-6 text-[10px] font-black uppercase text-slate-500 tracking-widest">Region</th>
-                                            <th class="px-10 py-6 text-[10px] font-black uppercase text-slate-500 tracking-widest">Product</th>
-                                            <th class="px-10 py-6 text-[10px] font-black uppercase text-slate-500 tracking-widest text-right">Rate (KZT/T)</th>
+                                            <th class="px-8 py-4 text-[9px] font-black uppercase text-slate-500">Region</th>
+                                            <th class="px-8 py-4 text-[9px] font-black uppercase text-slate-500">Fuel</th>
+                                            <th class="px-8 py-4 text-[9px] font-black uppercase text-slate-500 text-right">Rate (KZT/T)</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-white/5 font-bold">
                                         ${state.prices.regional.map(r => `
-                                            <tr class="hover:bg-white/[0.03] transition-all group">
-                                                <td class="px-10 py-8">
-                                                    <div class="flex items-center gap-4">
-                                                        <div class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-                                                        <span class="text-lg text-white tracking-tight">${r.region}</span>
-                                                    </div>
-                                                </td>
-                                                <td class="px-10 py-8">
-                                                    <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${r.cat==='auto'?'bg-blue-500/10 text-blue-400 border border-blue-500/20':'bg-cosmic-gold/10 text-cosmic-gold border border-cosmic-gold/20'}">${r.fuel}</span>
-                                                </td>
-                                                <td class="px-10 py-8 text-right">
-                                                    <span class="text-3xl font-black text-white tracking-tighter group-hover:text-blue-400 transition-colors">${r.price.toLocaleString()}</span>
-                                                </td>
+                                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                                <td class="px-8 py-6 text-sm text-white">${r.region}</td>
+                                                <td class="px-8 py-6"><span class="px-3 py-1 rounded-full text-[8px] uppercase tracking-widest ${r.cat==='auto'?'bg-blue-500/10 text-blue-400 border border-blue-500/20':'bg-cosmic-gold/10 text-cosmic-gold border border-cosmic-gold/20'}">${r.fuel}</span></td>
+                                                <td class="px-8 py-6 text-right text-lg text-white font-black tracking-tight">${r.price.toLocaleString()}</td>
                                             </tr>
                                         `).join('')}
                                     </tbody>
@@ -638,247 +704,320 @@
                             </div>
                         </div>
 
-                        <!-- Calculator Section -->
+                        <!-- Calculator -->
                         <div class="space-y-8">
-                            <div class="glass-panel p-10 rounded-[48px] border-l-4 border-cosmic-accent shadow-2xl relative overflow-hidden">
-                                <div class="absolute -right-4 -top-4 opacity-5 text-9xl font-black italic">CALC</div>
-                                <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">Fuel Calculator</h3>
+                            <div class="glass-panel p-10 rounded-[48px] border-l-4 border-blue-500 shadow-2xl relative overflow-hidden">
+                                <div class="absolute -right-4 -top-4 opacity-5 text-8xl font-black italic">CALC</div>
+                                <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">${dict[state.lang].calc}</h3>
                                 <div class="space-y-6">
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Density (ρ) <span class="text-slate-700 ml-1">g/cm³</span></label>
-                                        <input type="number" step="0.001" value="${calc.dens}" oninput="updateCalc('dens', this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg outline-none" />
+                                        <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Density (ρ) <span class="text-slate-700 ml-1">g/cm³</span></label>
+                                        <input type="number" step="0.001" value="${calc.dens}" oninput="updateCalc('dens', this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg" />
                                     </div>
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Volume (V) <span class="text-slate-700 ml-1">Litres</span></label>
-                                        <input type="number" value="${calc.vol}" oninput="updateCalc('vol', this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg outline-none" />
+                                        <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Volume (V) <span class="text-slate-700 ml-1">Litres</span></label>
+                                        <input type="number" value="${calc.vol}" oninput="updateCalc('vol', this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg" />
                                     </div>
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Price <span class="text-slate-700 ml-1">KZT / Tonne</span></label>
-                                        <input type="number" value="${calc.price}" oninput="updateCalc('price', this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg outline-none" />
+                                        <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Price <span class="text-slate-700 ml-1">KZT / Tonne</span></label>
+                                        <input type="number" value="${calc.price}" oninput="updateCalc('price', this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg" />
                                     </div>
                                 </div>
-
-                                <div class="mt-12 pt-10 border-t border-white/10 space-y-6">
+                                <div class="mt-10 pt-10 border-t border-white/10 space-y-6">
                                     <div class="flex justify-between items-center">
-                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Net Mass (m)</span>
-                                        <span class="text-2xl font-black text-blue-400 tracking-tighter">${mass.toFixed(3)} <span class="text-xs uppercase ml-1">T</span></span>
+                                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Net Mass (m)</span>
+                                        <span class="text-xl font-black text-blue-400 tracking-tighter">${mass.toFixed(3)} <span class="text-[10px] uppercase ml-1">T</span></span>
                                     </div>
                                     <div class="bg-blue-600/10 p-6 rounded-[32px] border border-blue-500/20">
-                                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Total Estimated Cost</p>
-                                        <p class="text-4xl font-black text-cosmic-gold tracking-tighter">${Math.round(total).toLocaleString()} <span class="text-sm uppercase ml-1">KZT</span></p>
+                                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">${dict[state.lang].total} Cost</p>
+                                        <p class="text-3xl font-black text-cosmic-gold tracking-tighter">${Math.round(total).toLocaleString()} <span class="text-xs uppercase ml-1">KZT</span></p>
                                     </div>
-                                    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl uppercase tracking-[0.2em] text-xs shadow-xl transition-all shine">Export Result</button>
+                                    <button onclick="simulateExport()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] shadow-xl transition-all">Export Report</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
+            initChart();
         }
 
-        window.updateCalc = function(key, val) {
+        function updateCalc(key, val) {
             if (!state.calc) state.calc = { dens: 0.775, vol: 24000, price: 410000 };
             state.calc[key] = parseFloat(val) || 0;
             renderPrices();
-        };
+        }
 
+        function simulateExport() {
+            showToast("Generating PDF Report...", "info");
+            setTimeout(() => showToast("Report Downloaded Successfully", "success"), 2000);
+        }
+
+        let marketChart;
+        function initChart() {
+            const ctx = document.getElementById('marketChart').getContext('2d');
+            const data = {
+                labels: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
+                datasets: [{
+                    label: 'Jet A-1 Index',
+                    data: [405000, 408000, 410000, 409000, 412000, 411000, 413000],
+                    borderColor: '#3B82F6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#3B82F6'
+                }]
+            };
+            if (marketChart) marketChart.destroy();
+            marketChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // 7. VIEWS: CONTACTS & LEADERS
         function renderContacts() {
             const content = document.getElementById('main-content');
             content.innerHTML = `
-                <div class="space-y-20 fade-in">
+                <div class="space-y-20">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                         <div class="space-y-2">
-                            <h2 class="text-5xl font-black uppercase tracking-tighter text-white">Global <span class="text-blue-500">Contacts</span></h2>
-                            <p class="text-slate-500 font-bold uppercase text-xs tracking-[0.2em]">Strategy • Logistics • Management</p>
+                            <h2 class="text-4xl font-black uppercase tracking-tighter text-white">Global <span class="text-blue-500">Connect</span></h2>
+                            <p class="text-slate-500 font-bold uppercase text-xs tracking-widest">Infrastructure • Logistics • Strategic Leadership</p>
                         </div>
                     </div>
 
                     <div class="grid lg:grid-cols-2 gap-16">
                         <div class="space-y-12">
-                            <div class="glass-card p-12 rounded-[48px] border-l-4 border-blue-500 shadow-2xl relative overflow-hidden">
-                                <div class="absolute -right-8 -bottom-8 opacity-5 text-9xl font-black italic">SME</div>
-                                <div class="flex items-center gap-4 mb-8">
-                                    <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/40"><i class="fa-solid fa-industry"></i></div>
-                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">Headquarters</h3>
-                                </div>
+                            <div class="glass-card p-10 rounded-[48px] border-l-4 border-blue-500 relative overflow-hidden">
+                                <div class="absolute -right-8 -bottom-8 opacity-5 text-9xl font-black italic">HQ</div>
+                                <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">${dict[state.lang].contactInfo}</h3>
                                 <div class="space-y-8">
                                     <div class="space-y-2">
-                                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Physical Address</p>
-                                        <p class="text-xl text-slate-200 font-bold leading-relaxed">Қазақстан, Алматы қаласы, Түрксіб ауданы, Свободная көшесі, 136/2</p>
+                                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Physical Address</p>
+                                        <p class="text-lg text-slate-200 font-bold leading-relaxed">Қазақстан, Алматы қаласы, Түрксіб ауданы, Свободная көшесі, 136/2</p>
                                     </div>
                                     <div class="grid grid-cols-2 gap-8">
                                         <div class="space-y-2">
-                                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">General Inquiries</p>
-                                            <div class="flex items-center gap-3 text-blue-400 font-black text-lg"><i class="fa-solid fa-phone"></i><span>+7 (727) 355-10-10</span></div>
+                                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Inquiries</p>
+                                            <p class="text-lg text-blue-400 font-black">+7 (727) 355-10-10</p>
                                         </div>
                                         <div class="space-y-2">
-                                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Support Email</p>
-                                            <div class="flex items-center gap-3 text-emerald-400 font-black text-lg"><i class="fa-solid fa-envelope"></i><span>info@sme.kz</span></div>
-                                        </div>
-                                    </div>
-                                    <div class="pt-8 border-t border-white/5 flex gap-6">
-                                        <div class="flex flex-col">
-                                            <span class="text-4xl font-black text-white">19,000</span>
-                                            <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Cubic Meters Capacity</span>
-                                        </div>
-                                        <div class="flex flex-col border-l border-white/10 pl-6">
-                                            <span class="text-4xl font-black text-white">13</span>
-                                            <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Active Reservoirs</span>
+                                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Support</p>
+                                            <p class="text-lg text-emerald-400 font-black">info@sme.kz</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="space-y-8">
+                                <h3 class="text-2xl font-black uppercase tracking-tighter text-white">${dict[state.lang].feedback}</h3>
+                                <div class="glass-panel p-8 rounded-[40px] space-y-6">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <input placeholder="Name" class="glass-input w-full p-4 rounded-xl text-xs font-bold" />
+                                        <input placeholder="Phone" class="glass-input w-full p-4 rounded-xl text-xs font-bold" />
+                                    </div>
+                                    <textarea placeholder="Message" class="glass-input w-full p-4 rounded-xl text-xs font-bold h-32 resize-none"></textarea>
+                                    <button onclick="showToast('Message Sent', 'success')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl uppercase tracking-widest text-[10px] transition-all">${dict[state.lang].send}</button>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="glass-panel p-12 rounded-[48px] shadow-2xl relative">
-                            <h3 class="text-3xl font-black uppercase tracking-tighter text-white mb-10">Direct Feedback</h3>
-                            <div class="space-y-8">
-                                <div class="grid grid-cols-2 gap-6">
-                                    <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Full Name</label>
-                                        <input placeholder="John Doe" class="glass-input w-full p-5 rounded-2xl font-bold outline-none" />
+                        <!-- Leaders -->
+                        <div class="space-y-10">
+                            <h3 class="text-2xl font-black uppercase tracking-tighter text-white">Board of <span class="text-blue-500">Directors</span></h3>
+                            <div class="space-y-6">
+                                ${state.leaders.map((l, i) => `
+                                    <div onclick="openLeaderBio(${i})" class="glass-card p-6 rounded-[32px] flex items-center gap-6 cursor-pointer hover:border-blue-500/40 group">
+                                        <div class="w-20 h-20 rounded-2xl overflow-hidden border border-white/10 group-hover:scale-105 transition-transform">
+                                            <img src="${l.img}" class="w-full h-full object-cover" />
+                                        </div>
+                                        <div>
+                                            <span class="bg-cosmic-gold/10 text-cosmic-gold text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-cosmic-gold/20 tracking-widest">${l.badge}</span>
+                                            <h4 class="text-lg font-black text-white mt-1 uppercase tracking-tighter">${l.name}</h4>
+                                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">${l.role[state.lang]}</p>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right ml-auto text-slate-700 group-hover:text-blue-400 transition-colors"></i>
                                     </div>
-                                    <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Contact Phone</label>
-                                        <input placeholder="+7 701 ..." class="glass-input w-full p-5 rounded-2xl font-bold outline-none" />
-                                    </div>
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Message Brief</label>
-                                    <textarea placeholder="How can we help your business?" class="glass-input w-full p-5 rounded-2xl font-bold outline-none h-40 resize-none"></textarea>
-                                </div>
-                                <button onclick="showToast('Message sent successfully', 'success')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl uppercase tracking-[0.3em] text-xs shadow-xl transition-all shine">Dispatch Message</button>
+                                `).join('')}
                             </div>
                         </div>
                     </div>
-
-                    <!-- Leadership Section (Requested in style) -->
-                    <section class="space-y-12">
-                        <div class="text-center space-y-2">
-                            <h3 class="text-4xl font-black uppercase tracking-tighter text-white">Board of <span class="text-blue-500">Directors</span></h3>
-                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.4em]">Industrial Excellence • Scientific Leadership</p>
-                        </div>
-                        <div class="grid md:grid-cols-3 gap-8">
-                            ${[
-                                { name: "Makshat Akhmetzhanov", role: "General Director", badge: "PhD • CEO" },
-                                { name: "Talgat Tazhibayev", role: "Head of Operations", badge: "Expert • JIG" },
-                                { name: "Vera Shashkova", role: "Head of Laboratory", badge: "Technical Lead" }
-                            ].map((leader, i) => `
-                                <div class="glass-card p-10 rounded-[40px] text-center space-y-6 hover:scale-[1.02] transition-all group">
-                                    <div class="w-32 h-32 rounded-[32px] bg-gradient-to-br from-blue-500/20 to-indigo-600/20 mx-auto flex items-center justify-center border border-white/5 relative overflow-hidden">
-                                        <i class="fa-solid fa-user-tie text-5xl text-blue-400 group-hover:text-blue-300 transition-colors"></i>
-                                        <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
-                                    </div>
-                                    <div>
-                                        <span class="bg-cosmic-gold/10 text-cosmic-gold text-[9px] font-black uppercase px-3 py-1 rounded-full border border-cosmic-gold/20 tracking-widest">${leader.badge}</span>
-                                        <h4 class="text-2xl font-black text-white mt-4 uppercase tracking-tighter">${leader.name}</h4>
-                                        <p class="text-xs font-bold text-slate-500 uppercase mt-1 tracking-widest">${leader.role}</p>
-                                    </div>
-                                    <button onclick="openLeaderBio(${i})" class="text-[10px] font-black text-blue-400 uppercase tracking-widest hover:text-white transition-colors">View Biography →</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </section>
                 </div>
             `;
         }
 
+        function openLeaderBio(idx) {
+            const l = state.leaders[idx];
+            openModal(`
+                <div class="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
+                    <div class="w-48 h-64 rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl shrink-0">
+                        <img src="${l.img}" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <span class="bg-blue-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full tracking-widest mb-3 inline-block">${l.badge}</span>
+                            <h3 class="text-4xl font-black text-white uppercase tracking-tighter">${l.name}</h3>
+                            <p class="text-sm font-bold text-blue-400 uppercase tracking-widest">${l.role[state.lang]}</p>
+                        </div>
+                        <p class="text-slate-300 leading-relaxed font-medium italic">"${l.bio[state.lang]}"</p>
+                        <div class="pt-6 border-t border-white/5 flex flex-col md:flex-row md:items-center gap-6">
+                            <div class="flex items-center justify-center md:justify-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400"><i class="fa-solid fa-envelope text-xs"></i></div>
+                                <span class="text-xs font-black text-slate-400">${l.email}</span>
+                            </div>
+                            <button onclick="showToast('Contacting...', 'info')" class="bg-white/5 border border-white/10 hover:bg-white/10 px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">Schedule Meeting</button>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+
+        // 8. VIEWS: AUTH
         function renderLogin() {
             const content = document.getElementById('main-content');
             content.innerHTML = `
                 <div class="min-h-[60vh] flex items-center justify-center">
-                    <div class="glass-panel p-12 rounded-[40px] w-full max-w-md space-y-8 border-t-4 border-blue-500 shadow-2xl">
+                    <div class="glass-panel p-10 rounded-[40px] w-full max-w-md space-y-8 border-t-4 border-blue-500 shadow-2xl">
                         <div class="text-center">
                             <h2 class="text-4xl font-black uppercase tracking-tighter mb-2">${dict[state.lang].login}</h2>
-                            <p class="text-slate-500 font-bold uppercase text-[10px] tracking-[0.3em]">Access Management Hub</p>
+                            <p class="text-slate-500 font-bold uppercase text-[9px] tracking-[0.3em]">Secure Enterprise Access</p>
                         </div>
                         <div class="space-y-6">
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Email Address</label>
-                                <input id="login-email" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="admin@sme.kz" />
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">BIN / Email</label>
+                                <input id="login-id" class="glass-input w-full p-4 rounded-2xl outline-none font-bold" placeholder="admin@sme.kz" />
                             </div>
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Password</label>
-                                <input id="login-pass" type="password" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="••••••••" />
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Password</label>
+                                <input id="login-pass" type="password" class="glass-input w-full p-4 rounded-2xl outline-none font-bold" placeholder="••••••••" />
                             </div>
-                            <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl uppercase tracking-widest text-xs shadow-lg shadow-blue-900/40 transition-all">
+                            <button onclick="handleLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] shadow-lg shadow-blue-900/40 transition-all">
                                 ${dict[state.lang].login} Dashboard
                             </button>
                         </div>
-                        <div class="text-center text-xs font-bold text-slate-500 uppercase">
-                            Don't have an account? <button onclick="switchTab('register')" class="text-blue-400 hover:underline">Register Now</button>
+                        <div class="text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                            New partner? <button onclick="switchTab('register')" class="text-blue-400 hover:underline ml-1">Request Registration</button>
                         </div>
                     </div>
                 </div>
             `;
+        }
+
+        function handleLogin() {
+            const id = document.getElementById('login-id').value;
+            const user = state.users.find(u => u.email === id || u.bin === id);
+            if (user) {
+                state.user = user;
+                showToast(`${dict[state.lang].welcome}, ${user.name}!`, 'success');
+                logAction("Logged in successfully");
+                renderAuth();
+                switchTab('home');
+            } else {
+                showToast(dict[state.lang].authErr, 'error');
+            }
+        }
+
+        function logout() {
+            logAction("Logged out");
+            state.user = null;
+            renderAuth();
+            switchTab('home');
         }
 
         function renderRegister() {
             const content = document.getElementById('main-content');
             content.innerHTML = `
                 <div class="min-h-[70vh] flex items-center justify-center">
-                    <div class="glass-panel p-12 rounded-[40px] w-full max-w-lg space-y-8 border-t-4 border-emerald-500 shadow-2xl">
+                    <div class="glass-panel p-10 rounded-[40px] w-full max-w-lg space-y-8 border-t-4 border-emerald-500 shadow-2xl">
                         <div class="text-center">
-                            <h2 class="text-4xl font-black uppercase tracking-tighter mb-2">Registration</h2>
-                            <p class="text-slate-500 font-bold uppercase text-[10px] tracking-[0.3em]">Request Enterprise Access</p>
+                            <h2 class="text-4xl font-black uppercase tracking-tighter mb-2">${dict[state.lang].register}</h2>
+                            <p class="text-slate-500 font-bold uppercase text-[9px] tracking-[0.3em]">Partner Registration Request</p>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="col-span-2">
-                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Company Name</label>
-                                <input id="reg-name" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="LLP Smart Energy" />
+                            <div class="col-span-2 space-y-1">
+                                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Company Name</label>
+                                <input id="reg-name" class="glass-input w-full p-4 rounded-2xl font-bold" placeholder="LLP Smart Logistics" />
                             </div>
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">BIN</label>
-                                <input id="reg-bin" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="123456789012" />
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">BIN</label>
+                                <input id="reg-bin" class="glass-input w-full p-4 rounded-2xl font-bold" placeholder="12-digits" />
                             </div>
-                            <div>
-                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Phone</label>
-                                <input id="reg-phone" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="+7 700 000 0000" />
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Corporate Phone</label>
+                                <input id="reg-phone" class="glass-input w-full p-4 rounded-2xl font-bold" placeholder="+7 7..." />
                             </div>
-                            <div class="col-span-2">
-                                <label class="text-[10px] font-black text-slate-500 uppercase mb-2 block tracking-widest">Corporate Email</label>
-                                <input id="reg-email" type="email" class="glass-input w-full p-4 rounded-xl outline-none" placeholder="info@company.kz" />
+                            <div class="col-span-2 space-y-1">
+                                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Corporate Email</label>
+                                <input id="reg-email" type="email" class="glass-input w-full p-4 rounded-2xl font-bold" placeholder="office@company.kz" />
                             </div>
                         </div>
-                        <button onclick="registerRequest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-xl uppercase tracking-widest text-xs shadow-lg shadow-emerald-900/40 transition-all">
-                            Submit Request
+                        <button onclick="handleRegister()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] shadow-lg shadow-emerald-900/40 transition-all">
+                            Submit Application
                         </button>
-                        <div class="text-center text-xs font-bold text-slate-500 uppercase">
-                            Already have an account? <button onclick="switchTab('login')" class="text-blue-400 hover:underline">Sign In</button>
+                        <div class="text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                            Already registered? <button onclick="switchTab('login')" class="text-blue-400 hover:underline ml-1">Sign In</button>
                         </div>
                     </div>
                 </div>
             `;
         }
 
+        function handleRegister() {
+            const name = document.getElementById('reg-name').value;
+            const bin = document.getElementById('reg-bin').value;
+            const email = document.getElementById('reg-email').value;
+            if (!name || !bin || !email) { showToast(dict[state.lang].error, 'error'); return; }
+
+            const newReq = {
+                id: Date.now(), name, bin, email, status: 'Pending', time: new Date().toLocaleString()
+            };
+            state.registrations.push(newReq);
+            logAction(`New registration request: ${name}`);
+            showToast(dict[state.lang].regSubmitted, 'success');
+            switchTab('home');
+        }
+
+        // 9. VIEWS: CABINET (USER)
         function renderCabinet() {
-            if (state.user?.role !== 'User') { switchTab('home'); return; }
+            if (!state.user || state.user.role !== 'User') { switchTab('home'); return; }
             const content = document.getElementById('main-content');
             content.innerHTML = `
-                <div class="space-y-16 fade-in">
-                    <div class="flex justify-between items-end">
+                <div class="space-y-12">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                         <div class="space-y-2">
-                            <h2 class="text-5xl font-black uppercase tracking-tighter text-white">${dict[state.lang].cabinet}</h2>
-                            <p class="text-slate-500 font-bold uppercase text-xs tracking-[0.2em]">Client ID: SME-${state.user.id} • Verified Account</p>
+                            <h2 class="text-4xl font-black uppercase tracking-tighter text-white">${dict[state.lang].cabinet}</h2>
+                            <p class="text-slate-500 font-bold uppercase text-xs tracking-widest">ID: SME-${state.user.id} • ${state.user.name}</p>
                         </div>
-                        <div class="glass-panel px-8 py-4 rounded-[28px] border-l-4 border-emerald-500">
-                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">${dict[state.lang].balance}</p>
-                            <p class="text-3xl font-black text-white tracking-tighter">${state.user.balance.toLocaleString()} <span class="text-sm text-slate-500">KZT</span></p>
+                        <div class="glass-panel px-8 py-6 rounded-[32px] border-l-4 border-emerald-500 shadow-xl">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">${dict[state.lang].balance}</p>
+                            <p class="text-4xl font-black text-white tracking-tighter">${Math.round(state.user.balance).toLocaleString()} <span class="text-xs text-slate-500">KZT</span></p>
                         </div>
                     </div>
 
-                    <div class="grid lg:grid-cols-3 gap-12">
-                        <div class="lg:col-span-2 space-y-12">
+                    <div class="grid lg:grid-cols-3 gap-10">
+                        <div class="lg:col-span-2 space-y-10">
                             <div class="glass-card p-10 rounded-[48px] space-y-8">
                                 <h3 class="text-2xl font-black uppercase tracking-tighter text-white">${dict[state.lang].history}</h3>
-                                <div class="space-y-4">
+                                <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
                                     ${state.user.orders.map(o => `
                                         <div class="p-6 bg-white/5 rounded-[32px] border border-white/5 flex justify-between items-center group hover:bg-white/10 transition-all">
                                             <div class="flex items-center gap-6">
-                                                <div class="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-400 font-black text-xs">#${o.id}</div>
+                                                <div class="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-400 font-black text-[10px]">#${o.id}</div>
                                                 <div>
                                                     <p class="text-sm font-black text-white uppercase">${o.fuel} • ${o.mass} T</p>
-                                                    <p class="text-[10px] text-slate-500 font-bold uppercase mt-1">${o.date}</p>
+                                                    <p class="text-[10px] text-slate-500 font-bold mt-1">${o.date}</p>
                                                 </div>
                                             </div>
                                             <div class="text-right">
@@ -887,17 +1026,17 @@
                                             </div>
                                         </div>
                                     `).join('')}
+                                    ${state.user.orders.length === 0 ? '<p class="text-center text-slate-600 py-10 font-black uppercase text-xs tracking-widest">No active orders</p>' : ''}
                                 </div>
                             </div>
                         </div>
 
                         <div class="space-y-8">
                             <div class="glass-panel p-10 rounded-[48px] border-t-4 border-cosmic-gold shadow-2xl relative overflow-hidden">
-                                <div class="absolute -right-8 -top-8 opacity-5 text-9xl font-black italic">ORDER</div>
                                 <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">${dict[state.lang].placeOrder}</h3>
                                 <div class="space-y-6">
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Product Grade</label>
+                                        <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">${dict[state.lang].fuel}</label>
                                         <select id="order-fuel" class="glass-input w-full p-4 rounded-2xl font-bold outline-none">
                                             <option value="AI-92">AI-92 Standard</option>
                                             <option value="AI-95">AI-95 Premium</option>
@@ -905,14 +1044,14 @@
                                         </select>
                                     </div>
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Mass (Tonnes)</label>
+                                        <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">${dict[state.lang].mass} (T)</label>
                                         <input id="order-mass" type="number" placeholder="0.00" oninput="updateOrderEst(this.value)" class="glass-input w-full p-4 rounded-2xl font-black text-lg outline-none" />
                                     </div>
                                     <div class="bg-blue-600/10 p-6 rounded-[32px] border border-blue-500/20">
-                                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Estimated Charge</p>
+                                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Estimated Cost</p>
                                         <p id="order-est" class="text-3xl font-black text-cosmic-gold tracking-tighter">0 ₸</p>
                                     </div>
-                                    <button onclick="submitOrder()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl uppercase tracking-[0.3em] text-xs shadow-xl transition-all shine">Confirm Order</button>
+                                    <button onclick="handlePlaceOrder()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl uppercase tracking-[0.2em] text-xs shadow-xl transition-all">Confirm Transaction</button>
                                 </div>
                             </div>
                         </div>
@@ -921,434 +1060,474 @@
             `;
         }
 
-        window.submitOrder = function() {
+        function updateOrderEst(val) {
+            const mass = parseFloat(val) || 0;
+            const price = 410000; // Simplified
+            document.getElementById('order-est').innerText = (Math.round(mass * price)).toLocaleString() + ' ₸';
+        }
+
+        function handlePlaceOrder() {
             const fuel = document.getElementById('order-fuel').value;
             const mass = parseFloat(document.getElementById('order-mass').value);
-            if (!mass || mass <= 0) { showToast("Invalid mass", 'error'); return; }
+            if (!mass || mass <= 0) { showToast(dict[state.lang].error, 'error'); return; }
 
-            const cost = mass * 410000; // Mock price
-            if (cost > state.user.balance) { showToast("Insufficient balance", 'error'); return; }
+            const cost = mass * 410000;
+            if (cost > state.user.balance) { showToast(dict[state.lang].insufficient, 'error'); return; }
 
             state.user.balance -= cost;
-            state.user.orders.unshift({ id: Math.floor(Math.random()*1000), fuel, mass, cost, date: new Date().toISOString().split('T')[0], status: 'Processing' });
-            logAction(`Placed order: ${fuel} x ${mass}T`);
-            showToast("Order Placed Successfully", 'success');
+            const newOrder = {
+                id: Math.floor(Math.random() * 900) + 100,
+                fuel, mass, cost,
+                date: new Date().toISOString().split('T')[0],
+                status: 'Processing'
+            };
+            state.user.orders.unshift(newOrder);
+            logAction(`Order placed: ${fuel} x ${mass}T`);
+            showToast(dict[state.lang].orderPlaced, 'success');
             renderCabinet();
-        };
+        }
 
-        window.updateOrderEst = function(val) {
-            const mass = parseFloat(val) || 0;
-            const est = mass * 410000;
-            document.getElementById('order-est').innerText = Math.round(est).toLocaleString() + ' ₸';
-        };
-
+        // 10. VIEWS: ADMIN
         function renderAdmin() {
-            if (state.user?.role !== 'Admin') { switchTab('home'); return; }
+            if (!state.user || state.user.role !== 'Admin') { switchTab('home'); return; }
             const content = document.getElementById('main-content');
-            const subTab = state.adminTab || 'dashboard';
+            const sub = state.adminTab;
 
             content.innerHTML = `
-                <div class="flex flex-col lg:flex-row gap-12 min-h-[70vh]">
-                    <aside class="lg:w-72 space-y-2">
-                        <div class="p-4 mb-4">
+                <div class="flex flex-col lg:flex-row gap-10 min-h-[70vh]">
+                    <!-- Sidebar -->
+                    <aside class="lg:w-64 space-y-2">
+                        <div class="p-6 mb-4">
                             <h3 class="text-2xl font-black uppercase tracking-tighter text-amber-500 leading-none">Enterprise <br/><span class="text-white text-3xl">Suite</span></h3>
                         </div>
                         ${[
-                            { id: 'dashboard', icon: 'fa-chart-pie', label: 'Overview' },
-                            { id: 'cms', icon: 'fa-pen-to-square', label: 'Content CMS' },
-                            { id: 'prices', icon: 'fa-tags', label: 'Pricing CRUD' },
-                            { id: 'requests', icon: 'fa-user-plus', label: 'Registrations' },
-                            { id: 'users', icon: 'fa-users', label: 'Users' },
-                            { id: 'audit', icon: 'fa-shield-halved', label: 'Security Logs' }
+                            { id: 'dashboard', icon: 'fa-chart-pie', label: dict[state.lang].overview },
+                            { id: 'cms', icon: 'fa-pen-to-square', label: dict[state.lang].cms },
+                            { id: 'prices', icon: 'fa-tags', label: dict[state.lang].pricingEngine },
+                            { id: 'requests', icon: 'fa-user-plus', label: dict[state.lang].registrations },
+                            { id: 'users', icon: 'fa-users', label: dict[state.lang].users },
+                            { id: 'audit', icon: 'fa-shield-halved', label: dict[state.lang].audit }
                         ].map(item => `
-                            <button onclick="switchAdminTab('${item.id}')" class="w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${subTab === item.id ? 'bg-blue-600 shadow-xl text-white' : 'text-slate-500 hover:bg-white/5 hover:text-slate-300'}">
+                            <button onclick="switchAdminTab('${item.id}')" class="w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${sub === item.id ? 'bg-blue-600 shadow-xl text-white' : 'text-slate-500 hover:bg-white/5 hover:text-slate-300'}">
                                 <i class="fa-solid ${item.icon} w-5 text-center"></i><span>${item.label}</span>
                             </button>
                         `).join('')}
                     </aside>
-                    <div class="flex-1 glass-panel p-12 rounded-[40px] border-white/5">
-                        ${subTab === 'dashboard' ? `
-                            <div class="space-y-12 fade-in">
-                                <div class="flex justify-between items-center">
-                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">System <span class="text-blue-500">Overview</span></h3>
-                                    <div class="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-                                        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
-                                        <span class="text-[9px] font-black uppercase text-emerald-400 tracking-widest">Global Status: Optimal</span>
-                                    </div>
-                                </div>
-                                <div class="grid md:grid-cols-4 gap-6">
-                                    <div class="glass-card p-8 rounded-[32px] border-t-4 border-blue-500">
-                                        <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">Active Users</p>
-                                        <div class="flex items-end gap-2">
-                                            <p class="text-5xl font-black text-white tracking-tighter">${state.users.length}</p>
-                                            <span class="text-blue-500 text-xs font-bold pb-1 underline decoration-dotted">Live</span>
-                                        </div>
-                                    </div>
-                                    <div class="glass-card p-8 rounded-[32px] border-t-4 border-amber-500">
-                                        <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">Requests</p>
-                                        <div class="flex items-end gap-2">
-                                            <p class="text-5xl font-black text-amber-500 tracking-tighter">${state.registrations.length}</p>
-                                            <span class="text-slate-500 text-[10px] font-bold pb-1">Wait</span>
-                                        </div>
-                                    </div>
-                                    <div class="glass-card p-8 rounded-[32px] border-t-4 border-emerald-500">
-                                        <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">DB Latency</p>
-                                        <div class="flex items-end gap-2">
-                                            <p class="text-5xl font-black text-emerald-400 tracking-tighter">${state.metrics.latency}</p>
-                                            <span class="text-slate-500 text-[10px] font-bold pb-1">ms</span>
-                                        </div>
-                                    </div>
-                                    <div class="glass-card p-8 rounded-[32px] border-t-4 border-indigo-500">
-                                        <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">Stations</p>
-                                        <div class="flex items-end gap-2">
-                                            <p class="text-5xl font-black text-indigo-400 tracking-tighter">42</p>
-                                            <span class="text-slate-500 text-[10px] font-bold pb-1">Sync</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="grid lg:grid-cols-2 gap-8">
-                                    <div class="glass-card p-10 rounded-[48px] space-y-8 border-white/5">
-                                        <div class="flex justify-between items-center">
-                                            <h4 class="text-xl font-black uppercase tracking-tighter text-white">Cloud Resources</h4>
-                                            <i class="fa-solid fa-server text-blue-500/50"></i>
-                                        </div>
-                                        <div class="space-y-10">
-                                            <div>
-                                                <div class="flex justify-between text-[10px] font-black uppercase mb-3 tracking-widest text-slate-400">
-                                                    <span>Core CPU Architecture</span>
-                                                    <span class="${state.metrics.cpu > 80 ? 'text-rose-400' : 'text-blue-400'}">${state.metrics.cpu}%</span>
-                                                </div>
-                                                <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden border border-white/5 p-[2px]">
-                                                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(59,130,246,0.3)]" style="width:${state.metrics.cpu}%"></div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="flex justify-between text-[10px] font-black uppercase mb-3 tracking-widest text-slate-400">
-                                                    <span>Shared Memory Cluster</span>
-                                                    <span class="text-amber-400">${state.metrics.ram}%</span>
-                                                </div>
-                                                <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden border border-white/5 p-[2px]">
-                                                    <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(245,158,11,0.3)]" style="width:${state.metrics.ram}%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="glass-card p-10 rounded-[48px] border-white/5 flex flex-col justify-between">
-                                        <div class="space-y-2">
-                                            <h4 class="text-xl font-black uppercase tracking-tighter text-white">Quick Actions</h4>
-                                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">One-click enterprise commands</p>
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-4 mt-8">
-                                            <button onclick="showToast('Global backup started', 'info')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-cloud-arrow-up text-blue-400 text-lg"></i>Backup</button>
-                                            <button onclick="showToast('Cache cleared', 'success')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-broom text-emerald-400 text-lg"></i>Flush</button>
-                                            <button onclick="showToast('Alerts silenced for 1h', 'warning')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-bell-slash text-amber-400 text-lg"></i>Silence</button>
-                                            <button onclick="window.location.reload()" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-rotate text-rose-400 text-lg"></i>Reboot</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ` : ''}
-                        ${subTab === 'cms' ? `
-                            <div class="space-y-12 fade-in">
-                                <div class="flex justify-between items-center">
-                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">Content <span class="text-blue-500">CMS</span></h3>
-                                    <button onclick="showToast('New slide added', 'success')" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase px-6 py-3 rounded-2xl transition-all shadow-lg shadow-blue-900/40">+ Add Banner Slide</button>
-                                </div>
-                                <div class="grid lg:grid-cols-2 gap-8">
-                                    <div class="glass-card p-10 rounded-[48px] space-y-8">
-                                        <h4 class="text-xl font-black uppercase tracking-tighter text-white">Main Banner Configuration</h4>
-                                        <div class="space-y-6">
-                                            <div class="space-y-2"><label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Background Image URL</label><input value="${state.banner.url}" class="glass-input w-full p-4 rounded-xl outline-none" /></div>
-                                            <div class="space-y-2"><label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Main Title (KZ)</label><input value="${state.banner.title.KZ}" class="glass-input w-full p-4 rounded-xl outline-none" /></div>
-                                            <div class="space-y-2"><label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Subtitle (KZ)</label><textarea class="glass-input w-full p-4 rounded-xl outline-none h-24 resize-none">${state.banner.desc.KZ}</textarea></div>
-                                            <button onclick="showToast('Banner saved', 'success'); logAction('Updated main banner');" class="bg-blue-600 text-white font-black text-[10px] uppercase py-4 rounded-xl w-full tracking-[0.2em] shadow-lg transition-all">Save Changes</button>
-                                        </div>
-                                    </div>
-                                    <div class="space-y-8">
-                                        <h4 class="text-xl font-black uppercase tracking-tighter text-white">Corporate News Feed</h4>
-                                        <div class="space-y-4 max-h-[500px] overflow-y-auto pr-4 no-scrollbar">
-                                            ${state.news.map(n => `
-                                                <div class="glass-card p-6 rounded-[32px] flex gap-4">
-                                                    <img src="${n.img}" class="w-20 h-20 rounded-2xl object-cover border border-white/10" />
-                                                    <div class="flex-1 flex flex-col justify-between">
-                                                        <h5 class="text-xs font-black text-white line-clamp-1">${n.title[state.lang]}</h5>
-                                                        <p class="text-[10px] text-slate-500 font-bold">${n.date}</p>
-                                                        <div class="flex gap-2 mt-2">
-                                                            <button class="text-[9px] font-black text-blue-400 uppercase">Edit</button>
-                                                            <button class="text-[9px] font-black text-rose-400 uppercase">Delete</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ` : ''}
 
-                        ${subTab === 'prices' ? `
-                            <div class="space-y-12 fade-in">
-                                <h3 class="text-3xl font-black uppercase tracking-tighter text-white">Pricing <span class="text-blue-500">Engine</span></h3>
-                                <div class="glass-panel rounded-[48px] overflow-hidden border-white/5">
-                                    <div class="p-8 bg-white/5 border-b border-white/5 flex justify-between items-center">
-                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Managed Regional Rates</span>
-                                        <button class="bg-blue-600 text-white text-[9px] font-black uppercase px-4 py-2 rounded-xl">+ New Rate</button>
-                                    </div>
-                                    <table class="w-full text-left">
-                                        <thead class="bg-black/20">
-                                            <tr><th class="p-6 text-[10px] uppercase font-black text-slate-500">Region</th><th class="p-6 text-[10px] uppercase font-black text-slate-500">Product</th><th class="p-6 text-[10px] uppercase font-black text-slate-500">Current Rate</th><th class="p-6 text-[10px] uppercase font-black text-slate-500 text-right">Action</th></tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-white/5 font-bold">
-                                            ${state.prices.regional.map(r => `
-                                                <tr>
-                                                    <td class="p-6 text-white text-sm">${r.region}</td>
-                                                    <td class="p-6"><span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[9px] uppercase tracking-widest border border-blue-500/20">${r.fuel}</span></td>
-                                                    <td class="p-6 text-cosmic-gold text-xl tracking-tighter">${r.price.toLocaleString()}</td>
-                                                    <td class="p-6 text-right"><button onclick="showToast('Edit mode activated', 'info')" class="text-slate-500 hover:text-white transition-colors"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                                                </tr>
-                                            `).join('')}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="grid lg:grid-cols-2 gap-8">
-                                    <div class="glass-card p-10 rounded-[48px] space-y-8 border-white/5">
-                                        <h4 class="text-xl font-black uppercase tracking-tighter text-white">Spot Market CRUD</h4>
-                                        <div class="space-y-4">
-                                            ${state.prices.spot.map(s => `
-                                                <div class="flex items-center justify-between p-6 bg-white/5 rounded-[32px] border border-white/5">
-                                                    <div><p class="text-sm font-black text-white uppercase">${s.name}</p><p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Live Trend: ${s.trend}% ${s.status}</p></div>
-                                                    <div class="flex items-center gap-4">
-                                                        <input type="number" value="${s.price}" class="glass-input w-28 p-2 rounded-xl text-center font-black text-cosmic-gold" />
-                                                        <button onclick="showToast('${s.name} Updated', 'success'); logAction('Updated spot price: ${s.name}');" class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white hover:bg-blue-700 transition-all shadow-lg"><i class="fa-solid fa-check"></i></button>
-                                                    </div>
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    </div>
-                                    <div class="glass-card p-10 rounded-[48px] border-white/5 flex flex-col justify-center items-center text-center space-y-6">
-                                        <div class="w-20 h-20 rounded-full bg-cosmic-gold/10 flex items-center justify-center text-cosmic-gold text-3xl shadow-[0_0_30px_rgba(245,158,11,0.2)]"><i class="fa-solid fa-bolt-lightning"></i></div>
-                                        <div><h4 class="text-xl font-black uppercase tracking-tighter text-white">Auto-Pricing Engine</h4><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-2 max-w-xs">Synchronization with Singapore & Argus indices is currently ACTIVE.</p></div>
-                                        <button class="bg-cosmic-gold text-cosmic-deep px-8 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Configure API</button>
-                                    </div>
-                                </div>
-                            </div>
-                        ` : ''}
-
-                        ${subTab === 'requests' ? `
-                            <div class="space-y-8 fade-in">
-                                <h3 class="text-3xl font-black uppercase tracking-tighter">Registration Requests</h3>
-                                <div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-white/5 border-b border-white/5"><tr><th class="p-6 text-[10px] uppercase font-black text-slate-500">Company / Email</th><th class="p-6 text-[10px] uppercase font-black text-slate-500">BIN</th><th class="p-6 text-[10px] uppercase font-black text-slate-500 text-right">Actions</th></tr></thead><tbody class="divide-y divide-white/5">
-                                    ${state.registrations.map(r => `
-                                        <tr class="hover:bg-white/[0.02]">
-                                            <td class="p-6"><div><p class="font-black text-white">${r.name}</p><p class="text-[10px] text-slate-500 font-bold lowercase">${r.email}</p></div></td>
-                                            <td class="p-6 text-xs font-bold">${r.bin}</td>
-                                            <td class="p-6 flex justify-end gap-3">
-                                                <button onclick="approveUser(${r.id})" class="bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase border border-emerald-500/30 px-4 py-2 rounded-xl hover:bg-emerald-500 hover:text-black transition-all">Approve</button>
-                                                <button onclick="rejectUser(${r.id})" class="bg-rose-500/10 text-rose-400 text-[10px] font-black uppercase border border-rose-500/30 px-4 py-2 rounded-xl hover:bg-rose-500 hover:text-black transition-all">Reject</button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                    ${state.registrations.length === 0 ? '<tr><td colspan="3" class="p-12 text-center text-slate-500 font-black uppercase text-xs tracking-widest">No pending requests</td></tr>' : ''}
-                                </tbody></table></div>
-                            </div>
-                        ` : ''}
-                        ${subTab === 'users' ? `
-                            <div class="space-y-12 fade-in">
-                                <div class="flex justify-between items-center px-2">
-                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">User <span class="text-blue-500">Privileges</span></h3>
-                                    <button onclick="showToast('Feature restricted in demo', 'warning')" class="bg-blue-600 text-white text-[10px] font-black uppercase px-6 py-3 rounded-2xl shadow-lg">+ New Employee</button>
-                                </div>
-                                <div class="glass-panel rounded-[48px] overflow-hidden border-white/5">
-                                    <table class="w-full text-left">
-                                        <thead class="bg-black/20">
-                                            <tr>
-                                                <th class="p-8 text-[10px] uppercase font-black text-slate-500">Identity</th>
-                                                <th class="p-8 text-[10px] uppercase font-black text-slate-500">Role & Security</th>
-                                                <th class="p-8 text-[10px] uppercase font-black text-slate-500">Permissions</th>
-                                                <th class="p-8 text-[10px] uppercase font-black text-slate-500 text-right">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-white/5 font-bold">
-                                            ${state.users.map(u => `
-                                                <tr class="hover:bg-white/[0.02] transition-colors group">
-                                                    <td class="p-8">
-                                                        <div class="flex items-center gap-4">
-                                                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-xs text-white border border-white/10 uppercase">${u.name.charAt(0)}</div>
-                                                            <div><p class="text-sm font-black text-white">${u.name}</p><p class="text-[10px] text-slate-500 lowercase font-bold">${u.email}</p></div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="p-8">
-                                                        <div class="flex flex-col gap-2">
-                                                            <span class="inline-block px-3 py-1 rounded-lg ${u.role==='Admin'?'bg-amber-500/10 text-amber-500 border border-amber-500/20':'bg-blue-500/10 text-blue-500 border border-blue-500/20'} text-[9px] font-black uppercase w-fit tracking-widest">${u.role}</span>
-                                                            <p class="text-[8px] text-slate-600 uppercase">Auth: Biometric/2FA</p>
-                                                        </div>
-                                                    </td>
-                                                    <td class="p-8">
-                                                        <div class="flex gap-2">
-                                                            ${['CMS', 'TELE', 'CRUD'].map(p => `<span class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[8px] text-slate-500 hover:text-blue-400 cursor-help" title="${p}">${p}</span>`).join('')}
-                                                        </div>
-                                                    </td>
-                                                    <td class="p-8 text-right">
-                                                        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[9px] uppercase tracking-widest border border-emerald-500/20">● Operational</span>
-                                                    </td>
-                                                </tr>
-                                            `).join('')}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        ` : ''}
-                        ${subTab === 'audit' ? `
-                            <div class="space-y-12 fade-in">
-                                <div class="flex justify-between items-center">
-                                    <h3 class="text-3xl font-black uppercase tracking-tighter text-white">Security <span class="text-blue-500">Audit</span></h3>
-                                    <div class="flex gap-3">
-                                        <button onclick="showToast('Audit report exported', 'success')" class="bg-white/5 border border-white/10 text-white text-[9px] font-black uppercase px-6 py-3 rounded-2xl hover:bg-white/10">Export PDF</button>
-                                        <button onclick="state.auditLogs=[]; renderAdmin(); showToast('Logs Purged', 'success')" class="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[9px] font-black uppercase px-6 py-3 rounded-2xl hover:bg-rose-500 hover:text-white transition-all">Purge All</button>
-                                    </div>
-                                </div>
-
-                                <div class="glass-panel p-4 rounded-[32px] border-white/5 flex gap-4 items-center">
-                                    <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500"><i class="fa-solid fa-magnifying-glass"></i></div>
-                                    <input id="audit-search" placeholder="Search system movements, user actions or timestamps..." class="bg-transparent flex-1 outline-none text-sm font-bold text-white tracking-tight" oninput="filterAudit(this.value)" />
-                                </div>
-
-                                <div class="space-y-4 max-h-[600px] overflow-y-auto pr-4 no-scrollbar" id="audit-list-container">
-                                    ${state.auditLogs.map(l => `
-                                        <div class="glass-card p-8 rounded-[32px] flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-white/5 hover:border-blue-500/20 transition-all">
-                                            <div class="flex items-center gap-6">
-                                                <div class="w-14 h-14 rounded-2xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center text-blue-400 shadow-inner">
-                                                    <i class="fa-solid ${l.action.includes('Approved') ? 'fa-user-check' : l.action.includes('Updated') ? 'fa-pen-to-square' : 'fa-bolt-lightning'}"></i>
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <p class="text-sm font-black text-white uppercase tracking-tight">${l.user}</p>
-                                                    <p class="text-xs text-slate-400 font-bold leading-relaxed">${l.action}</p>
-                                                </div>
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">${l.time}</p>
-                                                <p class="text-[8px] text-emerald-500 font-bold uppercase mt-1 tracking-widest">Verified Log</p>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                    ${state.auditLogs.length === 0 ? `
-                                        <div class="py-20 text-center space-y-6">
-                                            <div class="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mx-auto text-slate-700 text-4xl"><i class="fa-solid fa-box-open"></i></div>
-                                            <p class="text-slate-500 font-black uppercase text-xs tracking-[0.3em]">No movements documented</p>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        ` : ''}
+                    <!-- Panel -->
+                    <div class="flex-1 glass-panel p-8 md:p-12 rounded-[48px] border-white/5 overflow-hidden">
+                        ${renderAdminSubTab(sub)}
                     </div>
                 </div>
             `;
         }
 
-        // 4. HANDLERS
-        window.login = function() {
-            const email = document.getElementById('login-email').value;
-            const user = state.users.find(u => u.email === email);
-            if (user) {
-                state.user = user;
-                showToast(`Welcome back, ${user.name}!`, 'success');
-                logAction("Logged in");
-                switchTab('home');
-                renderAuth();
-            } else {
-                showToast("User not found", 'error');
+        function renderAdminSubTab(tab) {
+            if (tab === 'dashboard') {
+                return `
+                    <div class="space-y-12 fade-in">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-3xl font-black uppercase tracking-tighter text-white">${dict[state.lang].sysOverview}</h3>
+                            <div class="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                                <span class="text-[9px] font-black uppercase text-emerald-400 tracking-widest">${dict[state.lang].globalStatus}: Optimal</span>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="glass-card p-8 rounded-[32px] border-t-4 border-blue-500">
+                                <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">${dict[state.lang].latency}</p>
+                                <p class="text-5xl font-black text-white tracking-tighter" id="metric-latency">${state.metrics.latency} <span class="text-xs">ms</span></p>
+                            </div>
+                            <div class="glass-card p-8 rounded-[32px] border-t-4 border-amber-500">
+                                <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">Pending Req</p>
+                                <p class="text-5xl font-black text-white tracking-tighter">${state.registrations.length}</p>
+                            </div>
+                            <div class="glass-card p-8 rounded-[32px] border-t-4 border-emerald-500">
+                                <p class="text-[10px] font-black text-slate-500 uppercase mb-3 tracking-widest">${dict[state.lang].activeStations}</p>
+                                <p class="text-5xl font-black text-white tracking-tighter">42</p>
+                            </div>
+                        </div>
+                        <div class="grid lg:grid-cols-2 gap-8">
+                            <div class="glass-card p-10 rounded-[48px] space-y-10">
+                                <div class="flex justify-between items-center"><h4 class="text-xl font-black uppercase tracking-tighter text-white">${dict[state.lang].resourceAlloc}</h4><i class="fa-solid fa-server text-blue-500/30"></i></div>
+                                <div class="space-y-8">
+                                    <div>
+                                        <div class="flex justify-between text-[10px] font-black uppercase mb-3 tracking-widest text-slate-400"><span>CPU Utilization</span><span id="metric-cpu-val">${state.metrics.cpu}%</span></div>
+                                        <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden border border-white/5 p-[2px]"><div id="metric-cpu-bar" class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-1000" style="width:${state.metrics.cpu}%"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-[10px] font-black uppercase mb-3 tracking-widest text-slate-400"><span>RAM Usage</span><span id="metric-ram-val">${state.metrics.ram}%</span></div>
+                                        <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden border border-white/5 p-[2px]"><div id="metric-ram-bar" class="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-1000" style="width:${state.metrics.ram}%"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-card p-10 rounded-[48px] flex flex-col justify-between border-white/5">
+                                <div class="space-y-2"><h4 class="text-xl font-black uppercase tracking-tighter text-white">${dict[state.lang].quickCmds}</h4><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Global enterprise shortcuts</p></div>
+                                <div class="grid grid-cols-2 gap-4 mt-8">
+                                    <button onclick="showToast('Cluster Resynced', 'success')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-rotate text-blue-400 text-lg"></i>Resync</button>
+                                    <button onclick="showToast('Audit Log Exported', 'info')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-file-export text-emerald-400 text-lg"></i>Export</button>
+                                    <button onclick="showToast('Global Alert Sent', 'warning')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-bell text-amber-400 text-lg"></i>Broadcast</button>
+                                    <button onclick="showToast('Maintenance Mode: OFF', 'info')" class="p-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase hover:bg-white/10 transition-all flex flex-col items-center gap-3"><i class="fa-solid fa-wrench text-rose-400 text-lg"></i>Tools</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
-        };
 
-        window.logout = function() {
-            logAction("Logged out");
-            state.user = null;
-            showToast("Logged out");
-            switchTab('home');
-            renderAuth();
-        };
+            if (tab === 'cms') {
+                return `
+                    <div class="space-y-12 fade-in">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-3xl font-black uppercase tracking-tighter text-white">Content <span class="text-blue-500">CMS</span></h3>
+                        </div>
+                        <div class="grid lg:grid-cols-2 gap-10">
+                            <!-- Hero Config -->
+                            <div class="glass-card p-10 rounded-[48px] space-y-8">
+                                <h4 class="text-xl font-black uppercase tracking-tighter text-white">${dict[state.lang].heroConfig}</h4>
+                                <div class="space-y-6">
+                                    <div class="space-y-2"><label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Background Image URL</label><input id="cms-banner-url" value="${state.banner.url}" class="glass-input w-full p-4 rounded-2xl outline-none font-bold" /></div>
+                                    <div class="space-y-2"><label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Main Title (KZ)</label><input id="cms-banner-title" value="${state.banner.title.KZ}" class="glass-input w-full p-4 rounded-2xl outline-none font-bold" /></div>
+                                    <div class="space-y-2"><label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1">Subtitle (KZ)</label><textarea id="cms-banner-desc" class="glass-input w-full p-4 rounded-2xl outline-none font-bold h-24 resize-none">${state.banner.desc.KZ}</textarea></div>
+                                    <button onclick="saveCMSBanner()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] shadow-lg transition-all">${dict[state.lang].save}</button>
+                                </div>
+                            </div>
+                            <!-- News Config -->
+                            <div class="space-y-8">
+                                <div class="flex justify-between items-center"><h4 class="text-xl font-black uppercase tracking-tighter text-white">${dict[state.lang].corpNews}</h4><button onclick="addNewsItem()" class="text-blue-400 text-xs font-black uppercase tracking-widest hover:text-white">+ ${dict[state.lang].add}</button></div>
+                                <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
+                                    ${state.news.map((n, i) => `
+                                        <div class="glass-card p-6 rounded-[32px] flex gap-4 items-center">
+                                            <img src="${n.img}" class="w-16 h-16 rounded-xl object-cover border border-white/10" />
+                                            <div class="flex-1">
+                                                <h5 class="text-xs font-black text-white uppercase line-clamp-1">${n.title[state.lang]}</h5>
+                                                <p class="text-[9px] text-slate-500 font-bold mt-1">${n.date}</p>
+                                            </div>
+                                            <div class="flex gap-2">
+                                                <button onclick="editNews(${i})" class="text-slate-600 hover:text-blue-400 transition-colors"><i class="fa-solid fa-pen"></i></button>
+                                                <button onclick="deleteNews(${i})" class="text-slate-600 hover:text-rose-500 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
 
-        window.registerRequest = function() {
-            const name = document.getElementById('reg-name').value;
-            const bin = document.getElementById('reg-bin').value;
-            const email = document.getElementById('reg-email').value;
+            if (tab === 'prices') {
+                return `
+                    <div class="space-y-12 fade-in">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-3xl font-black uppercase tracking-tighter text-white">${dict[state.lang].pricingEngine}</h3>
+                        </div>
+                        <div class="grid lg:grid-cols-2 gap-10">
+                            <!-- Regional Rates -->
+                            <div class="glass-panel rounded-[40px] overflow-hidden col-span-2">
+                                <div class="bg-white/5 p-6 border-b border-white/5 flex justify-between items-center">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Regional Distribution CRUD</span>
+                                    <button onclick="openAddRateModal()" class="bg-blue-600 text-white text-[9px] font-black uppercase px-4 py-2 rounded-xl">+ Add New Rate</button>
+                                </div>
+                                <table class="w-full text-left">
+                                    <thead class="bg-black/20">
+                                        <tr><th class="p-6 text-[9px] uppercase font-black text-slate-500">Region</th><th class="p-6 text-[9px] uppercase font-black text-slate-500">Fuel Grade</th><th class="p-6 text-[9px] uppercase font-black text-slate-500">Rate (KZT/T)</th><th class="p-6 text-[9px] uppercase font-black text-slate-500 text-right">Actions</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-white/5">
+                                        ${state.prices.regional.map((r, i) => `
+                                            <tr class="hover:bg-white/[0.02]">
+                                                <td class="p-6 text-sm font-black text-white">${r.region}</td>
+                                                <td class="p-6"><span class="px-3 py-1 rounded-full bg-white/5 text-[8px] font-black uppercase tracking-widest text-slate-400 border border-white/5">${r.fuel}</span></td>
+                                                <td class="p-6 text-xl font-black text-cosmic-gold tracking-tighter">${r.price.toLocaleString()}</td>
+                                                <td class="p-6 text-right">
+                                                    <button onclick="editRegionalRate(${i})" class="text-slate-600 hover:text-blue-400 mr-4"><i class="fa-solid fa-pen"></i></button>
+                                                    <button onclick="deleteRegionalRate(${i})" class="text-slate-600 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Spot Simulation Config -->
+                            <div class="glass-card p-10 rounded-[48px] space-y-8">
+                                <h4 class="text-xl font-black uppercase tracking-tighter text-white">${dict[state.lang].spotCtrl}</h4>
+                                <div class="space-y-6">
+                                    ${state.prices.spot.map((s, i) => `
+                                        <div class="flex items-center justify-between p-6 bg-white/5 rounded-[32px] border border-white/5">
+                                            <div><p class="text-sm font-black text-white uppercase">${s.name}</p><p class="text-[9px] text-slate-500 font-bold uppercase mt-1">Trend: ${s.status === 'up' ? '▲' : '▼'} ${s.trend}%</p></div>
+                                            <div class="flex items-center gap-4">
+                                                <input type="number" value="${s.price}" onchange="updateSpotPrice(${i}, this.value)" class="glass-input w-28 p-2 rounded-xl text-center font-black text-cosmic-gold text-sm" />
+                                                <i class="fa-solid fa-check text-emerald-500 opacity-50"></i>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <!-- Auto-Price Info -->
+                            <div class="glass-card p-10 rounded-[48px] flex flex-col justify-center items-center text-center space-y-6 border-white/5">
+                                <div class="w-20 h-20 rounded-full bg-cosmic-gold/10 flex items-center justify-center text-cosmic-gold text-4xl shadow-[0_0_40px_rgba(245,158,11,0.2)]"><i class="fa-solid fa-bolt"></i></div>
+                                <div><h4 class="text-xl font-black uppercase tracking-tighter text-white">${dict[state.lang].marketSync}</h4><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-2 max-w-xs">Connecting to global Singapore & Argus indices for automated pricing adjustments.</p></div>
+                                <button onclick="showToast('Connection Refreshed', 'success')" class="bg-cosmic-gold text-cosmic-deep px-8 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Refresh Link</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
 
-            if (!name || !bin || !email) { showToast("All fields required", 'error'); return; }
+            if (tab === 'requests') {
+                return `
+                    <div class="space-y-12 fade-in">
+                        <h3 class="text-3xl font-black uppercase tracking-tighter text-white">${dict[state.lang].registrations}</h3>
+                        <div class="glass-panel rounded-[40px] overflow-hidden">
+                            <table class="w-full text-left">
+                                <thead class="bg-black/20">
+                                    <tr><th class="p-8 text-[9px] uppercase font-black text-slate-500">${dict[state.lang].company}</th><th class="p-8 text-[9px] uppercase font-black text-slate-500">${dict[state.lang].bin}</th><th class="p-8 text-[9px] uppercase font-black text-slate-500">${dict[state.lang].time}</th><th class="p-8 text-[9px] uppercase font-black text-slate-500 text-right">${dict[state.lang].action}</th></tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5 font-bold">
+                                    ${state.registrations.map(r => `
+                                        <tr class="hover:bg-white/[0.02]">
+                                            <td class="p-8"><div><p class="text-sm text-white">${r.name}</p><p class="text-[10px] text-slate-500 font-bold lowercase">${r.email}</p></div></td>
+                                            <td class="p-8 text-xs text-slate-400">${r.bin}</td>
+                                            <td class="p-8 text-xs text-slate-600 font-medium">${r.time}</td>
+                                            <td class="p-8 flex justify-end gap-3">
+                                                <button onclick="approveReg(${r.id})" class="bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase border border-emerald-500/30 px-4 py-2 rounded-xl hover:bg-emerald-500 hover:text-black transition-all">${dict[state.lang].approve}</button>
+                                                <button onclick="rejectReg(${r.id})" class="bg-rose-500/10 text-rose-400 text-[10px] font-black uppercase border border-rose-500/30 px-4 py-2 rounded-xl hover:bg-rose-500 hover:text-black transition-all">${dict[state.lang].reject}</button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                    ${state.registrations.length === 0 ? '<tr><td colspan="4" class="p-20 text-center text-slate-700 font-black uppercase text-xs tracking-widest">No pending applications</td></tr>' : ''}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
 
-            state.registrations.push({
-                id: Date.now(), name, bin, email, status: 'Pending', time: new Date().toLocaleString()
+            if (tab === 'users') {
+                return `
+                    <div class="space-y-12 fade-in">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-3xl font-black uppercase tracking-tighter text-white">${dict[state.lang].users}</h3>
+                        </div>
+                        <div class="glass-panel rounded-[40px] overflow-hidden">
+                            <table class="w-full text-left">
+                                <thead class="bg-black/20">
+                                    <tr><th class="p-8 text-[9px] uppercase font-black text-slate-500">${dict[state.lang].identity}</th><th class="p-8 text-[9px] uppercase font-black text-slate-500">${dict[state.lang].role}</th><th class="p-8 text-[9px] uppercase font-black text-slate-500">${dict[state.lang].authDetail}</th><th class="p-8 text-[9px] uppercase font-black text-slate-500 text-right">${dict[state.lang].status}</th></tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5 font-bold">
+                                    ${state.users.map(u => `
+                                        <tr class="hover:bg-white/[0.02] transition-all">
+                                            <td class="p-8"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-xs text-white uppercase">${u.name.charAt(0)}</div><div><p class="text-sm text-white">${u.name}</p><p class="text-[10px] text-slate-500 lowercase">${u.email}</p></div></div></td>
+                                            <td class="p-8"><span class="inline-block px-3 py-1 rounded-lg ${u.role==='Admin'?'bg-amber-500/10 text-amber-500 border border-amber-500/20':'bg-blue-500/10 text-blue-500 border border-blue-500/20'} text-[9px] font-black uppercase tracking-widest">${u.role}</span></td>
+                                            <td class="p-8 text-xs text-slate-600">BIN: ${u.bin}</td>
+                                            <td class="p-8 text-right"><span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[9px] uppercase tracking-widest border border-emerald-500/20">● Operational</span></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (tab === 'audit') {
+                return `
+                    <div class="space-y-12 fade-in">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-3xl font-black uppercase tracking-tighter text-white">${dict[state.lang].audit}</h3>
+                            <button onclick="clearAuditLogs()" class="bg-rose-500/10 text-rose-400 text-[10px] font-black uppercase px-6 py-3 rounded-2xl border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all">Purge Logs</button>
+                        </div>
+                        <div class="glass-panel p-4 rounded-3xl flex gap-4 items-center">
+                            <div class="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <input id="audit-search" placeholder="Search movements..." class="bg-transparent flex-1 outline-none text-sm font-bold text-white" oninput="filterAudit(this.value)" />
+                        </div>
+                        <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 no-scrollbar" id="audit-list">
+                            ${state.auditLogs.map(l => `
+                                <div class="glass-card p-6 rounded-[32px] flex justify-between items-center group">
+                                    <div class="flex items-center gap-6">
+                                        <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500 group-hover:text-blue-400 transition-colors"><i class="fa-solid fa-bolt-lightning"></i></div>
+                                        <div><p class="text-xs font-black text-white uppercase">${l.user}</p><p class="text-sm text-slate-400 font-medium mt-1">${l.action}</p></div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-[10px] font-black text-slate-600 uppercase">${l.time}</p>
+                                        <p class="text-[8px] text-emerald-500/40 uppercase mt-1">Verified</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                            ${state.auditLogs.length === 0 ? '<p class="text-center text-slate-700 py-10 font-black uppercase text-xs tracking-widest">No logs</p>' : ''}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 11. ADMIN ACTIONS
+        function saveCMSBanner() {
+            state.banner.url = document.getElementById('cms-banner-url').value;
+            state.banner.title.KZ = document.getElementById('cms-banner-title').value;
+            state.banner.desc.KZ = document.getElementById('cms-banner-desc').value;
+            logAction("Updated Hero Banner CMS");
+            showToast("Hero Section Updated", "success");
+            if (state.activeTab === 'home') renderHome();
+        }
+
+        function addNewsItem() {
+            openModal(`
+                <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">Add Corporate News</h3>
+                <div class="space-y-6">
+                    <input id="new-news-title" class="glass-input w-full p-4 rounded-xl font-bold" placeholder="News Title (KZ)" />
+                    <textarea id="new-news-sub" class="glass-input w-full p-4 rounded-xl font-bold h-24" placeholder="Description (KZ)"></textarea>
+                    <button onclick="handleSaveNews()" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl uppercase tracking-widest text-[10px]">Publish News</button>
+                </div>
+            `);
+        }
+
+        function handleSaveNews() {
+            const title = document.getElementById('new-news-title').value;
+            const sub = document.getElementById('new-news-sub').value;
+            if (!title) return;
+            state.news.unshift({
+                id: Date.now(),
+                title: { KZ: title, RU: title, EN: title },
+                subtitle: { KZ: sub, RU: sub, EN: sub },
+                date: new Date().toISOString().split('T')[0],
+                img: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80"
             });
-            showToast("Request submitted for approval", 'success');
-            logAction(`New registration request from: ${name}`);
-            switchTab('home');
-        };
-
-        window.approveUser = function(id) {
-            const req = state.registrations.find(r => r.id === id);
-            if (req) {
-                state.users.push({ id: Date.now(), name: req.name, email: req.email, role: 'User', status: 'Active', bin: req.bin });
-                state.registrations = state.registrations.filter(r => r.id !== id);
-                showToast(`User Approved: ${req.name}`, 'success');
-                logAction(`Approved user request: ${req.name}`);
-                renderAdmin();
-            }
-        };
-
-        window.rejectUser = function(id) {
-            const req = state.registrations.find(r => r.id === id);
-            if (req) {
-                state.registrations = state.registrations.filter(r => r.id !== id);
-                showToast(`Request Rejected`, 'error');
-                logAction(`Rejected user request: ${req.name}`);
-                renderAdmin();
-            }
-        };
-
-        window.switchAdminTab = function(tab) {
-            state.adminTab = tab;
+            logAction("Added news item: " + title);
+            closeModal();
             renderAdmin();
-        };
+        }
 
-        window.filterAudit = function(val) {
-            const list = document.getElementById('audit-list-container');
+        function deleteNews(idx) {
+            state.news.splice(idx, 1);
+            logAction("Deleted news item");
+            renderAdmin();
+        }
+
+        function editNews(idx) {
+            const n = state.news[idx];
+            openModal(`
+                <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">Edit News</h3>
+                <div class="space-y-6">
+                    <input id="edit-news-title" value="${n.title.KZ}" class="glass-input w-full p-4 rounded-xl font-bold" />
+                    <textarea id="edit-news-sub" class="glass-input w-full p-4 rounded-xl font-bold h-24">${n.subtitle.KZ}</textarea>
+                    <button onclick="handleUpdateNews(${idx})" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl uppercase tracking-widest text-[10px]">Update News</button>
+                </div>
+            `);
+        }
+
+        function handleUpdateNews(idx) {
+            state.news[idx].title.KZ = document.getElementById('edit-news-title').value;
+            state.news[idx].subtitle.KZ = document.getElementById('edit-news-sub').value;
+            logAction("Updated news item");
+            closeModal();
+            renderAdmin();
+        }
+
+        function approveReg(id) {
+            const req = state.registrations.find(r => r.id === id);
+            if (req) {
+                const newUser = {
+                    id: Date.now(),
+                    name: req.name,
+                    email: req.email,
+                    bin: req.bin,
+                    role: 'User',
+                    status: 'Active',
+                    balance: 15000000,
+                    orders: []
+                };
+                state.users.push(newUser);
+                state.registrations = state.registrations.filter(r => r.id !== id);
+                logAction(`Approved Partner: ${req.name}`);
+                showToast(`Partner Approved: ${req.name}`, 'success');
+                renderAdmin();
+            }
+        }
+
+        function rejectReg(id) {
+            state.registrations = state.registrations.filter(r => r.id !== id);
+            logAction("Rejected registration request");
+            showToast("Request Rejected", "error");
+            renderAdmin();
+        }
+
+        function updateSpotPrice(idx, val) {
+            state.prices.spot[idx].price = parseFloat(val);
+            logAction(`Manual spot adjust: ${state.prices.spot[idx].name}`);
+            showToast("Spot Price Adjusted", "info");
+        }
+
+        function deleteRegionalRate(idx) {
+            state.prices.regional.splice(idx, 1);
+            logAction("Deleted regional rate");
+            renderAdmin();
+        }
+
+        function openAddRateModal() {
+            openModal(`
+                <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">Add Regional Rate</h3>
+                <div class="space-y-6">
+                    <input id="new-reg-name" class="glass-input w-full p-4 rounded-xl font-bold" placeholder="Region Name" />
+                    <input id="new-reg-fuel" class="glass-input w-full p-4 rounded-xl font-bold" placeholder="Fuel Grade" value="AI-92" />
+                    <input id="new-reg-price" type="number" class="glass-input w-full p-4 rounded-xl font-bold" placeholder="Price (KZT/T)" />
+                    <button onclick="handleAddRate()" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl uppercase tracking-widest text-[10px]">Add Rate</button>
+                </div>
+            `);
+        }
+
+        function handleAddRate() {
+            const region = document.getElementById('new-reg-name').value;
+            const fuel = document.getElementById('new-reg-fuel').value;
+            const price = document.getElementById('new-reg-price').value;
+            if (region && price) {
+                state.prices.regional.push({ region, fuel, price: parseFloat(price), cat: 'auto' });
+                logAction(`Added rate: ${region}`);
+                closeModal();
+                renderAdmin();
+            }
+        }
+
+        function editRegionalRate(idx) {
+            const r = state.prices.regional[idx];
+            openModal(`
+                <h3 class="text-2xl font-black uppercase tracking-tighter text-white mb-8">Edit Rate</h3>
+                <div class="space-y-6">
+                    <input id="edit-reg-name" value="${r.region}" class="glass-input w-full p-4 rounded-xl font-bold" />
+                    <input id="edit-reg-price" type="number" value="${r.price}" class="glass-input w-full p-4 rounded-xl font-bold" />
+                    <button onclick="handleUpdateRate(${idx})" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl uppercase tracking-widest text-[10px]">Update Rate</button>
+                </div>
+            `);
+        }
+
+        function handleUpdateRate(idx) {
+            state.prices.regional[idx].region = document.getElementById('edit-reg-name').value;
+            state.prices.regional[idx].price = parseFloat(document.getElementById('edit-reg-price').value);
+            logAction("Updated regional rate");
+            closeModal();
+            renderAdmin();
+        }
+
+        function clearAuditLogs() {
+            state.auditLogs = [];
+            showToast("Audit Logs Purged", "error");
+            renderAdmin();
+        }
+
+        function filterAudit(val) {
+            const list = document.getElementById('audit-list');
             const items = list.querySelectorAll('.glass-card');
             const query = val.toLowerCase();
             items.forEach(item => {
                 const text = item.innerText.toLowerCase();
                 item.style.display = text.includes(query) ? 'flex' : 'none';
             });
-        };
+        }
 
-        window.openLeaderBio = function(idx) {
-            const leader = state.leaders[idx];
-            openModal(`
-                <div class="space-y-8">
-                    <div class="flex items-center gap-6">
-                        <div class="w-24 h-24 rounded-3xl bg-blue-600/10 flex items-center justify-center text-4xl text-blue-400 border border-blue-500/20"><i class="fa-solid fa-user-tie"></i></div>
-                        <div>
-                            <span class="bg-cosmic-gold/10 text-cosmic-gold text-[9px] font-black uppercase px-3 py-1 rounded-full border border-cosmic-gold/20 tracking-widest">${leader.badge}</span>
-                            <h3 class="text-3xl font-black text-white mt-2 uppercase tracking-tighter">${leader.name}</h3>
-                            <p class="text-xs font-bold text-blue-400 uppercase tracking-widest">${leader.role}</p>
-                        </div>
-                    </div>
-                    <div class="bg-white/5 p-8 rounded-[32px] border border-white/5 space-y-4">
-                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Biography / Exp</p>
-                        <p class="text-slate-300 leading-relaxed font-medium">${leader.bio}</p>
-                    </div>
-                    <div class="flex justify-between items-center pt-4">
-                        <div class="flex items-center gap-3 text-emerald-400 text-xs font-bold"><i class="fa-solid fa-envelope"></i><span>${leader.email}</span></div>
-                        <button onclick="closeModal()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Close Bio</button>
-                    </div>
-                </div>
-            `);
-        };
-
-        window.changeLang = function(l) { state.lang = l; init(); };
-
-        // 5. LIVE MARKET SIMULATION
+        // 12. SIMULATIONS
         setInterval(() => {
             state.prices.spot.forEach(p => {
-                const change = (Math.random() - 0.5) * 500;
+                const change = (Math.random() - 0.5) * 600;
                 p.price += change;
                 p.trend = Math.abs(((change / p.price) * 100).toFixed(2));
                 p.status = change > 0 ? 'up' : 'down';
@@ -1357,8 +1536,23 @@
             if (state.activeTab === 'admin' && state.adminTab === 'prices') renderAdmin();
         }, 5000);
 
-        // INITIALIZE
-        init();
+        setInterval(() => {
+            state.metrics.cpu = 5 + Math.floor(Math.random() * 20);
+            state.metrics.ram = 25 + Math.floor(Math.random() * 15);
+            state.metrics.latency = 40 + Math.floor(Math.random() * 10);
+
+            const cpuBar = document.getElementById('metric-cpu-bar');
+            if (cpuBar) {
+                cpuBar.style.width = state.metrics.cpu + '%';
+                document.getElementById('metric-cpu-val').innerText = state.metrics.cpu + '%';
+                document.getElementById('metric-ram-bar').style.width = state.metrics.ram + '%';
+                document.getElementById('metric-ram-val').innerText = state.metrics.ram + '%';
+                document.getElementById('metric-latency').innerHTML = state.metrics.latency + ' <span class="text-xs">ms</span>';
+            }
+        }, 3000);
+
+        // INIT
+        window.onload = init;
     </script>
 </body>
 </html>
