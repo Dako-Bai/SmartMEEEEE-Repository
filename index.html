@@ -142,6 +142,8 @@
         .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
+    <!-- Three.js 3D WebGL Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <div id="root"></div>
@@ -230,7 +232,8 @@
                 orderForm: "Тапсырыс беру",
                 analytics: "Аналитика",
                 calculator: "Калькулятор",
-                downloadHub: "Жүктеу орталығы"
+                downloadHub: "Жүктеу орталығы",
+                qazaqBatyr3d: "QAZAQ-BATYR 3D CORE"
             },
             ru: {
                 title: "Smart Mercury Energy",
@@ -273,7 +276,8 @@
                 orderForm: "Заказать топливо",
                 analytics: "Аналитика",
                 calculator: "Калькулятор",
-                downloadHub: "Центр загрузок"
+                downloadHub: "Центр загрузок",
+                qazaqBatyr3d: "QAZAQ-BATYR 3D CORE"
             },
             en: {
                 title: "Smart Mercury Energy",
@@ -316,7 +320,8 @@
                 orderForm: "Order Fuel",
                 analytics: "Analytics",
                 calculator: "Calculator",
-                downloadHub: "Download Hub"
+                downloadHub: "Download Hub",
+                qazaqBatyr3d: "QAZAQ-BATYR 3D CORE"
             }
         };
 
@@ -1377,6 +1382,7 @@
 
         const Sidebar = ({ currentTab, setTab, t, role }) => {
             const items = [
+                { id: 'qazaqBatyr3d', icon: 'box', label: t.qazaqBatyr3d || 'QAZAQ-BATYR 3D' },
                 { id: 'monitoring', icon: 'activity', label: t.monitoring },
                 { id: 'calculator', icon: 'calculator', label: t.calculator },
                 { id: 'orderForm', icon: 'mail', label: t.orderForm },
@@ -1426,6 +1432,651 @@
                 </div>
             );
         };
+
+
+        // --- 3D Cyber Batyr Showcase Component ---
+        const QazaqBatyr3DShowcase = ({ t, language }) => {
+            const mountRef = React.useRef(null);
+            const [activeMode, setActiveMode] = React.useState('sentinel'); // 'sentinel', 'defense', 'hyperdrive', 'zen'
+            const [activeTheme, setActiveTheme] = React.useState('cyan'); // 'cyan', 'gold', 'emerald', 'crimson'
+            const [soundEnabled, setSoundEnabled] = React.useState(true);
+            const [hudTransmission, setHudTransmission] = React.useState('Q-BATYR-01 ONLINE // KÓK-TÚRK CYBERNETICS // CORE NORMAL');
+            const [cameraOrbit, setCameraOrbit] = React.useState(true);
+            const [zoomLevel, setZoomLevel] = React.useState(7.2);
+            const [stats, setStats] = React.useState({
+                shield: 99.4,
+                quantumFlow: 1420,
+                coreTemp: 36.6,
+                torusRpm: 45
+            });
+
+            // Color Themes Dictionary
+            const themes = {
+                cyan: { name: 'Kók-Túrk Cyan', primary: 0x00f0ff, secondary: 0x0088ff, hex: '#00f0ff' },
+                gold: { name: 'Altyn Batyr Gold', primary: 0xffd700, secondary: 0xff8800, hex: '#ffd700' },
+                emerald: { name: 'Uly Dala Emerald', primary: 0x10b981, secondary: 0x047857, hex: '#10b981' },
+                crimson: { name: 'Ot-Jalyn Crimson', primary: 0xf43f5e, secondary: 0xbe123c, hex: '#f43f5e' }
+            };
+
+            // Audio Synthesizer via Web Audio API
+            const playSoundEffect = (type) => {
+                if (!soundEnabled) return;
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioContext) return;
+                    const ctx = new AudioContext();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    const now = ctx.currentTime;
+
+                    if (type === 'mode') {
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(300, now);
+                        osc.frequency.exponentialRampToValueAtTime(880, now + 0.25);
+                        gain.gain.setValueAtTime(0.12, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                        osc.start(now);
+                        osc.stop(now + 0.25);
+                    } else if (type === 'scan') {
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(520, now);
+                        osc.frequency.linearRampToValueAtTime(1200, now + 0.15);
+                        gain.gain.setValueAtTime(0.08, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                        osc.start(now);
+                        osc.stop(now + 0.18);
+                    } else if (type === 'warp') {
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(120, now);
+                        osc.frequency.exponentialRampToValueAtTime(40, now + 0.4);
+                        gain.gain.setValueAtTime(0.2, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                        osc.start(now);
+                        osc.stop(now + 0.4);
+                    }
+                } catch(e) {
+                    console.warn("WebAudio disabled or blocked", e);
+                }
+            };
+
+            React.useEffect(() => {
+                const container = mountRef.current;
+                if (!container || !window.THREE) return;
+
+                const width = container.clientWidth;
+                const height = container.clientHeight || 560;
+
+                // 1. Scene & Camera
+                const scene = new THREE.Scene();
+                scene.fog = new THREE.FogExp2(0x060c1b, 0.045);
+
+                const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+                camera.position.set(0, 0.4, zoomLevel);
+
+                // 2. WebGL Renderer
+                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 1.25;
+                container.innerHTML = '';
+                container.appendChild(renderer.domElement);
+
+                // 3. Lighting
+                const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+                scene.add(ambientLight);
+
+                const pointLightCenter = new THREE.PointLight(themes[activeTheme].primary, 3.5, 15);
+                pointLightCenter.position.set(0, 0.5, 2.5);
+                scene.add(pointLightCenter);
+
+                const rimLight = new THREE.PointLight(0xffb703, 2.8, 12);
+                rimLight.position.set(2.5, 2.0, -2);
+                scene.add(rimLight);
+
+                const bottomPedestalLight = new THREE.PointLight(themes[activeTheme].secondary, 4.0, 10);
+                bottomPedestalLight.position.set(0, -2.5, 1.0);
+                scene.add(bottomPedestalLight);
+
+                // Main Pivot Group
+                const batyrGroup = new THREE.Group();
+                scene.add(batyrGroup);
+
+                // 4. Character Curved Mesh with Transparent Cutout PNG
+                const textureLoader = new THREE.TextureLoader();
+                const heroTex = textureLoader.load('assets/qazaq-cyber-hero.png');
+                heroTex.generateMipmaps = true;
+                heroTex.minFilter = THREE.LinearMipmapLinearFilter;
+
+                // 3D Holographic Character Plane (Aspect ratio: 736 / 1104 = 0.6667)
+                const heroGeo = new THREE.PlaneGeometry(3.0, 4.5);
+                const heroMat = new THREE.MeshStandardMaterial({
+                    map: heroTex,
+                    transparent: true,
+                    alphaTest: 0.1,
+                    roughness: 0.2,
+                    metalness: 0.35,
+                    side: THREE.DoubleSide
+                });
+                const heroMesh = new THREE.Mesh(heroGeo, heroMat);
+                heroMesh.position.set(0, 0.2, 0);
+                batyrGroup.add(heroMesh);
+
+                // 4b. Hero Hologram Contour Aura Plane
+                const auraGeo = new THREE.PlaneGeometry(3.2, 4.2);
+                const auraMat = new THREE.MeshBasicMaterial({
+                    map: heroTex,
+                    transparent: true,
+                    opacity: 0.22,
+                    blending: THREE.AdditiveBlending,
+                    color: themes[activeTheme].primary,
+                    side: THREE.DoubleSide
+                });
+                const auraMesh = new THREE.Mesh(auraGeo, auraMat);
+                auraMesh.position.set(0, 0.2, -0.08);
+                batyrGroup.add(auraMesh);
+
+                // 5. Rotating Nomad Pedestal (Cyber Decal Floor)
+                const pedestalTex = textureLoader.load('assets/nomad-pedestal.png');
+                pedestalTex.wrapS = THREE.RepeatWrapping;
+                pedestalTex.wrapT = THREE.RepeatWrapping;
+
+                const pedestalGeo = new THREE.CylinderGeometry(2.2, 2.4, 0.22, 48);
+                const pedestalMat = new THREE.MeshStandardMaterial({
+                    color: 0x0f172a,
+                    roughness: 0.3,
+                    metalness: 0.8
+                });
+                const pedestalMesh = new THREE.Mesh(pedestalGeo, pedestalMat);
+                pedestalMesh.position.y = -2.0;
+                scene.add(pedestalMesh);
+
+                // Pedestal glowing rune disc on top
+                const discGeo = new THREE.CircleGeometry(2.15, 48);
+                const discMat = new THREE.MeshBasicMaterial({
+                    map: pedestalTex,
+                    transparent: true,
+                    opacity: 0.85,
+                    side: THREE.DoubleSide,
+                    blending: THREE.AdditiveBlending
+                });
+                const discMesh = new THREE.Mesh(discGeo, discMat);
+                discMesh.rotation.x = -Math.PI / 2;
+                discMesh.position.y = -1.88;
+                scene.add(discMesh);
+
+                // 6. Gyroscopic Nomad Shield Rings
+                // Inner Golden Ring
+                const ring1Geo = new THREE.TorusGeometry(2.4, 0.035, 16, 100);
+                const ring1Mat = new THREE.MeshStandardMaterial({
+                    color: 0xfbbf24,
+                    emissive: 0xd97706,
+                    emissiveIntensity: 0.4,
+                    metalness: 0.9,
+                    roughness: 0.2
+                });
+                const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+                batyrGroup.add(ring1);
+
+                // Middle Cyan Ring
+                const ring2Geo = new THREE.TorusGeometry(2.7, 0.04, 16, 100);
+                const ring2Mat = new THREE.MeshStandardMaterial({
+                    color: themes[activeTheme].primary,
+                    emissive: themes[activeTheme].primary,
+                    emissiveIntensity: 0.5,
+                    metalness: 0.8,
+                    roughness: 0.3
+                });
+                const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+                batyrGroup.add(ring2);
+
+                // Outer Hexagonal Nomad Energy Ring
+                const ring3Geo = new THREE.RingGeometry(3.0, 3.08, 6);
+                const ring3Mat = new THREE.MeshBasicMaterial({
+                    color: themes[activeTheme].primary,
+                    side: THREE.DoubleSide,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.65
+                });
+                const ring3 = new THREE.Mesh(ring3Geo, ring3Mat);
+                batyrGroup.add(ring3);
+
+                // 7. Nomad Diamond Nodes (Qoshqar Múyiz cyber telemetry satellites)
+                const nodeGroup = new THREE.Group();
+                const diamondGeo = new THREE.OctahedronGeometry(0.14, 0);
+                const diamondMat = new THREE.MeshStandardMaterial({
+                    color: 0x38bdf8,
+                    emissive: 0x0284c7,
+                    emissiveIntensity: 0.8,
+                    metalness: 0.95,
+                    roughness: 0.1
+                });
+                const nodeCount = 8;
+                for (let i = 0; i < nodeCount; i++) {
+                    const angle = (i / nodeCount) * Math.PI * 2;
+                    const nodeMesh = new THREE.Mesh(diamondGeo, diamondMat);
+                    nodeMesh.position.set(Math.cos(angle) * 2.7, Math.sin(angle) * 2.7, 0);
+                    nodeGroup.add(nodeMesh);
+                }
+                batyrGroup.add(nodeGroup);
+
+                // 8. 350-Particle Quantum Starry Cosmos
+                const particleCount = 350;
+                const starGeo = new THREE.BufferGeometry();
+                const starPos = new Float32Array(particleCount * 3);
+                const starSizes = new Float32Array(particleCount);
+
+                for (let i = 0; i < particleCount * 3; i += 3) {
+                    starPos[i] = (Math.random() - 0.5) * 16;
+                    starPos[i + 1] = (Math.random() - 0.5) * 14;
+                    starPos[i + 2] = (Math.random() - 0.5) * 12;
+                    starSizes[i / 3] = Math.random() * 2.5 + 0.5;
+                }
+                starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+
+                const starMat = new THREE.PointsMaterial({
+                    color: themes[activeTheme].primary,
+                    size: 0.08,
+                    transparent: true,
+                    opacity: 0.75,
+                    blending: THREE.AdditiveBlending
+                });
+                const starField = new THREE.Points(starGeo, starMat);
+                scene.add(starField);
+
+                // 9. Interactive Mouse Parallax & Drag Rotation
+                let mouseX = 0;
+                let mouseY = 0;
+                let targetRotX = 0;
+                let targetRotY = 0;
+                let isDragging = false;
+                let prevMouseX = 0;
+                let prevMouseY = 0;
+
+                const handleMouseMove = (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+                    const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+
+                    if (isDragging) {
+                        const deltaX = clientX - prevMouseX;
+                        const deltaY = clientY - prevMouseY;
+                        batyrGroup.rotation.y += deltaX * 0.01;
+                        batyrGroup.rotation.x += deltaY * 0.01;
+                        prevMouseX = clientX;
+                        prevMouseY = clientY;
+                    } else {
+                        const nx = ((clientX - rect.left) / rect.width) * 2 - 1;
+                        const ny = -(((clientY - rect.top) / rect.height) * 2 - 1);
+                        targetRotY = nx * 0.45;
+                        targetRotX = -ny * 0.3;
+                    }
+                };
+
+                const handleMouseDown = (e) => {
+                    isDragging = true;
+                    prevMouseX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+                    prevMouseY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+                };
+
+                const handleMouseUp = () => {
+                    isDragging = false;
+                };
+
+                container.addEventListener('mousemove', handleMouseMove);
+                container.addEventListener('mousedown', handleMouseDown);
+                window.addEventListener('mouseup', handleMouseUp);
+
+                // 10. Animation Loop
+                let clock = new THREE.Clock();
+                let animId;
+
+                const animate = () => {
+                    animId = requestAnimationFrame(animate);
+                    const elapsed = clock.getElapsedTime();
+
+                    // Mode kinematics multiplier
+                    let speedMult = 1.0;
+                    let floatAmp = 0.12;
+                    let pulseScale = 1.0;
+
+                    if (activeMode === 'defense') {
+                        speedMult = 0.6;
+                        floatAmp = 0.05;
+                    } else if (activeMode === 'hyperdrive') {
+                        speedMult = 2.4;
+                        floatAmp = 0.22;
+                        pulseScale = 1.0 + Math.sin(elapsed * 10) * 0.03;
+                    } else if (activeMode === 'zen') {
+                        speedMult = 0.35;
+                        floatAmp = 0.08;
+                    }
+
+                    // Floating Hero Levitation
+                    batyrGroup.position.y = Math.sin(elapsed * 1.8 * speedMult) * floatAmp;
+                    batyrGroup.scale.set(pulseScale, pulseScale, pulseScale);
+
+                    // Smooth Parallax Interpolation (if not manually dragging)
+                    if (!isDragging) {
+                        let autoY = cameraOrbit ? Math.sin(elapsed * 0.4) * 0.3 : 0;
+                        batyrGroup.rotation.y += (targetRotY + autoY - batyrGroup.rotation.y) * 0.06;
+                        batyrGroup.rotation.x += (targetRotX - batyrGroup.rotation.x) * 0.06;
+                    }
+
+                    // Orbiting Gyro Rings
+                    ring1.rotation.x = elapsed * 0.8 * speedMult;
+                    ring1.rotation.y = elapsed * 0.45 * speedMult;
+
+                    ring2.rotation.y = -elapsed * 0.7 * speedMult;
+                    ring2.rotation.z = elapsed * 0.35 * speedMult;
+
+                    ring3.rotation.z = elapsed * 0.2 * speedMult;
+                    nodeGroup.rotation.z = -elapsed * 0.5 * speedMult;
+
+                    // Pedestal Decal Disc Rotation
+                    discMesh.rotation.z = elapsed * 0.15;
+
+                    // Starfield subtle cosmic drift
+                    starField.rotation.y = elapsed * 0.04;
+
+                    // Pulsing Aura Mesh
+                    auraMesh.scale.set(
+                        1.02 + Math.sin(elapsed * 3) * 0.03,
+                        1.02 + Math.cos(elapsed * 3) * 0.03,
+                        1
+                    );
+
+                    renderer.render(scene, camera);
+                };
+
+                animate();
+
+                // Telemetry randomized jitter for authentic high-tech feel
+                const interval = setInterval(() => {
+                    setStats(prev => ({
+                        shield: +(98.5 + Math.random() * 1.4).toFixed(1),
+                        quantumFlow: Math.floor(1400 + Math.random() * 65),
+                        coreTemp: +(36.4 + Math.random() * 0.5).toFixed(1),
+                        torusRpm: Math.floor(42 + Math.random() * 6)
+                    }));
+                }, 1800);
+
+                const handleResize = () => {
+                    if (!container) return;
+                    const w = container.clientWidth;
+                    const h = container.clientHeight || 560;
+                    camera.aspect = w / h;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(w, h);
+                };
+                window.addEventListener('resize', handleResize);
+
+                return () => {
+                    cancelAnimationFrame(animId);
+                    clearInterval(interval);
+                    window.removeEventListener('resize', handleResize);
+                    container.removeEventListener('mousemove', handleMouseMove);
+                    container.removeEventListener('mousedown', handleMouseDown);
+                    window.removeEventListener('mouseup', handleMouseUp);
+                    renderer.dispose();
+                };
+            }, [activeMode, activeTheme, cameraOrbit, zoomLevel]);
+
+            const triggerMode = (mode) => {
+                setActiveMode(mode);
+                playSoundEffect('mode');
+                const msgs = {
+                    sentinel: 'SENTINEL PROTOCOL: ACTIVE 360° RADAR PATROL // PERIMETER SECURE',
+                    defense: 'DEFENSE MATRIX: QALQAN ENERGY FIELD REINFORCED // 250% FORTIFICATION',
+                    hyperdrive: 'HYPERDRIVE ENGAGED: TÚRK TACHYON CORE ACCELERATION // MAXIMUM VELOCITY',
+                    zen: 'ZEN HARMONY: ULY DALA BIO-QUANTUM RESONANCE // MEDITATION MODE'
+                };
+                setHudTransmission(msgs[mode] || 'STATUS NORMAL');
+            };
+
+            const triggerTheme = (themeKey) => {
+                setActiveTheme(themeKey);
+                playSoundEffect('scan');
+                setHudTransmission(`COLOR MATRIX SWITCHED: ${themes[themeKey].name.toUpperCase()}`);
+            };
+
+            return (
+                <div className="space-y-6 animate-fade-in pb-12">
+                    {/* Header Banner */}
+                    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-cosmicSurface via-slate-900 to-cosmicDeep border border-cyan-500/30 p-8 shadow-2xl shadow-cyan-950/40">
+                        <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
+                        <div className="absolute right-1/4 -bottom-16 w-72 h-72 rounded-full bg-amber-500/10 blur-3xl pointer-events-none"></div>
+
+                        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold tracking-wider uppercase mb-3">
+                                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                                    Next-Gen Cyber Nomadic 3D Art Trend
+                                </div>
+                                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white font-display">
+                                    QAZAQ-BATYR 3D CORE
+                                </h1>
+                                <p className="text-sm md:text-base text-slate-300 mt-2 max-w-2xl font-sans leading-relaxed">
+                                    Kók-Túrk Cybernetics: Ұлы Даланың мыңжылдық батырлық рухы мен футуристік 3D WebGL кванттық технологиясының үйлесімі.
+                                </p>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-3">
+                                <button
+                                    onClick={() => { setSoundEnabled(!soundEnabled); playSoundEffect('scan'); }}
+                                    className={`px-4 py-2.5 rounded-xl border text-xs font-mono font-bold flex items-center gap-2 transition-all duration-300 ${
+                                        soundEnabled
+                                        ? 'bg-cyan-500/20 border-cyan-400/50 text-cyan-300 shadow-lg shadow-cyan-500/20'
+                                        : 'bg-white/5 border-white/10 text-slate-400'
+                                    }`}
+                                >
+                                    <LucideIcon name={soundEnabled ? "volume-2" : "volume-x"} className="w-4 h-4" />
+                                    <span>{soundEnabled ? 'SFX AUDIO ON' : 'SFX MUTED'}</span>
+                                </button>
+                                <button
+                                    onClick={() => { setCameraOrbit(!cameraOrbit); playSoundEffect('scan'); }}
+                                    className={`px-4 py-2.5 rounded-xl border text-xs font-mono font-bold flex items-center gap-2 transition-all duration-300 ${
+                                        cameraOrbit
+                                        ? 'bg-amber-500/20 border-amber-400/50 text-amber-300 shadow-lg shadow-amber-500/20'
+                                        : 'bg-white/5 border-white/10 text-slate-400'
+                                    }`}
+                                >
+                                    <LucideIcon name="orbit" className="w-4 h-4" />
+                                    <span>{cameraOrbit ? 'AUTO-ORBIT ON' : 'ORBIT PAUSED'}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Stage Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                        {/* 3D WebGL Viewport (8 cols) */}
+                        <div className="lg:col-span-8 relative rounded-3xl bg-gradient-to-b from-[#060c1b] via-[#091428] to-[#040813] border border-cyan-500/30 overflow-hidden shadow-2xl shadow-black/80 flex flex-col">
+                            {/* HUD Header Bar */}
+                            <div className="relative z-20 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-slate-950/60 backdrop-blur-md">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-3 h-3 rounded-full bg-cyan-400 animate-pulse"></div>
+                                    <span className="font-mono text-xs uppercase tracking-widest text-cyan-300 font-bold">
+                                        TELEMETRY // CODEX: Q-BATYR-01
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-4 text-[11px] font-mono text-slate-400">
+                                    <span>RENDER: <span className="text-emerald-400 font-bold">THREE.JS WEBGL</span></span>
+                                    <span className="hidden sm:inline">FPS: <span className="text-amber-400 font-bold">60.0</span></span>
+                                </div>
+                            </div>
+
+                            {/* 3D Canvas Canvas Container */}
+                            <div
+                                ref={mountRef}
+                                className="w-full h-[520px] md:h-[620px] cursor-grab active:cursor-grabbing relative"
+                                title="Батырды бұру үшін басып сүйреңіз (Drag to rotate in 3D)"
+                            >
+                                {/* Drag Hint overlay */}
+                                <div className="absolute top-4 left-4 pointer-events-none z-10 px-3 py-1.5 rounded-lg bg-black/50 backdrop-blur border border-white/10 text-[11px] font-mono text-slate-300 flex items-center gap-2">
+                                    <LucideIcon name="move-3d" className="w-3.5 h-3.5 text-cyan-400" />
+                                    <span>3D Интерактив: тінтуірмен бұрыңыз</span>
+                                </div>
+                            </div>
+
+                            {/* HUD Bottom Transmission Ticker */}
+                            <div className="relative z-20 px-6 py-3 border-t border-white/10 bg-black/60 backdrop-blur-md flex items-center gap-3">
+                                <LucideIcon name="radio" className="w-4 h-4 text-cyan-400 animate-pulse" />
+                                <span className="font-mono text-xs text-cyan-300 truncate tracking-wide">
+                                    {hudTransmission}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Interactive Cyber Controls & Status (4 cols) */}
+                        <div className="lg:col-span-4 space-y-6">
+                            {/* Kinematic Modes Card */}
+                            <div className="rounded-3xl bg-cosmicSurface/90 border border-white/10 p-6 backdrop-blur-xl shadow-xl">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
+                                        <LucideIcon name="cpu" className="w-5 h-5 text-cyan-400" />
+                                        <span>Кинематикалық Режимдер</span>
+                                    </h3>
+                                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                                        4 MODES
+                                    </span>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-2.5">
+                                    {[
+                                        { id: 'sentinel', name: 'Sentinel', sub: 'Шолу күзеті', icon: 'shield' },
+                                        { id: 'defense', name: 'Qalqan Def', sub: 'Қорғаныс күші', icon: 'shield-alert' },
+                                        { id: 'hyperdrive', name: 'Hyperdrive', sub: 'Кванттық жылдамдық', icon: 'zap' },
+                                        { id: 'zen', name: 'Zen Dala', sub: 'Гармония рухы', icon: 'sparkles' },
+                                    ].map(m => (
+                                        <button
+                                            key={m.id}
+                                            onClick={() => triggerMode(m.id)}
+                                            className={`p-3 rounded-2xl border text-left transition-all duration-300 ${
+                                                activeMode === m.id
+                                                ? 'bg-cyan-500/20 border-cyan-400 text-white shadow-lg shadow-cyan-500/20 scale-[1.02]'
+                                                : 'bg-white/5 border-white/5 text-slate-300 hover:bg-white/10'
+                                            }`}
+                                        >
+                                            <div className="flex items-center justify-between mb-1">
+                                                <LucideIcon name={m.icon} className={`w-4 h-4 ${activeMode === m.id ? 'text-cyan-400' : 'text-slate-400'}`} />
+                                                {activeMode === m.id && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>}
+                                            </div>
+                                            <p className="font-bold text-xs">{m.name}</p>
+                                            <p className="text-[10px] text-slate-400 truncate">{m.sub}</p>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Holographic Color Themes Card */}
+                            <div className="rounded-3xl bg-cosmicSurface/90 border border-white/10 p-6 backdrop-blur-xl shadow-xl">
+                                <h3 className="font-display font-bold text-base text-white mb-4 flex items-center gap-2">
+                                    <LucideIcon name="palette" className="w-5 h-5 text-amber-400" />
+                                    <span>Голографиялық Түс Тәртібі</span>
+                                </h3>
+                                <div className="grid grid-cols-2 gap-2.5">
+                                    {Object.entries(themes).map(([k, val]) => (
+                                        <button
+                                            key={k}
+                                            onClick={() => triggerTheme(k)}
+                                            className={`p-3 rounded-2xl border flex items-center gap-3 transition-all duration-300 ${
+                                                activeTheme === k
+                                                ? 'border-white/50 bg-white/10 shadow-lg'
+                                                : 'border-white/5 bg-white/5 hover:bg-white/10'
+                                            }`}
+                                        >
+                                            <div className="w-6 h-6 rounded-xl flex-shrink-0" style={{ backgroundColor: val.hex, boxShadow: `0 0 12px ${val.hex}80` }}></div>
+                                            <div className="text-left overflow-hidden">
+                                                <p className="text-xs font-bold text-white truncate">{val.name.split(' ')[0]}</p>
+                                                <p className="text-[10px] text-slate-400 truncate">{val.name.split(' ')[1]}</p>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Telemetry Status Gauges */}
+                            <div className="rounded-3xl bg-cosmicSurface/90 border border-white/10 p-6 backdrop-blur-xl shadow-xl space-y-4">
+                                <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
+                                    <LucideIcon name="activity" className="w-5 h-5 text-emerald-400" />
+                                    <span>Батыр Мониторинг Телеметриясы</span>
+                                </h3>
+
+                                <div className="space-y-3">
+                                    <div>
+                                        <div className="flex justify-between text-xs font-mono mb-1">
+                                            <span className="text-slate-400">QALQAN ENERGY FIELD</span>
+                                            <span className="text-cyan-400 font-bold">{stats.shield}%</span>
+                                        </div>
+                                        <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                                            <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-500" style={{ width: `${stats.shield}%` }}></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex justify-between text-xs font-mono mb-1">
+                                            <span className="text-slate-400">KÓK-TÚRK QUANTUM FLUX</span>
+                                            <span className="text-amber-400 font-bold">{stats.quantumFlow} Q/s</span>
+                                        </div>
+                                        <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                                            <div className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-500" style={{ width: `${(stats.quantumFlow / 1600) * 100}%` }}></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex justify-between text-xs font-mono mb-1">
+                                            <span className="text-slate-400">CORE TEMPERATURE</span>
+                                            <span className="text-emerald-400 font-bold">{stats.coreTemp} °C</span>
+                                        </div>
+                                        <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                                            <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500" style={{ width: `${(stats.coreTemp / 45) * 100}%` }}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Nomad Cyber Arsenal & Story Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="rounded-3xl bg-cosmicSurface/80 border border-white/10 p-6 backdrop-blur">
+                            <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4">
+                                <LucideIcon name="shield" className="w-5 h-5" />
+                            </div>
+                            <h4 className="font-display font-bold text-white text-base mb-2">Алтын Сауыт (Altyn Sawyt)</h4>
+                            <p className="text-slate-300 text-xs leading-relaxed">
+                                Қазақтың ою-өрнекті алтын сауыты футуристік нано-көміртекті қорытпамен қапталып, кез келген кванттық соққыны кері қайтарады.
+                            </p>
+                        </div>
+
+                        <div className="rounded-3xl bg-cosmicSurface/80 border border-white/10 p-6 backdrop-blur">
+                            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-4">
+                                <LucideIcon name="compass" className="w-5 h-5" />
+                            </div>
+                            <h4 className="font-display font-bold text-white text-base mb-2">Қошқар Мүйіз Навигаторы</h4>
+                            <p className="text-slate-300 text-xs leading-relaxed">
+                                Орбитада айналатын кибернетикалық тор сақиналары қазақтың байырғы жұлдызды бағыттау компасы ретінде ғарыштық бағдар береді.
+                            </p>
+                        </div>
+
+                        <div className="rounded-3xl bg-cosmicSurface/80 border border-white/10 p-6 backdrop-blur">
+                            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
+                                <LucideIcon name="zap" className="w-5 h-5" />
+                            </div>
+                            <h4 className="font-display font-bold text-white text-base mb-2">SmartME Кванттық Энергия</h4>
+                            <p className="text-slate-300 text-xs leading-relaxed">
+                                Жоғары октанды және таза энергияның үздіксіз тасымалын қамтамасыз ететін интеллектуалды кибер-жүйенің басты қамқоршысы.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
 
         // --- Main App Component ---
         const App = () => {
@@ -1776,6 +2427,13 @@
 
                         {/* Page Content */}
                         <div className="p-8 max-w-7xl mx-auto">
+                            {currentTab === 'qazaqBatyr3d' && (
+                                <QazaqBatyr3DShowcase
+                                    t={t}
+                                    language={lang}
+                                />
+                            )}
+
                             {currentTab === 'monitoring' && (
                                 <MonitoringHub
                                     t={t}
