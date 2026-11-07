@@ -1,1868 +1,1134 @@
 <!DOCTYPE html>
-<html lang="kk">
+<html lang="kk" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mercury Energy | Интеллектуалды Басқару Хабы</title>
+    <title>ALUA MARAT | Ultra-Luxury 3D Interactive Portfolio</title>
 
-    <!-- Dependencies -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Meta tags for Apple keynote grade presentation -->
+    <meta name="description" content="Ultra-Luxury 3D Interactive Portfolio in the style of Apple Keynotes and Awwwards Winners. Deep Dark UI, Liquid Glassmorphism, 3D Tilt Card and dynamic ambient lighting.">
+
+    <!-- Fonts: Inter and Plus Jakarta Sans / Syne for editorial luxury typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&family=Syne:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        cosmicDeep: '#0b1329',
-                        cosmicSurface: '#121f3d',
-                        mercuryGold: '#fcd34d',
-                        royalBlue: '#2563eb',
-                        safetyGreen: '#34d399',
-                    },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Montserrat', 'sans-serif'],
+                        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#030712',
+                        spaceDark: '#080c18',
+                        liquidGlass: 'rgba(255, 255, 255, 0.03)',
+                        glassBorder: 'rgba(255, 255, 255, 0.08)',
+                        neonCyan: '#06b6d4',
+                        neonViolet: '#8b5cf6',
+                        neonAmber: '#f59e0b',
+                        appleSilver: '#f5f5f7',
+                        appleMuted: '#86868b',
+                    },
+                    backgroundImage: {
+                        'radial-glow': 'radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.15), transparent 60%)',
+                        'apple-gradient': 'linear-gradient(180deg, #FFFFFF 0%, #A1A1A6 100%)',
+                        'card-specular': 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 60%, rgba(255,255,255,0.08) 100%)',
+                    },
+                    boxShadow: {
+                        'glass-surface': '0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                        'neon-glow': '0 0 35px -5px rgba(6, 182, 212, 0.3)',
                     }
                 }
             }
         }
     </script>
 
-    <style type="text/css">
+    <!-- Lucide Icons & GSAP + ScrollTrigger -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* Apple-Grade Deep Dark & Liquid Glass Architecture */
+        :root {
+            --cursor-x: 50vw;
+            --cursor-y: 50vh;
+        }
+
         body {
-            background-color: #0b1329;
-            color: #f8fafc;
+            background-color: #030712;
+            color: #f5f5f7;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
+            selection-background-color: #06b6d4;
+            selection-color: #ffffff;
         }
 
-        .glass {
-            background: rgba(18, 31, 61, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        ::selection {
+            background: #3b82f6;
+            color: #ffffff;
         }
 
-        /* 3D Tank Styles */
-        .tank-cylinder {
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .glass-pill {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-pill:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        /* Ambient interactive card glow effect */
+        .ambient-card {
             position: relative;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg,
-                rgba(30, 41, 59, 0.9) 0%,
-                rgba(71, 85, 105, 0.4) 50%,
-                rgba(30, 41, 59, 0.9) 100%);
-            border-radius: 10px / 20px;
-            box-shadow:
-                inset 0 0 30px rgba(0,0,0,0.7),
-                0 10px 20px rgba(0,0,0,0.4);
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
+            isolation: isolate;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
         }
 
-        .tank-glint {
+        .ambient-card::before {
+            content: '';
             position: absolute;
-            top: 0;
-            left: 20%;
-            width: 15%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            z-index: 15;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(6, 182, 212, 0.4), rgba(139, 92, 246, 0.2), transparent 70%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 2;
         }
 
-        .tank-top {
+        .ambient-card:hover::before {
+            opacity: 1;
+        }
+
+        .ambient-card .glow-backdrop {
             position: absolute;
-            top: -10px;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(90deg, #334155, #64748b, #334155);
-            border-radius: 50%;
+            inset: -20px;
+            border-radius: 2rem;
+            background: radial-gradient(320px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(6, 182, 212, 0.22), rgba(139, 92, 246, 0.15), transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+            filter: blur(28px);
+        }
+
+        .ambient-card:hover .glow-backdrop {
+            opacity: 1;
+        }
+
+        /* 3D Tilt Card Container & Specular Glare */
+        .tilt-viewport {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: transform;
+            position: relative;
+        }
+
+        .tilt-card .specular-glare {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+            pointer-events: none;
+            opacity: var(--glare-opacity, 0);
+            transition: opacity 0.3s ease;
             z-index: 20;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.3);
         }
 
-        /* Liquid Wave Animation */
-        .liquid-container {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            z-index: 1;
+        .tilt-card-layer-1 {
+            transform: translateZ(30px);
         }
 
-        .wave {
-            position: absolute;
-            top: -15px;
-            left: 0;
-            width: 200%;
-            height: 30px;
-            background: inherit;
-            border-radius: 38%;
-            opacity: 0.8;
-            filter: brightness(1.1);
+        .tilt-card-layer-2 {
+            transform: translateZ(55px);
         }
 
-        .wave-1 { animation: waveMoveSlow 5s linear infinite; }
-        .wave-2 { animation: waveMoveFast 3s linear infinite reverse; top: -20px; opacity: 0.4; }
-
-        @keyframes waveMoveSlow {
-            0% { transform: translateX(0) rotate(0deg); }
-            100% { transform: translateX(-50%) rotate(360deg); }
-        }
-        @keyframes waveMoveFast {
-            0% { transform: translateX(0) rotate(0deg); }
-            100% { transform: translateX(-50%) rotate(-360deg); }
+        .tilt-card-layer-3 {
+            transform: translateZ(75px);
         }
 
-        /* Water level styling */
-        .water-layer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(90deg, #0f766e 0%, #14b8a6 50%, #0f766e 100%);
-            z-index: 5;
-            transition: height 1s ease-in-out;
+        /* Noise subtle overlay for cinematic Apple keynote look */
+        .noise-bg {
+            background-image: radial-gradient(circle at 50% 0%, rgba(20, 30, 60, 0.6) 0%, rgba(3, 7, 18, 0.95) 70%);
+        }
+
+        /* Text Gradients */
+        .text-apple-headline {
+            background: linear-gradient(180deg, #FFFFFF 20%, #A1A1A6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-aurora {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0b1329; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #334155; }
-
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 9999px;
+            border: 2px solid #030712;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
     </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="relative min-h-screen text-slate-100 noise-bg antialiased selection:bg-cyan-500 selection:text-white">
 
-    <script type="text/babel">
-        const { useState, useEffect, useMemo, useCallback, useRef } = React;
+    <!-- Dynamic Ambient Background Glow Elements -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+        <div class="absolute -top-40 left-1/4 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[140px] animate-pulse" style="animation-duration: 8s;"></div>
+        <div class="absolute top-1/3 -right-40 w-[550px] h-[550px] bg-violet-600/10 rounded-full blur-[150px] animate-pulse" style="animation-duration: 10s;"></div>
+        <div class="absolute -bottom-20 left-1/3 w-[700px] h-[700px] bg-blue-600/10 rounded-full blur-[160px]"></div>
+    </div>
 
-        // --- Helper Logic ---
-        const escapeHtml = (text) => {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        };
-
-        const showToast = (message, type = 'info') => {
-            let container = document.getElementById('toast-root');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'toast-root';
-                container.className = 'fixed top-10 right-10 z-[1000] space-y-4 pointer-events-none';
-                document.body.appendChild(container);
-            }
-            const toast = document.createElement('div');
-            toast.className = `glass p-4 rounded-2xl border-l-4 shadow-2xl animate-fade-in flex items-center gap-3 min-w-[300px] pointer-events-auto ${
-                type === 'success' ? 'border-emerald-500 text-emerald-100' :
-                type === 'error' ? 'border-red-500 text-red-100' : 'border-blue-500 text-blue-100'
-            }`;
-            toast.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                    <i data-lucide="${type === 'error' ? 'alert-circle' : (type === 'success' ? 'check-circle' : 'info')}" class="w-4 h-4"></i>
-                </div>
-                <span class="text-xs font-bold uppercase tracking-tight">${escapeHtml(message)}</span>
-            `;
-            container.appendChild(toast);
-            if (window.lucide) {
-                window.lucide.createIcons({ node: toast });
-            }
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-20px)';
-                toast.style.transition = 'all 0.5s ease';
-                setTimeout(() => toast.remove(), 500);
-            }, 4000);
-        };
-
-        // --- Translations ---
-        const translations = {
-            kk: {
-                title: "Smart Mercury Energy",
-                dashboard: "Басқару панелі",
-                monitoring: "Мониторинг",
-                depot: "Мұнай базасы",
-                stations: "Жанармай бекеттері",
-                admin: "Әкімшілік",
-                prices: "Бағалар",
-                requests: "Тіркелу өтінімдері",
-                audit: "Аудит журналы",
-                settings: "Баптаулар",
-                oilDepot: "НБ (Мұнай базасы)",
-                azsNetwork: "АЗС Желісі",
-                premium: "Premium АИ-95",
-                regular: "Regular АИ-92",
-                diesel: "Дизель (ДТ)",
-                volume: "Көлем",
-                temp: "Температура",
-                density: "Тығыздық",
-                water: "Төменгі су",
-                lastUpdate: "Соңғы жаңарту",
-                edit: "Өңдеу",
-                save: "Сақтау",
-                cancel: "Болдырмау",
-                addStation: "Бекет қосу",
-                stationName: "Бекет атауы",
-                region: "Аймақ",
-                actions: "Әрекеттер",
-                systemStatus: "Жүйе күйі",
-                active: "Белсенді",
-                warning: "Ескерту",
-                critical: "Қауіпті",
-                stock: "Қоймада",
-                priceList: "Ағымдағы бағалар",
-                userRoles: "Пайдаланушылар",
-                export: "Экспорт",
-                notification: "Хабарламалар",
-                // Жаңа бөлімдердің аудармасы
-                orderForm: "Тапсырыс беру",
-                analytics: "Аналитика",
-                calculator: "Калькулятор",
-                downloadHub: "Жүктеу орталығы"
-            },
-            ru: {
-                title: "Smart Mercury Energy",
-                dashboard: "Панель управления",
-                monitoring: "Мониторинг",
-                depot: "Нефтебаза",
-                stations: "Автозаправочные станции",
-                admin: "Администрирование",
-                prices: "Цены",
-                requests: "Заявки на регистрацию",
-                audit: "Журнал аудита",
-                settings: "Настройки",
-                oilDepot: "НБ (Нефтебаза)",
-                azsNetwork: "Сеть АЗС",
-                premium: "Premium АИ-95",
-                regular: "Regular АИ-92",
-                diesel: "Дизельное топливо",
-                volume: "Объем",
-                temp: "Температура",
-                density: "Плотность",
-                water: "Подтоварная вода",
-                lastUpdate: "Последнее обновление",
-                edit: "Изменить",
-                save: "Сохранить",
-                cancel: "Отмена",
-                addStation: "Добавить станцию",
-                stationName: "Название станции",
-                region: "Регион",
-                actions: "Действия",
-                systemStatus: "Статус системы",
-                active: "Активен",
-                warning: "Предупреждение",
-                critical: "Критично",
-                stock: "В наличии",
-                priceList: "Текущие цены",
-                userRoles: "Пользователи",
-                export: "Экспорт",
-                notification: "Уведомления",
-                // Переводы для новых разделов
-                orderForm: "Заказать топливо",
-                analytics: "Аналитика",
-                calculator: "Калькулятор",
-                downloadHub: "Центр загрузок"
-            },
-            en: {
-                title: "Smart Mercury Energy",
-                dashboard: "Dashboard",
-                monitoring: "Monitoring",
-                depot: "Oil Depot",
-                stations: "Fuel Stations",
-                admin: "Administration",
-                prices: "Prices",
-                requests: "Registration Requests",
-                audit: "Audit Log",
-                settings: "Settings",
-                oilDepot: "Oil Depot (NB)",
-                azsNetwork: "AZS Network",
-                premium: "Premium AI-95",
-                regular: "Regular AI-92",
-                diesel: "Diesel Fuel",
-                volume: "Volume",
-                temp: "Temperature",
-                density: "Density",
-                water: "Bottom Water",
-                lastUpdate: "Last Update",
-                edit: "Edit",
-                save: "Save",
-                cancel: "Cancel",
-                addStation: "Add Station",
-                stationName: "Station Name",
-                region: "Region",
-                actions: "Actions",
-                systemStatus: "System Status",
-                active: "Active",
-                warning: "Warning",
-                critical: "Critical",
-                stock: "In Stock",
-                priceList: "Current Prices",
-                userRoles: "Users",
-                export: "Export",
-                notification: "Notifications",
-                // Translations for new sections
-                orderForm: "Order Fuel",
-                analytics: "Analytics",
-                calculator: "Calculator",
-                downloadHub: "Download Hub"
-            }
-        };
-
-        // --- Mock Data ---
-        const initialDepotState = [
-            { id: 't1', name: 'РВС-5000 #1', fuelType: 'premium', capacity: 5000, current: 3850, water: 12, temp: 18.5, density: 745 },
-            { id: 't2', name: 'РВС-5000 #2', fuelType: 'regular', capacity: 5000, current: 4200, water: 8, temp: 19.2, density: 730 },
-            { id: 't3', name: 'РВС-3000 #3', fuelType: 'diesel', capacity: 3000, current: 1200, water: 25, temp: 17.8, density: 835 },
-            { id: 't4', name: 'РВС-2000 #4', fuelType: 'premium', capacity: 2000, current: 1800, water: 5, temp: 18.1, density: 742 },
-            { id: 't5', name: 'РВС-5000 #5', fuelType: 'regular', capacity: 5000, current: 2100, water: 15, temp: 18.9, density: 735 },
-            { id: 't6', name: 'РВС-3000 #6', fuelType: 'diesel', capacity: 3000, current: 2800, water: 4, temp: 17.5, density: 840 },
-            { id: 't7', name: 'РВС-5000 #7', fuelType: 'premium', capacity: 5000, current: 4900, water: 2, temp: 19.5, density: 748 },
-            { id: 't8', name: 'РВС-2000 #8', fuelType: 'regular', capacity: 2000, current: 500, water: 30, temp: 18.0, density: 732 },
-        ];
-
-        const initialStations = [
-            { id: 1, name: 'SME Almaty-01', region: 'Almaty', stocks: { premium: 85, regular: 60, diesel: 40 } },
-            { id: 2, name: 'SME Astana-04', region: 'Astana', stocks: { premium: 45, regular: 90, diesel: 75 } },
-            { id: 3, name: 'SME Shymkent-02', region: 'Shymkent', stocks: { premium: 70, regular: 30, diesel: 95 } },
-        ];
-
-        const initialPrices = {
-            premium: { kk: 255, ru: 255, en: 255 },
-            regular: { kk: 205, ru: 205, en: 205 },
-            diesel: { kk: 295, ru: 295, en: 295 }
-        };
-
-        const initialDocuments = [
-            { id: 'doc-1', title: 'Premium АИ-95 сапа сертификаты', category: 'Сертификаттар', size: '2.4 MB', type: 'PDF', downloads: 142 },
-            { id: 'doc-2', title: 'Дизельді отын (қысқы) сынақ хаттамасы', category: 'Сертификаттар', size: '1.8 MB', type: 'PDF', downloads: 98 },
-            { id: 'doc-3', title: 'Smart Mercury Energy коммерциялық ұсынысы 2026', category: 'Презентациялар', size: '5.2 MB', type: 'PPTX', downloads: 310 },
-            { id: 'doc-4', title: 'Көтерме жеткізу шарттары мен типтік келісімшарт', category: 'Құжаттар', size: '1.1 MB', type: 'DOCX', downloads: 215 },
-        ];
-
-        const initialAnalyticsLogs = [
-            { id: 'an-1', page: 'Мониторинг', referral: 'Тікелей кіру', action: '3D резервуарлар күйін тексерді', timestamp: '15:24:10' },
-            { id: 'an-2', page: 'Калькулятор', referral: 'Google Search', action: 'АИ-92 үшін 15,000л есептеді', timestamp: '15:25:32' },
-            { id: 'an-3', page: 'Жүктеу орталығы', referral: 'Коммерциялық сілтеме', action: 'АИ-95 сертификатын жүктеді', timestamp: '15:28:15' },
-        ];
-
-        const initialB2bOrders = [
-            { id: 'o-1', company: 'KazTransLogistics LLP', bin: '920840001234', fuelType: 'diesel', volume: 25000, region: 'Astana', status: 'Жаңа', date: '19.06.2026' },
-            { id: 'o-2', company: 'SinoOil Partner', bin: '120540009876', fuelType: 'premium', volume: 10000, region: 'Almaty', status: 'Жаңа', date: '21.06.2026' }
-        ];
-
-        // --- Safe Lucide React Wrapper ---
-        const LucideIcon = ({ name, className = "w-5 h-5" }) => {
-            const iconRef = useRef(null);
-            useEffect(() => {
-                if (window.lucide && iconRef.current) {
-                    iconRef.current.innerHTML = `<i data-lucide="${name}"></i>`;
-                    window.lucide.createIcons({
-                        node: iconRef.current,
-                        attrs: { class: className }
-                    });
-                }
-            }, [name, className]);
-
-            return <span ref={iconRef} className="inline-flex items-center justify-center" />;
-        };
-
-        // --- NEW COMPONENT: Notification Toast ---
-        const NotificationToast = ({ notif, onClose }) => {
-            useEffect(() => {
-                const timer = setTimeout(onClose, 5000);
-                return () => clearTimeout(timer);
-            }, [onClose]);
-
-            return (
-                <div className={`glass p-4 rounded-2xl border-l-4 shadow-2xl animate-fade-in flex items-center gap-3 mb-4 pointer-events-auto ${
-                    notif.type === 'error' ? 'border-red-500 text-red-100' :
-                    notif.type === 'success' ? 'border-emerald-500 text-emerald-100' : 'border-blue-500 text-blue-100'
-                }`}>
-                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                        <LucideIcon name={notif.type === 'error' ? 'alert-circle' : (notif.type === 'success' ? 'check-circle' : 'info')} className="w-4 h-4" />
+    <!-- Navigation Bar: Floating Capsule (Apple & Awwwards Style) -->
+    <header class="fixed top-6 inset-x-0 z-50 flex justify-center px-4">
+        <nav class="glass-panel rounded-full px-6 py-3 flex items-center justify-between gap-6 md:gap-12 max-w-4xl w-full border border-white/10 shadow-2xl transition-all duration-300">
+            <!-- Brand / Logo -->
+            <a href="#hero" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded-full px-1">
+                <div class="relative w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-500 to-indigo-600 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-black/80 rounded-full flex items-center justify-center backdrop-blur-md">
+                        <span class="font-display font-black text-sm tracking-tighter text-white">AM</span>
                     </div>
-                    <div className="flex-1">
-                        <p className="text-[10px] font-black uppercase tracking-tight">{escapeHtml(notif.message)}</p>
-                        <p className="text-[8px] font-bold opacity-50">{notif.time}</p>
-                    </div>
-                    <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
-                        <LucideIcon name="x" className="w-3 h-3" />
-                    </button>
                 </div>
-            );
-        };
+                <div class="hidden sm:flex flex-col text-left">
+                    <span class="font-display font-bold text-sm tracking-tight text-white leading-tight">Alua Marat</span>
+                    <span class="text-[10px] uppercase font-mono tracking-widest text-cyan-400" data-i18n="nav.role">Creative Technologist</span>
+                </div>
+            </a>
 
-        // --- Sub-Components ---
-        const Tank3D = ({ label, percentage, fuelType, capacity, current, waterLevel, variant = "large", t }) => {
-            const getFuelColor = (type) => {
-                switch(type) {
-                    case 'premium': return 'linear-gradient(90deg, #b45309 0%, #fbbf24 50%, #b45309 100%)';
-                    case 'regular': return 'linear-gradient(90deg, #1e3a8a 0%, #3b82f6 50%, #1e3a8a 100%)';
-                    case 'diesel': return 'linear-gradient(90deg, #064e3b 0%, #10b981 50%, #064e3b 100%)';
-                    default: return '#334155';
-                }
-            };
+            <!-- Navigation Links -->
+            <ul class="hidden md:flex items-center gap-8 text-xs uppercase font-mono tracking-widest text-slate-300">
+                <li><a href="#about" class="hover:text-white transition-colors py-1" data-i18n="nav.about">Тұлға / About</a></li>
+                <li><a href="#projects" class="hover:text-white transition-colors py-1" data-i18n="nav.projects">Жобалар / Works</a></li>
+                <li><a href="#craftsmanship" class="hover:text-white transition-colors py-1" data-i18n="nav.craft">Шеберлік / Craft</a></li>
+                <li><a href="#awards" class="hover:text-white transition-colors py-1" data-i18n="nav.awards">Марапаттар / Honors</a></li>
+            </ul>
 
-            const heightVal = Math.min(percentage, 100);
-            const waterHeight = variant === "large" ? (waterLevel / 50) * 100 : 0;
+            <!-- Controls: Language Toggle & Contact CTA Button -->
+            <div class="flex items-center gap-3">
+                <!-- Language Toggle Button -->
+                <button id="langToggleBtn" type="button" class="glass-pill px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-mono font-medium tracking-wide text-slate-300 hover:text-white transition cursor-pointer" aria-label="Тілді ауыстыру / Switch Language">
+                    <i data-lucide="globe" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    <span id="currentLangLabel">KZ (LAT)</span>
+                </button>
 
-            return (
-                <div className={`flex flex-col items-center ${variant === "large" ? "w-full" : "w-24"}`}>
-                    <div className={`${variant === "large" ? "h-64 w-32" : "h-32 w-12"} relative`}>
-                        <div className="tank-top"></div>
+                <!-- Contact CTA Button -->
+                <button id="openContactBtn" type="button" class="relative group overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                    <span class="absolute inset-0 bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-500 rounded-full animate-gradient"></span>
+                    <span class="relative block px-4 py-1.5 rounded-full bg-slate-950/90 backdrop-blur-md text-xs font-semibold tracking-wide text-white group-hover:bg-opacity-40 transition-all flex items-center gap-1.5">
+                        <span data-i18n="nav.contact">Байланысу</span>
+                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                    </span>
+                </button>
+            </div>
+        </nav>
+    </header>
 
-                        {variant === "large" && (
-                            <div className="absolute right-[-45px] top-0 h-full flex flex-col justify-between text-[10px] font-black text-slate-600 py-1 border-r border-white/5 pr-2">
-                                {[100, 80, 60, 40, 20, 0].map(v => <span key={v}>{v}%</span>)}
+    <!-- MAIN CONTENT -->
+    <main class="relative z-10 pt-28 md:pt-36">
+
+        <!-- ================= HERO SECTION ================= -->
+        <section id="hero" class="min-h-[92vh] flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-12">
+
+            <!-- Keynote Subtitle Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill border border-cyan-500/20 shadow-lg shadow-cyan-500/5 mb-8 animate-fade-in">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                <span class="text-xs uppercase font-mono tracking-widest text-cyan-300" data-i18n="hero.badge">2025 Visionary Portfolio • Awwwards Recognized</span>
+            </div>
+
+            <!-- Apple Keynote Style Headline -->
+            <div class="text-center max-w-4xl mx-auto mb-14">
+                <h1 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-extrabold tracking-tight leading-[1.08] mb-6">
+                    <span class="text-apple-headline block" data-i18n="hero.headlinePre">Визуалдан да терең.</span>
+                    <span class="text-aurora block" data-i18n="hero.headlineAccent">Нақты 3D Кеңістік.</span>
+                </h1>
+                <p class="text-base sm:text-xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed" data-i18n="hero.description">
+                    Жоғары технологиялар, тегіс 3D анимациялар және Apple деңгейіндегі өнім философиясының тоғысы. Цифрлық тәжірибені жаңа биікке көтеретін интерактивті кеңістік.
+                </p>
+            </div>
+
+            <!-- 3D INTERACTIVE TILT PROFILE CARD (Apple Masterpiece Showcase) -->
+            <div id="tiltCardWrapper" class="tilt-viewport w-full max-w-xl mx-auto mb-16 py-4 flex justify-center">
+                <div id="interactiveTiltCard" class="tilt-card w-full max-w-lg rounded-3xl glass-panel p-6 sm:p-8 cursor-grab active:cursor-grabbing border border-white/15 shadow-2xl relative overflow-hidden group">
+                    <!-- Dynamic Specular Glare -->
+                    <div class="specular-glare"></div>
+
+                    <!-- Ambient Glow behind card in 3D -->
+                    <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-cyan-500/20 via-purple-500/10 to-indigo-500/20 blur-2xl -z-10 opacity-70"></div>
+
+                    <!-- Card Header / Status Indicator -->
+                    <div class="tilt-card-layer-1 flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <span class="relative flex h-3 w-3">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                            </span>
+                            <span class="text-xs font-mono tracking-wider text-slate-300" data-i18n="hero.status">AVAILABLE FOR BESPOKE PROJECTS</span>
+                        </div>
+                        <div class="text-[11px] font-mono text-cyan-400/80 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+                            PRO-X // 01
+                        </div>
+                    </div>
+
+                    <!-- Card Body: Profile Portrait & Identity in 3D space -->
+                    <div class="tilt-card-layer-2 flex flex-col sm:flex-row items-center gap-6 mb-6">
+                        <!-- Profile Image Frame with Fallback Avatar -->
+                        <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl p-[2px] bg-gradient-to-br from-cyan-400 via-indigo-500 to-fuchsia-500 shadow-2xl shrink-0 group-hover:scale-105 transition-transform duration-500">
+                            <div class="w-full h-full rounded-2xl overflow-hidden bg-slate-900 relative">
+                                <img id="profileImageEl" src="assets/profile.jpg" alt="Alua Marat Profile" class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 flex flex-col items-center justify-center text-cyan-400\'><i data-lucide=\'sparkles\' class=\'w-10 h-10 mb-1\'></i><span class=\'font-display font-bold text-xs tracking-wider text-white\'>ALUA MARAT</span></div>'; lucide.createIcons();">
                             </div>
-                        )}
-
-                        <div className="tank-cylinder">
-                            <div className="tank-glint"></div>
-
-                            <div
-                                className="liquid-container"
-                                style={{
-                                    height: `${heightVal}%`,
-                                    background: getFuelColor(fuelType)
-                                }}
-                            >
-                                <div className="wave wave-1"></div>
-                                <div className="wave wave-2"></div>
-                                <div className="absolute top-0 left-0 w-full h-[2px] bg-white/20 blur-[1px] z-10"></div>
-                            </div>
-
-                            {variant === "large" && waterLevel > 0 && (
-                                <div className="water-layer" style={{ height: `${waterHeight}%` }}>
-                                    <div className="absolute top-0 left-0 w-full h-[1px] bg-white/30"></div>
-                                </div>
-                            )}
                         </div>
 
-                        <div className="absolute bottom-[-15px] left-0 w-full h-[25px] bg-black/60 blur-lg rounded-full -z-10"></div>
+                        <!-- Info & Bio -->
+                        <div class="text-center sm:text-left">
+                            <h2 class="text-2xl font-display font-bold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2">
+                                Alua Marat
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400 fill-cyan-400/20"></i>
+                            </h2>
+                            <p class="text-sm font-medium text-cyan-300 mb-2" data-i18n="hero.cardRole">Lead Creative Technologist & 3D Web Architect</p>
+                            <p class="text-xs text-slate-400 leading-relaxed max-w-xs" data-i18n="hero.cardBio">
+                                Ғаламдық брендтер мен стартаптар үшін кинематографиялық 3D веб-тәжірибелерді өмірге әкелуші.
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="mt-8 text-center">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">{label}</p>
-                        <div className="flex items-center justify-center gap-2">
-                            <span className="text-lg font-display font-black text-white italic">{percentage}%</span>
-                            <span className={`text-[10px] font-bold ${percentage > 20 ? 'text-emerald-400' : 'text-red-400'} animate-pulse`}>
-                                ●
+                    <!-- Card Interactive Stats (3D Layer 3) -->
+                    <div class="tilt-card-layer-3 grid grid-cols-3 gap-3 pt-4 border-t border-white/10 text-center">
+                        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/30 transition-colors">
+                            <div class="font-display font-bold text-lg text-white">8+</div>
+                            <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider" data-i18n="hero.statExp">Жыл / Yrs</div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/30 transition-colors">
+                            <div class="font-display font-bold text-lg text-cyan-400">14</div>
+                            <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider" data-i18n="hero.statAwards">Awwwards</div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/30 transition-colors">
+                            <div class="font-display font-bold text-lg text-white">100%</div>
+                            <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider" data-i18n="hero.statQuality">Precision</div>
+                        </div>
+                    </div>
+
+                    <!-- Micro-hint below card -->
+                    <div class="mt-4 text-center">
+                        <span class="text-[10px] font-mono text-slate-500 tracking-wider flex items-center justify-center gap-1.5 opacity-80">
+                            <i data-lucide="move" class="w-3 h-3 text-cyan-400"></i>
+                            <span data-i18n="hero.tiltHint">Курсорды қимылдатып, 3D визитканы бақылаңыз</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="#projects" class="px-8 py-3.5 rounded-full bg-white text-slate-950 font-semibold text-sm hover:bg-slate-200 transition-all shadow-xl hover:shadow-cyan-500/20 flex items-center gap-2 group">
+                    <span data-i18n="hero.btnExplore">Жобаларды көру</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i>
+                </a>
+                <button onclick="document.getElementById('openContactBtn').click()" class="px-8 py-3.5 rounded-full glass-pill text-white font-medium text-sm hover:border-cyan-400/40 transition-all flex items-center gap-2">
+                    <span data-i18n="hero.btnContact">Ынтымақтастық орнату</span>
+                    <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= ABOUT / PHILOSOPHY SECTION ================= -->
+        <section id="about" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-white/5">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono uppercase tracking-widest text-cyan-400 block mb-3" data-i18n="about.pre">Философия & Көзқарас</span>
+                <h2 class="text-3xl sm:text-5xl font-display font-bold tracking-tight text-apple-headline" data-i18n="about.title">
+                    Әрбір пикселдегі кемелдік.
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base mt-4 leading-relaxed" data-i18n="about.subtitle">
+                    Біз қарапайым веб-сайттар емес, пайдаланушы сезіміне тікелей әсер ететін цифрлық өнер туындыларын жасаймыз.
+                </p>
+            </div>
+
+            <!-- Bento Grid Craftsmanship (Apple Keynote Style) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Bento Item 1 -->
+                <div class="ambient-card glass-panel rounded-3xl p-8 border border-white/10 relative overflow-hidden group">
+                    <div class="glow-backdrop"></div>
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="layers" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-display font-bold text-white mb-3" data-i18n="about.bento1.title">Сұйық Шыны (Liquid Glass)</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" data-i18n="about.bento1.desc">
+                        Көпқабатты тереңдік (Backdrop blur 24px) және жарықтың нақты физикасына негізделген оптикалық эффектілер.
+                    </p>
+                </div>
+
+                <!-- Bento Item 2 -->
+                <div class="ambient-card glass-panel rounded-3xl p-8 border border-white/10 relative overflow-hidden group">
+                    <div class="glow-backdrop"></div>
+                    <div class="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="box" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-display font-bold text-white mb-3" data-i18n="about.bento2.title">3D Кеңістік & Физика</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" data-i18n="about.bento2.desc">
+                        Курсор бағытына сезімтал инерциялық қозғалыс, гироскопиялық тепе-теңдік және нақты 3D проекция.
+                    </p>
+                </div>
+
+                <!-- Bento Item 3 -->
+                <div class="ambient-card glass-panel rounded-3xl p-8 border border-white/10 relative overflow-hidden group">
+                    <div class="glow-backdrop"></div>
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="zap" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-display font-bold text-white mb-3" data-i18n="about.bento3.title">120 FPS Өнімділік</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" data-i18n="about.bento3.desc">
+                        Hardware-accelerated CSS трансформациялары мен GSAP ядросы арқылы тегіс скролл және кинематографиялық ашылу.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SELECTED WORKS / INTERACTIVE GALLERY ================= -->
+        <section id="projects" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-white/5">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                <div>
+                    <span class="text-xs font-mono uppercase tracking-widest text-cyan-400 block mb-3" data-i18n="projects.pre">Таңдаулы Портфолио</span>
+                    <h2 class="text-3xl sm:text-5xl font-display font-bold tracking-tight text-white" data-i18n="projects.title">
+                        Интерактивті Жобалар
+                    </h2>
+                </div>
+                <p class="text-slate-400 text-sm max-w-md font-light leading-relaxed" data-i18n="projects.desc">
+                    Карточкаға жақындағанда артынан жұмсақ неон сәулесі шығып, жобаның интерактивті мәнін ашады.
+                </p>
+            </div>
+
+            <!-- Project Cards Grid with Ambient Neon Backlight -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+
+                <!-- Project 1: Apple Vision Pro Concept -->
+                <div class="ambient-card glass-panel rounded-3xl p-6 sm:p-8 border border-white/10 flex flex-col justify-between group cursor-pointer">
+                    <div class="glow-backdrop"></div>
+                    <div>
+                        <!-- Project Visual Canvas Mockup -->
+                        <div class="relative h-64 sm:h-72 w-full rounded-2xl overflow-hidden mb-6 bg-gradient-to-tr from-slate-950 via-slate-900 to-indigo-950/80 border border-white/5 flex items-center justify-center p-6 group-hover:border-cyan-500/30 transition-colors">
+                            <!-- Visual Graphic -->
+                            <div class="relative w-40 h-40 rounded-full border border-cyan-400/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-2 rounded-full border border-dashed border-violet-400/40 animate-spin" style="animation-duration: 20s;"></div>
+                                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 blur-lg opacity-40 group-hover:opacity-75 transition-opacity"></div>
+                                <i data-lucide="eye" class="w-10 h-10 text-cyan-300 relative z-10"></i>
+                            </div>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-mono tracking-wider bg-white/10 backdrop-blur-md text-white border border-white/10">
+                                SOTD WINNER
                             </span>
                         </div>
-                        {variant === "large" && (
-                            <div className="mt-3 p-3 bg-white/5 rounded-2xl grid grid-cols-1 gap-1 text-[10px] font-bold">
-                                <div className="flex justify-between gap-4">
-                                    <span className="text-slate-500 uppercase">{t.volume}:</span>
-                                    <span className="text-mercuryGold">{current.toLocaleString()} m³</span>
-                                </div>
-                                <div className="flex justify-between gap-4">
-                                    <span className="text-slate-500 uppercase">{t.water}:</span>
-                                    <span className="text-blue-400">{waterLevel} cm</span>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        };
 
-        const InventoryChart = ({ t }) => {
-            const canvasRef = useRef(null);
-
-            useEffect(() => {
-                if (!canvasRef.current) return;
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                const data = [65, 82, 45, 90, 70, 85, 95];
-
-                ctx.clearRect(0, 0, 800, 200);
-
-                ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-                ctx.lineWidth = 1;
-                for(let i=0; i<6; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, i * 40);
-                    ctx.lineTo(800, i * 40);
-                    ctx.stroke();
-                }
-
-                ctx.beginPath();
-                ctx.strokeStyle = '#fcd34d';
-                ctx.lineWidth = 3;
-                ctx.lineJoin = 'round';
-                ctx.lineCap = 'round';
-
-                const step = 800 / (data.length - 1);
-                data.forEach((val, i) => {
-                    const x = i * step;
-                    const y = 200 - (val / 100 * 180);
-                    if(i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                });
-                ctx.stroke();
-
-                ctx.lineTo(800, 200);
-                ctx.lineTo(0, 200);
-                const grad = ctx.createLinearGradient(0, 0, 0, 200);
-                grad.addColorStop(0, 'rgba(252, 211, 77, 0.2)');
-                grad.addColorStop(1, 'transparent');
-                ctx.fillStyle = grad;
-                ctx.fill();
-
-                ctx.fillStyle = '#fcd34d';
-                data.forEach((val, i) => {
-                    const x = i * step;
-                    const y = 200 - (val / 100 * 180);
-                    ctx.beginPath();
-                    ctx.arc(x, y, 4, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-
-            }, [t]);
-
-            return (
-                <div className="w-full h-48 mt-4 relative">
-                    <canvas ref={canvasRef} width="800" height="200" className="w-full h-full"></canvas>
-                    <div className="absolute bottom-0 left-0 w-full flex justify-between px-2 text-[8px] font-bold text-slate-600 uppercase tracking-widest">
-                        <span>00:00</span>
-                        <span>06:00</span>
-                        <span>12:00</span>
-                        <span>18:00</span>
-                        <span>23:59</span>
-                    </div>
-                </div>
-            );
-        };
-
-        const MonitoringHub = ({ t, depotTanks, stations, onRefresh }) => (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 animate-fade-in">
-                {/* Left: Main Depot */}
-                <div className="xl:col-span-8 space-y-8">
-                    <div className="glass p-8 rounded-[40px] relative overflow-hidden">
-                        <div className="flex items-center justify-between mb-12">
-                            <div>
-                                <h2 className="text-2xl font-display font-black uppercase italic tracking-tighter">{t.oilDepot}</h2>
-                                <p className="text-sm font-medium text-slate-500">Орталық терминалдың 3D-мониторингі</p>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <button onClick={onRefresh} className="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                    <LucideIcon name="refresh-cw" className="w-5 h-5 text-amber-400" />
-                                </button>
-                            </div>
+                        <div class="flex items-center gap-3 text-xs font-mono text-cyan-400 mb-2">
+                            <span>SPATIAL COMPUTING</span>
+                            <span>•</span>
+                            <span>THREE.JS & SHADERS</span>
                         </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pt-4">
-                            {depotTanks.map(tank => (
-                                <Tank3D
-                                    key={tank.id}
-                                    label={tank.name}
-                                    percentage={Math.round((tank.current / tank.capacity) * 100)}
-                                    fuelType={tank.fuelType}
-                                    capacity={tank.capacity}
-                                    current={tank.current}
-                                    waterLevel={tank.water}
-                                    t={t}
-                                />
-                            ))}
-                        </div>
+                        <h3 class="text-2xl font-display font-bold text-white mb-3 group-hover:text-cyan-300 transition-colors" data-i18n="projects.p1.title">
+                            Aetheria | Кеңістіктік 3D Тәжірибесі
+                        </h3>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-6" data-i18n="projects.p1.desc">
+                            VisionOS интерфейсіне арналған ультра-премиум веб-визуализация. Жеңіл инерция және сұйық шыны әсерлері бар нақты уақыттағы 3D орта.
+                        </p>
                     </div>
 
-                    <div className="glass p-8 rounded-[40px]">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 italic">Тәуліктік айналым графигі</h3>
-                            <span className="text-[10px] font-bold text-emerald-400">+4.2% Бүгін</span>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                        <span class="text-xs font-mono text-slate-400" data-i18n="projects.client1">Client: Apple Ecosystem Labs</span>
+                        <div class="flex items-center gap-2 text-xs font-semibold text-white group-hover:text-cyan-400 transition-colors">
+                            <span data-i18n="projects.view">Жобаны зерттеу</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                         </div>
-                        <InventoryChart t={t} />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {[
-                            { label: t.premium, color: 'bg-amber-400', val: '5,650 m³' },
-                            { label: t.regular, color: 'bg-blue-500', val: '4,200 m³' },
-                            { label: t.diesel, color: 'bg-emerald-500', val: '1,200 m³' },
-                        ].map((stat, idx) => (
-                            <div key={idx} className="glass p-6 rounded-3xl flex items-center gap-4">
-                                <div className={`w-3 h-3 rounded-full ${stat.color} shadow-lg shadow-${stat.color.split('-')[1]}-500/50`}></div>
-                                <div>
-                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{stat.label}</p>
-                                    <p className="text-xl font-black text-white italic">{stat.val}</p>
-                                </div>
-                            </div>
-                        ))}
                     </div>
                 </div>
 
-                {/* Right: AZS Network */}
-                <div className="xl:col-span-4 space-y-6">
-                    <div className="glass p-8 rounded-[40px] h-full border-l-4 border-amber-400">
-                        <h2 className="text-xl font-display font-black uppercase italic tracking-tighter mb-8">{t.azsNetwork}</h2>
-                        <div className="space-y-8">
-                            {stations.map(station => (
-                                <div key={station.id} className="p-6 bg-white/5 rounded-3xl border border-white/5 hover:border-white/10 transition-all duration-300">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <div>
-                                            <h4 className="font-bold text-sm text-white">{station.name}</h4>
-                                            <p className="text-[10px] font-bold text-slate-500 uppercase">{station.region}</p>
-                                        </div>
-                                        <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center">
-                                            <LucideIcon name="map-pin" className="w-4 h-4 text-blue-400" />
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-end">
-                                        <Tank3D percentage={station.stocks.premium} fuelType="premium" variant="mini" label="P" t={t} />
-                                        <Tank3D percentage={station.stocks.regular} fuelType="regular" variant="mini" label="R" t={t} />
-                                        <Tank3D percentage={station.stocks.diesel} fuelType="diesel" variant="mini" label="D" t={t} />
-                                    </div>
-                                </div>
-                            ))}
+                <!-- Project 2: Chrono Lux Swiss Hyperwatch -->
+                <div class="ambient-card glass-panel rounded-3xl p-6 sm:p-8 border border-white/10 flex flex-col justify-between group cursor-pointer">
+                    <div class="glow-backdrop"></div>
+                    <div>
+                        <!-- Project Visual Canvas Mockup -->
+                        <div class="relative h-64 sm:h-72 w-full rounded-2xl overflow-hidden mb-6 bg-gradient-to-tr from-slate-950 via-slate-900 to-amber-950/40 border border-white/5 flex items-center justify-center p-6 group-hover:border-amber-500/30 transition-colors">
+                            <div class="relative w-40 h-40 rounded-full border border-amber-400/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-4 rounded-full border border-amber-500/30 animate-pulse"></div>
+                                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-600 blur-lg opacity-30 group-hover:opacity-70 transition-opacity"></div>
+                                <i data-lucide="watch" class="w-10 h-10 text-amber-300 relative z-10"></i>
+                            </div>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-mono tracking-wider bg-white/10 backdrop-blur-md text-white border border-white/10">
+                                BEST E-COMMERCE
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-3 text-xs font-mono text-amber-400 mb-2">
+                            <span>LUXURY HOROLOGY</span>
+                            <span>•</span>
+                            <span>WEBGL 60FPS</span>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold text-white mb-3 group-hover:text-amber-300 transition-colors" data-i18n="projects.p2.title">
+                            Chrono Haute | Швейцариялық Сағат Инженериясы
+                        </h3>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-6" data-i18n="projects.p2.desc">
+                            Жоғары сән сағаттарын интерактивті бөлшектеу және 360° оптикалық жарық шағылысымен көрсетуге арналған премиум презентация.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                        <span class="text-xs font-mono text-slate-400" data-i18n="projects.client2">Client: Geneve Horlogerie</span>
+                        <div class="flex items-center gap-2 text-xs font-semibold text-white group-hover:text-amber-400 transition-colors">
+                            <span data-i18n="projects.view">Жобаны зерттеу</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                         </div>
                     </div>
+                </div>
+
+                <!-- Project 3: Hyperion Electric Supercar -->
+                <div class="ambient-card glass-panel rounded-3xl p-6 sm:p-8 border border-white/10 flex flex-col justify-between group cursor-pointer">
+                    <div class="glow-backdrop"></div>
+                    <div>
+                        <!-- Project Visual Canvas Mockup -->
+                        <div class="relative h-64 sm:h-72 w-full rounded-2xl overflow-hidden mb-6 bg-gradient-to-tr from-slate-950 via-slate-900 to-cyan-950/40 border border-white/5 flex items-center justify-center p-6 group-hover:border-cyan-500/30 transition-colors">
+                            <div class="relative w-40 h-40 rounded-full border border-cyan-400/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
+                                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-cyan-400 to-emerald-500 blur-lg opacity-30 group-hover:opacity-70 transition-opacity"></div>
+                                <i data-lucide="gauge" class="w-10 h-10 text-cyan-300 relative z-10"></i>
+                            </div>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-mono tracking-wider bg-white/10 backdrop-blur-md text-white border border-white/10">
+                                FWA OF THE DAY
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-3 text-xs font-mono text-cyan-400 mb-2">
+                            <span>AUTOMOTIVE AERODYNAMICS</span>
+                            <span>•</span>
+                            <span>PARTICLE FLUIDS</span>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold text-white mb-3 group-hover:text-cyan-300 transition-colors" data-i18n="projects.p3.title">
+                            Hyperion GT | Аэродинамикалық Телеметрия
+                        </h3>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-6" data-i18n="projects.p3.desc">
+                            Жел туннеліндегі ауа ағынын интерактивті бөлшектер арқылы визуализациялайтын электрлік суперкар таныстырылымы.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                        <span class="text-xs font-mono text-slate-400" data-i18n="projects.client3">Client: Apex Automotive Munich</span>
+                        <div class="flex items-center gap-2 text-xs font-semibold text-white group-hover:text-cyan-400 transition-colors">
+                            <span data-i18n="projects.view">Жобаны зерттеу</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: Quantum Financial Core -->
+                <div class="ambient-card glass-panel rounded-3xl p-6 sm:p-8 border border-white/10 flex flex-col justify-between group cursor-pointer">
+                    <div class="glow-backdrop"></div>
+                    <div>
+                        <!-- Project Visual Canvas Mockup -->
+                        <div class="relative h-64 sm:h-72 w-full rounded-2xl overflow-hidden mb-6 bg-gradient-to-tr from-slate-950 via-slate-900 to-purple-950/40 border border-white/5 flex items-center justify-center p-6 group-hover:border-purple-500/30 transition-colors">
+                            <div class="relative w-40 h-40 rounded-full border border-purple-400/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
+                                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 blur-lg opacity-30 group-hover:opacity-70 transition-opacity"></div>
+                                <i data-lucide="shield-check" class="w-10 h-10 text-purple-300 relative z-10"></i>
+                            </div>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-mono tracking-wider bg-white/10 backdrop-blur-md text-white border border-white/10">
+                                DESIGN INNOVATION
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-3 text-xs font-mono text-purple-400 mb-2">
+                            <span>NEO BANKING & ENCRYPTION</span>
+                            <span>•</span>
+                            <span>REACT & GSAP CORE</span>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold text-white mb-3 group-hover:text-purple-300 transition-colors" data-i18n="projects.p4.title">
+                            Novus Capital | Институционалды Қаржы Платформасы
+                        </h3>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-6" data-i18n="projects.p4.desc">
+                            Жасанды интеллект негізіндегі транзакциялар ағынын микро-секундтық жылдамдықпен көрсететін криптографиялық басқару орталығы.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                        <span class="text-xs font-mono text-slate-400" data-i18n="projects.client4">Client: Novus Global London</span>
+                        <div class="flex items-center gap-2 text-xs font-semibold text-white group-hover:text-purple-400 transition-colors">
+                            <span data-i18n="projects.view">Жобаны зерттеу</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= CRAFTSMANSHIP & HONORS ================= -->
+        <section id="craftsmanship" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-white/5">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono uppercase tracking-widest text-cyan-400 block mb-3" data-i18n="craft.pre">Apple Деңгейіндегі Стандарттар</span>
+                <h2 class="text-3xl sm:text-5xl font-display font-bold tracking-tight text-apple-headline" data-i18n="craft.title">
+                    Инженерлік Дәлдік. Көркем Әсемдік.
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 text-center hover:border-cyan-500/30 transition-all">
+                    <div class="font-mono text-3xl font-bold text-cyan-400 mb-2">0.016s</div>
+                    <div class="text-xs uppercase font-mono tracking-wider text-slate-400 mb-1" data-i18n="craft.metric1.title">60fps Кадр Тұрақтылығы</div>
+                    <p class="text-xs text-slate-500" data-i18n="craft.metric1.desc">Микро-кешігусіз тегіс өтулер</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 text-center hover:border-violet-500/30 transition-all">
+                    <div class="font-mono text-3xl font-bold text-violet-400 mb-2">99.9%</div>
+                    <div class="text-xs uppercase font-mono tracking-wider text-slate-400 mb-1" data-i18n="craft.metric2.title">Lighthouse Performance</div>
+                    <p class="text-xs text-slate-500" data-i18n="craft.metric2.desc">Оңтайландырылған код базасы</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 text-center hover:border-emerald-500/30 transition-all">
+                    <div class="font-mono text-3xl font-bold text-emerald-400 mb-2">3D Tilt</div>
+                    <div class="text-xs uppercase font-mono tracking-wider text-slate-400 mb-1" data-i18n="craft.metric3.title">Инерциялық Физика</div>
+                    <p class="text-xs text-slate-500" data-i18n="craft.metric3.desc">Сенсорлық шынайы реакция</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 text-center hover:border-amber-500/30 transition-all">
+                    <div class="font-mono text-3xl font-bold text-amber-400 mb-2">Dual</div>
+                    <div class="text-xs uppercase font-mono tracking-wider text-slate-400 mb-1" data-i18n="craft.metric4.title">Qazaq & English</div>
+                    <p class="text-xs text-slate-500" data-i18n="craft.metric4.desc">Толық қос тілді қолдау</p>
                 </div>
             </div>
-        );
+        </section>
 
-        const PriceManagement = ({ t, prices, setPrices, onSave, lang }) => (
-            <div className="max-w-4xl space-y-8 animate-fade-in">
-                <div className="glass p-10 rounded-[40px]">
-                    <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-10">{t.priceList}</h2>
-                    <div className="space-y-6">
-                        {Object.entries(prices).map(([type, priceObj]) => (
-                            <div key={type} className="flex items-center justify-between p-6 bg-white/5 rounded-3xl group hover:bg-white/10 transition-all">
-                                <div className="flex items-center gap-6">
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                                        type === 'premium' ? 'bg-amber-400/10 text-amber-400' :
-                                        type === 'regular' ? 'bg-blue-400/10 text-blue-400' : 'bg-emerald-400/10 text-emerald-400'
-                                    }`}>
-                                        <LucideIcon name="fuel" className="w-8 h-8" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-lg font-black uppercase italic">{t[type]}</h4>
-                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest italic">{t.lastUpdate}: 14:45</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-6">
-                                    <input
-                                        type="number"
-                                        value={priceObj[lang] || priceObj.kk || 0}
-                                        onChange={(e) => {
-                                            const newVal = parseFloat(e.target.value) || 0;
-                                            setPrices(prev => ({
-                                                ...prev,
-                                                [type]: { ...prev[type], [lang]: newVal }
-                                            }));
-                                        }}
-                                        className="w-32 bg-cosmicDeep border border-white/10 rounded-2xl px-4 py-3 text-2xl font-display font-black text-mercuryGold text-right outline-none focus:border-mercuryGold/50 transition-all"
-                                    />
-                                    <span className="text-xl font-black text-slate-600">₸/L</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="mt-12 flex justify-end">
-                        <button
-                            onClick={onSave}
-                            className="bg-amber-400 text-cosmicDeep px-10 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber-400/20"
-                        >
-                            {t.save}
-                        </button>
-                    </div>
+        <!-- ================= HONORS & AWARDS SECTION ================= -->
+        <section id="awards" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-white/5">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                <div>
+                    <span class="text-xs font-mono uppercase tracking-widest text-cyan-400 block mb-3" data-i18n="awards.pre">Халықаралық Тану</span>
+                    <h2 class="text-3xl sm:text-5xl font-display font-bold tracking-tight text-white" data-i18n="awards.title">
+                        Марапаттар & Бағалау
+                    </h2>
                 </div>
             </div>
-        );
 
-        // --- NEW MODULE: Fuel Cost Calculator ---
-        const FuelCalculator = ({ t, prices, lang, onApplyToForm }) => {
-            const [selectedFuel, setSelectedFuel] = useState('diesel');
-            const [volume, setVolume] = useState(15000);
-            const [region, setRegion] = useState('Astana');
-
-            const currentPrice = useMemo(() => {
-                return prices[selectedFuel]?.[lang] || prices[selectedFuel]?.kk || 0;
-            }, [prices, selectedFuel, lang]);
-
-            const logisticsCostPerLiter = {
-                Almaty: 4,
-                Astana: 8,
-                Shymkent: 3,
-                Kokshetau: 9,
-                Aktau: 14
-            };
-
-            const calculation = useMemo(() => {
-                const basePrice = volume * currentPrice;
-                const logisticsPrice = volume * (logisticsCostPerLiter[region] || 5);
-
-                // Volume discounts (көлемдік жеңілдіктер)
-                let discountPercent = 0;
-                if (volume >= 50000) discountPercent = 0.05; // 5%
-                else if (volume >= 20000) discountPercent = 0.03; // 3%
-                else if (volume >= 10000) discountPercent = 0.015; // 1.5%
-
-                const baseDiscount = basePrice * discountPercent;
-                const subtotal = basePrice + logisticsPrice - baseDiscount;
-                const vat = subtotal * 0.12; // 12% VAT (ҚҚС)
-                const total = subtotal + vat;
-
-                return {
-                    basePrice,
-                    logisticsPrice,
-                    discountPercent: (discountPercent * 100).toFixed(1),
-                    discountAmount: baseDiscount,
-                    subtotal,
-                    vat,
-                    total
-                };
-            }, [volume, currentPrice, region]);
-
-            return (
-                <div className="max-w-4xl space-y-8 animate-fade-in">
-                    <div className="glass p-10 rounded-[40px] border-l-4 border-amber-400">
-                        <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-4">{t.calculator}</h2>
-                        <p className="text-sm font-medium text-slate-500 mb-8">Көтерме отын құнын автоматты түрде есептеу жүйесі (ҚҚС және жеткізуді есептейді)</p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Отын түрі</label>
-                                    <select
-                                        value={selectedFuel}
-                                        onChange={(e) => setSelectedFuel(e.target.value)}
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    >
-                                        <option value="premium">{t.premium}</option>
-                                        <option value="regular">{t.regular}</option>
-                                        <option value="diesel">{t.diesel}</option>
-                                    </select>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Жеткізу аймағы</label>
-                                    <select
-                                        value={region}
-                                        onChange={(e) => setRegion(e.target.value)}
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    >
-                                        <option value="Almaty">Алматы (Логистика: +4 ₸/л)</option>
-                                        <option value="Astana">Астана (Логистика: +8 ₸/л)</option>
-                                        <option value="Shymkent">Шымкент (Логистика: +3 ₸/л)</option>
-                                        <option value="Kokshetau">Көкшетау (Логистика: +9 ₸/л)</option>
-                                        <option value="Aktau">Ақтау (Логистика: +14 ₸/л)</option>
-                                    </select>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <div className="flex justify-between items-center px-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Қажетті көлем</label>
-                                        <span className="text-xs font-bold text-amber-400">{volume.toLocaleString()} Литр</span>
-                                    </div>
-                                    <input
-                                        type="range"
-                                        min="1000"
-                                        max="100000"
-                                        step="500"
-                                        value={volume}
-                                        onChange={(e) => setVolume(parseInt(e.target.value))}
-                                        className="w-full accent-amber-400 cursor-pointer"
-                                    />
-                                    <input
-                                        type="number"
-                                        value={volume}
-                                        onChange={(e) => setVolume(Math.max(0, parseInt(e.target.value) || 0))}
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-3 text-xs font-bold focus:border-mercuryGold transition-all outline-none text-white mt-2"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Calculation Display Card */}
-                            <div className="bg-white/5 p-8 rounded-3xl border border-white/10 flex flex-col justify-between">
-                                <div>
-                                    <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6 italic">Есептеу нәтижесі</h4>
-
-                                    <div className="space-y-4">
-                                        <div className="flex justify-between text-xs font-bold">
-                                            <span className="text-slate-400">Отын базалық құны:</span>
-                                            <span>{calculation.basePrice.toLocaleString()} ₸</span>
-                                        </div>
-                                        <div className="flex justify-between text-xs font-bold">
-                                            <span className="text-slate-400">Тасымалдау / Логистика:</span>
-                                            <span>+ {calculation.logisticsPrice.toLocaleString()} ₸</span>
-                                        </div>
-                                        <div className="flex justify-between text-xs font-bold text-emerald-400">
-                                            <span>Жеңілдік ({calculation.discountPercent}%):</span>
-                                            <span>- {calculation.discountAmount.toLocaleString()} ₸</span>
-                                        </div>
-                                        <div className="flex justify-between text-xs font-bold">
-                                            <span className="text-slate-400">ҚҚС (12%):</span>
-                                            <span>{calculation.vat.toLocaleString()} ₸</span>
-                                        </div>
-                                        <hr className="border-white/10 my-4" />
-                                        <div className="flex justify-between items-baseline">
-                                            <span className="text-sm font-black uppercase tracking-wider text-slate-400">Барлығы:</span>
-                                            <span className="text-2xl font-display font-black text-mercuryGold italic">
-                                                {Math.round(calculation.total).toLocaleString()} ₸
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={() => onApplyToForm({ fuelType: selectedFuel, volume, region })}
-                                    className="w-full bg-amber-400 text-cosmicDeep py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-400/10 hover:bg-white transition-all transform active:scale-95 mt-6"
-                                >
-                                    Осы есеппен тапсырыс беру
-                                </button>
-                            </div>
+            <!-- Awards List -->
+            <div class="space-y-4">
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-cyan-500/40 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                            <i data-lucide="award" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-base font-semibold text-white">Awwwards Site of the Day (SOTD)</h4>
+                            <p class="text-xs text-slate-400 font-mono">Aetheria Spatial Platform • Global Recognition</p>
                         </div>
                     </div>
+                    <span class="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20 self-start sm:self-auto">2024</span>
                 </div>
-            );
-        };
 
-        // --- NEW MODULE: Contact & B2B Order Form ---
-        const B2bOrderForm = ({ t, initialValues, onSubmitOrder, userRole, b2bOrders, onUpdateStatus }) => {
-            const [company, setCompany] = useState('');
-            const [bin, setBin] = useState('');
-            const [fuelType, setFuelType] = useState('diesel');
-            const [volume, setVolume] = useState(10000);
-            const [region, setRegion] = useState('Almaty');
-            const [contactPerson, setContactPerson] = useState('');
-            const [email, setEmail] = useState('');
-
-            useEffect(() => {
-                if (initialValues) {
-                    if (initialValues.fuelType) setFuelType(initialValues.fuelType);
-                    if (initialValues.volume) setVolume(initialValues.volume);
-                    if (initialValues.region) setRegion(initialValues.region);
-                }
-            }, [initialValues]);
-
-            const handleFormSubmit = (e) => {
-                e.preventDefault();
-                const newOrder = {
-                    id: 'o-' + Date.now(),
-                    company: company || 'Жеке кәсіпкер',
-                    bin: bin || '123456789012',
-                    fuelType,
-                    volume: parseInt(volume) || 1000,
-                    region,
-                    contactPerson,
-                    email,
-                    status: 'Жаңа',
-                    date: new Date().toLocaleDateString()
-                };
-                onSubmitOrder(newOrder);
-                // Reset Form
-                setCompany('');
-                setBin('');
-                setContactPerson('');
-                setEmail('');
-                showToast('Көтерме отынға тапсырысыңыз сәтті қабылданды!', 'success');
-            };
-
-            return (
-                <div className="space-y-8 animate-fade-in">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        {/* Order / Contact Form Card */}
-                        <div className="lg:col-span-7 glass p-10 rounded-[40px]">
-                            <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-4">Жеткізуге сұраныс жіберу</h2>
-                            <p className="text-sm font-medium text-slate-500 mb-8">B2B серіктестер үшін көтерме сауда шарты бойынша жылдам сұраныс формасы</p>
-
-                            <form onSubmit={handleFormSubmit} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Компания атауы</label>
-                                        <input
-                                            value={company}
-                                            onChange={(e) => setCompany(e.target.value)}
-                                            type="text"
-                                            required
-                                            placeholder="ЖШС ОтынТранс"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">БИН (12 таңба)</label>
-                                        <input
-                                            value={bin}
-                                            onChange={(e) => setBin(e.target.value)}
-                                            type="text"
-                                            required
-                                            maxLength="12"
-                                            placeholder="920440001234"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Отын түрі</label>
-                                        <select
-                                            value={fuelType}
-                                            onChange={(e) => setFuelType(e.target.value)}
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                        >
-                                            <option value="premium">{t.premium}</option>
-                                            <option value="regular">{t.regular}</option>
-                                            <option value="diesel">{t.diesel}</option>
-                                        </select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Көлем (Литр)</label>
-                                        <input
-                                            value={volume}
-                                            onChange={(e) => setVolume(e.target.value)}
-                                            type="number"
-                                            required
-                                            min="1000"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Жеткізу аймағы</label>
-                                        <select
-                                            value={region}
-                                            onChange={(e) => setRegion(e.target.value)}
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                        >
-                                            <option value="Almaty">Алматы</option>
-                                            <option value="Astana">Астана</option>
-                                            <option value="Shymkent">Шымкент</option>
-                                            <option value="Kokshetau">Көкшетау</option>
-                                            <option value="Aktau">Ақтау</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Байланысушы тұлға</label>
-                                        <input
-                                            value={contactPerson}
-                                            onChange={(e) => setContactPerson(e.target.value)}
-                                            type="text"
-                                            required
-                                            placeholder="Арман Ахметов"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Электронды пошта</label>
-                                        <input
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            type="email"
-                                            required
-                                            placeholder="b2b@company.kz"
-                                            className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none"
-                                        />
-                                    </div>
-                                </div>
-
-                                <button className="w-full bg-mercuryGold text-cosmicDeep py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-400/10 hover:bg-white transition-all transform active:scale-95">
-                                    Жеткізу шартын бекітуге өтінім жіберу
-                                </button>
-                            </form>
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-violet-500/40 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-400">
+                            <i data-lucide="trophy" class="w-5 h-5"></i>
                         </div>
-
-                        {/* Order Tracking Dashboard / Sidebar info */}
-                        <div className="lg:col-span-5 space-y-6">
-                            <div className="glass p-8 rounded-[40px] border-r-4 border-royalBlue">
-                                <h3 className="text-xl font-display font-black uppercase italic tracking-tighter mb-6">Сұраныстар журналы</h3>
-
-                                <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2">
-                                    {b2bOrders.length === 0 ? (
-                                        <p className="text-xs text-slate-500 font-bold uppercase italic text-center py-8">Сұраныстар тізімі бос</p>
-                                    ) : (
-                                        b2bOrders.map(order => (
-                                            <div key={order.id} className="p-5 bg-white/5 rounded-2xl border border-white/5 space-y-3">
-                                                <div className="flex justify-between items-start">
-                                                    <div>
-                                                        <h4 className="text-xs font-black text-white">{order.company}</h4>
-                                                        <p className="text-[9px] font-mono text-slate-500">БИН: {order.bin}</p>
-                                                    </div>
-                                                    <span className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
-                                                        order.status === 'Жаңа' ? 'bg-amber-400/10 text-amber-400' :
-                                                        order.status === 'Жасалды' ? 'bg-emerald-400/10 text-emerald-400' : 'bg-royalBlue/10 text-royalBlue'
-                                                    }`}>
-                                                        {order.status}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between items-center text-[10px] font-bold">
-                                                    <span className="text-slate-400">{t[order.fuelType]}: <strong className="text-white">{order.volume.toLocaleString()} л</strong></span>
-                                                    <span className="text-slate-400">Аймақ: <strong className="text-white">{order.region}</strong></span>
-                                                </div>
-
-                                                {/* Admin Action to complete request */}
-                                                {userRole === 'admin' && order.status === 'Жаңа' && (
-                                                    <div className="pt-2 flex justify-end">
-                                                        <button
-                                                            onClick={() => onUpdateStatus(order.id, 'Жасалды')}
-                                                            className="px-3 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg text-[9px] font-black uppercase hover:bg-emerald-400 hover:text-cosmicDeep transition-all"
-                                                        >
-                                                            Мақұлдау
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
+                        <div>
+                            <h4 class="text-base font-semibold text-white">FWA of the Day</h4>
+                            <p class="text-xs text-slate-400 font-mono">Hyperion Aerodynamics • Outstanding Interaction Design</p>
                         </div>
                     </div>
+                    <span class="text-xs font-mono text-violet-400 bg-violet-500/10 px-3 py-1 rounded-full border border-violet-500/20 self-start sm:self-auto">2024</span>
                 </div>
-            );
-        };
 
-        // --- NEW MODULE: Download Hub ---
-        const DownloadHub = ({ t, documents, onDownload }) => {
-            const [downloadingId, setDownloadingId] = useState(null);
-            const [progress, setProgress] = useState(0);
-
-            const handleDownloadClick = (doc) => {
-                if (downloadingId) return;
-                setDownloadingId(doc.id);
-                setProgress(0);
-
-                const interval = setInterval(() => {
-                    setProgress(prev => {
-                        if (prev >= 100) {
-                            clearInterval(interval);
-                            setTimeout(() => {
-                                setDownloadingId(null);
-                                onDownload(doc);
-                                showToast(`Құжат жүктелді: ${doc.title}`, 'success');
-                            }, 500);
-                            return 100;
-                        }
-                        return prev + 10;
-                    });
-                }, 150);
-            };
-
-            return (
-                <div className="space-y-8 animate-fade-in max-w-5xl">
-                    <div className="glass p-10 rounded-[40px]">
-                        <h2 className="text-3xl font-display font-black uppercase italic tracking-tighter mb-4">{t.downloadHub}</h2>
-                        <p className="text-sm font-medium text-slate-500 mb-10">Тікелей серверден отын сертификаттарын, мемлекеттік стандарттарды және коммерциялық ұсыныстарды жылдам жүктеу бөлімі</p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {documents.map(doc => {
-                                const isDownloading = downloadingId === doc.id;
-                                return (
-                                    <div key={doc.id} className="p-6 bg-white/5 rounded-3xl border border-white/5 flex flex-col justify-between hover:border-white/10 transition-all group">
-                                        <div className="flex items-start gap-4 mb-6">
-                                            <div className="w-12 h-12 bg-royalBlue/20 rounded-2xl flex items-center justify-center text-royalBlue">
-                                                <LucideIcon name="file-text" className="w-6 h-6" />
-                                            </div>
-                                            <div>
-                                                <span className="text-[8px] font-black uppercase tracking-widest bg-white/5 text-slate-400 px-2 py-1 rounded-md">{doc.category}</span>
-                                                <h4 className="text-sm font-bold text-white mt-2 group-hover:text-amber-400 transition-colors">{doc.title}</h4>
-                                                <div className="flex gap-4 mt-1 text-[10px] font-bold text-slate-500">
-                                                    <span>Көлемі: {doc.size}</span>
-                                                    <span>Формат: {doc.type}</span>
-                                                    <span>Жүктелді: {doc.downloads} рет</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {isDownloading ? (
-                                            <div className="space-y-2">
-                                                <div className="flex justify-between text-[10px] font-black uppercase text-amber-400 tracking-widest">
-                                                    <span>Жүктелуде...</span>
-                                                    <span>{progress}%</span>
-                                                </div>
-                                                <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                                    <div className="h-full bg-amber-400 rounded-full transition-all duration-150" style={{ width: `${progress}%` }}></div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <button
-                                                onClick={() => handleDownloadClick(doc)}
-                                                className="w-full py-3 bg-white/5 group-hover:bg-amber-400 group-hover:text-cosmicDeep text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2"
-                                            >
-                                                <LucideIcon name="download" className="w-4 h-4" />
-                                                Жүктеп алу
-                                            </button>
-                                        )}
-                                    </div>
-                                );
-                            })}
+                <div class="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-amber-500/40 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                            <i data-lucide="star" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-base font-semibold text-white">Apple Design Award Nominee</h4>
+                            <p class="text-xs text-slate-400 font-mono">VisionOS Interaction Framework • Spatial Audio & 3D Tilt</p>
                         </div>
                     </div>
-                </div>
-            );
-        };
-
-        // --- NEW MODULE: Visitor Analytics ---
-        const VisitorAnalytics = ({ t, analyticsLogs, b2bOrders }) => {
-            const uniqueVisitors = useMemo(() => {
-                return Math.floor(analyticsLogs.length * 0.6) + 3;
-            }, [analyticsLogs]);
-
-            const totalOrdersVolume = useMemo(() => {
-                return b2bOrders.reduce((acc, curr) => acc + curr.volume, 0);
-            }, [b2bOrders]);
-
-            return (
-                <div className="space-y-8 animate-fade-in">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {[
-                            { label: "Жалпы әрекеттер саны", val: analyticsLogs.length + 120, icon: "activity", color: "text-royalBlue" },
-                            { label: "Бірегей келушілер", val: uniqueVisitors, icon: "globe", color: "text-amber-400" },
-                            { label: "Жиынтық тапсырыс көлемі", val: `${totalOrdersVolume.toLocaleString()} л`, icon: "fuel", color: "text-emerald-400" },
-                            { label: "Көрсетілім конверсиясы", val: "14.2 %", icon: "activity", color: "text-red-400" },
-                        ].map((card, i) => (
-                            <div key={i} className="glass p-6 rounded-3xl flex items-center gap-5 border border-white/5">
-                                <div className={`w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center ${card.color}`}>
-                                    <LucideIcon name={card.icon} />
-                                </div>
-                                <div>
-                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-wider">{card.label}</p>
-                                    <p className="text-xl font-black text-white italic mt-1">{card.val}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* Interactive Visitor Logs */}
-                        <div className="lg:col-span-2 glass rounded-[40px] overflow-hidden">
-                            <div className="p-8 border-b border-white/5 flex justify-between items-center">
-                                <h3 className="text-xl font-display font-black uppercase italic tracking-tighter">Шынайы уақыттағы келушілер логы</h3>
-                                <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 animate-pulse">● Live бақылау</span>
-                            </div>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left text-xs">
-                                    <thead className="bg-white/5 text-slate-500 uppercase text-[9px] font-black tracking-widest">
-                                        <tr>
-                                            <th className="px-6 py-4">Бет / Секция</th>
-                                            <th className="px-6 py-4">Кіру көзі</th>
-                                            <th className="px-6 py-4">Орындалған әрекет</th>
-                                            <th className="px-6 py-4 text-right">Уақыты</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-white/5">
-                                        {analyticsLogs.map(log => (
-                                            <tr key={log.id} className="hover:bg-white/5 transition-colors">
-                                                <td className="px-6 py-4 font-bold text-white">{log.page}</td>
-                                                <td className="px-6 py-4">
-                                                    <span className="px-2 py-0.5 bg-white/5 text-slate-400 rounded-md">{log.referral}</span>
-                                                </td>
-                                                <td className="px-6 py-4 text-slate-300 font-medium">{log.action}</td>
-                                                <td className="px-6 py-4 text-right text-slate-500 font-mono">{log.timestamp}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        {/* Interactive analytical breakdowns */}
-                        <div className="glass p-8 rounded-[40px] space-y-6">
-                            <h3 className="text-xl font-display font-black uppercase italic tracking-tighter">Сұраныс конверсиясы</h3>
-
-                            <div className="space-y-4">
-                                <div>
-                                    <div className="flex justify-between text-xs font-bold mb-1">
-                                        <span className="text-slate-400">Іздеу жүйелерінен (Organic)</span>
-                                        <span>42%</span>
-                                    </div>
-                                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-royalBlue" style={{ width: '42%' }}></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="flex justify-between text-xs font-bold mb-1">
-                                        <span className="text-slate-400">Тікелей сілтемелер (Direct)</span>
-                                        <span>35%</span>
-                                    </div>
-                                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-amber-400" style={{ width: '35%' }}></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="flex justify-between text-xs font-bold mb-1">
-                                        <span className="text-slate-400">Серіктестік желілер</span>
-                                        <span>23%</span>
-                                    </div>
-                                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-emerald-400" style={{ width: '23%' }}></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const AdminPanel = ({ t, stations, setStations, logAction }) => (
-            <div className="space-y-8 animate-fade-in">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="glass p-8 rounded-[40px]">
-                        <h3 className="text-xl font-display font-black uppercase italic tracking-tighter mb-8">{t.stations}</h3>
-                        <div className="space-y-4">
-                            {stations.map(st => (
-                                <div key={st.id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center">
-                                            <LucideIcon name="building-2" className="w-5 h-5 text-slate-400" />
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-sm">{st.name}</p>
-                                            <p className="text-[10px] font-bold text-slate-500 uppercase">{st.region}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button className="p-2 text-slate-500 hover:text-white transition-colors"><LucideIcon name="edit-3" className="w-4 h-4" /></button>
-                                        <button
-                                            onClick={() => {
-                                                setStations(stations.filter(s => s.id !== st.id));
-                                                logAction(`Өшірілді АЗС: ${st.name}`);
-                                            }}
-                                            className="p-2 text-slate-500 hover:text-red-400 transition-colors"
-                                        >
-                                            <LucideIcon name="trash-2" className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                            <button
-                                onClick={() => {
-                                    const newStation = { id: Date.now(), name: 'New SME Station', region: 'Astana', stocks: { premium: 50, regular: 50, diesel: 50 } };
-                                    setStations([...stations, newStation]);
-                                    logAction(`Қосылды жаңа АЗС: ${newStation.name}`);
-                                }}
-                                className="w-full py-4 border-2 border-dashed border-white/10 rounded-2xl text-slate-500 hover:border-amber-400 hover:text-amber-400 transition-all font-bold text-sm"
-                            >
-                                + {t.addStation}
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="glass p-8 rounded-[40px]">
-                        <h3 className="text-xl font-display font-black uppercase italic tracking-tighter mb-8">{t.userRoles}</h3>
-                        <div className="space-y-4">
-                            {[
-                                { name: 'Admin Hub', role: 'Superuser', status: 'Online' },
-                                { name: 'Operator_Almaty', role: 'Operator', status: 'Idle' },
-                                { name: 'Manager_NB', role: 'Viewer', status: 'Online' },
-                            ].map((user, i) => (
-                                <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-royalBlue/20 rounded-full flex items-center justify-center text-royalBlue font-black text-xs">
-                                            {user.name.substring(0, 2)}
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-sm">{user.name}</p>
-                                            <p className="text-[10px] font-bold text-royalBlue uppercase">{user.role}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'Online' ? 'bg-emerald-400' : 'bg-slate-600'}`}></div>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase">{user.status}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <span class="text-xs font-mono text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 self-start sm:self-auto">2023</span>
                 </div>
             </div>
-        );
+        </section>
 
-        const UserRequests = ({ t, userRequests, setUserRequests, registeredUsers, setRegisteredUsers, logAction }) => (
-            <div className="glass rounded-[40px] overflow-hidden animate-fade-in">
-                <div className="p-8 border-b border-white/5 flex items-center justify-between">
-                    <h2 className="text-2xl font-display font-black uppercase italic tracking-tighter">{t.requests}</h2>
-                    <span className="px-4 py-1.5 bg-royalBlue/20 text-royalBlue rounded-full text-[10px] font-black uppercase tracking-widest">{userRequests.length} Жаңа</span>
+        <!-- ================= LUXURY FOOTER ================= -->
+        <footer class="border-t border-white/10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-display font-bold text-xs">
+                        AM
+                    </div>
+                    <span class="text-sm font-display font-bold text-white tracking-tight">ALUA MARAT</span>
+                    <span class="text-xs text-slate-500 font-mono">© 2025 All Rights Reserved.</span>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-white/5 text-slate-500 uppercase text-[10px] font-black tracking-widest">
-                            <tr>
-                                <th className="px-8 py-6">Компания / БИН</th>
-                                <th className="px-8 py-6">Email</th>
-                                <th className="px-8 py-6">Дата</th>
-                                <th className="px-8 py-6 text-right">Шешім</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5 font-medium">
-                            {userRequests.map(req => (
-                                <tr key={req.id} className="hover:bg-white/5 transition-colors">
-                                    <td className="px-8 py-5">
-                                        <p className="text-sm font-bold text-white">{req.name}</p>
-                                        <p className="text-[10px] font-mono text-slate-500">{req.bin}</p>
-                                    </td>
-                                    <td className="px-8 py-5 text-sm text-slate-300">{req.email}</td>
-                                    <td className="px-8 py-5 text-sm text-slate-500">{req.date}</td>
-                                    <td className="px-8 py-5 text-right space-x-2">
-                                        <button
-                                            onClick={() => {
-                                                const newUser = { id: Date.now(), name: req.name, role: 'client', email: req.email };
-                                                setRegisteredUsers([...registeredUsers, newUser]);
-                                                setUserRequests(userRequests.filter(r => r.id !== req.id));
-                                                logAction(`Расталды тіркелу өтінімі ${req.name}`);
-                                                showToast(`Пайдаланушы ${req.name} расталды`, 'success');
-                                            }}
-                                            className="px-4 py-2 bg-emerald-500/10 text-emerald-500 rounded-xl text-[10px] font-black uppercase hover:bg-emerald-500 hover:text-white transition-all"
-                                        >
-                                            Растау
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setUserRequests(userRequests.filter(r => r.id !== req.id));
-                                                logAction(`Бас тартылды тіркелу өтінімі ${req.name}`);
-                                                showToast(`Өтінім бас тартылды`, 'error');
-                                            }}
-                                            className="px-4 py-2 bg-red-500/10 text-red-500 rounded-xl text-[10px] font-black uppercase hover:bg-red-500 hover:text-white transition-all"
-                                        >
-                                            Бас тарту
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+
+                <div class="flex items-center gap-6 text-xs font-mono text-slate-400">
+                    <a href="https://github.com" target="_blank" rel="noopener" class="hover:text-cyan-400 transition-colors">GitHub</a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener" class="hover:text-cyan-400 transition-colors">LinkedIn</a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener" class="hover:text-cyan-400 transition-colors">X (Twitter)</a>
+                    <a href="https://awwwards.com" target="_blank" rel="noopener" class="hover:text-cyan-400 transition-colors">Awwwards</a>
+                </div>
+
+                <div class="text-xs font-mono text-slate-500 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span>Almaty, KZ • UTC+5</span>
                 </div>
             </div>
-        );
+        </footer>
 
-        const AuditLogs = ({ t, logs }) => (
-            <div className="glass rounded-[40px] overflow-hidden animate-fade-in">
-                <div className="p-8 border-b border-white/5 flex items-center justify-between">
-                    <h2 className="text-2xl font-display font-black uppercase italic tracking-tighter">{t.audit}</h2>
-                    <button className="text-xs font-black text-amber-400 uppercase tracking-widest border border-amber-400/30 px-4 py-2 rounded-xl hover:bg-amber-400 hover:text-cosmicDeep transition-all">{t.export}</button>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-white/5 text-slate-500 uppercase text-[10px] font-black tracking-widest">
-                            <tr>
-                                <th className="px-8 py-6">ID</th>
-                                <th className="px-8 py-6">{t.audit}</th>
-                                <th className="px-8 py-6">User</th>
-                                <th className="px-8 py-6">Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5 font-medium">
-                            {logs.map(log => (
-                                <tr key={log.id} className="hover:bg-white/5 transition-colors">
-                                    <td className="px-8 py-5 text-slate-500 font-mono text-[10px]">#{log.id.toString().slice(-6)}</td>
-                                    <td className="px-8 py-5 text-sm">{log.action}</td>
-                                    <td className="px-8 py-5">
-                                        <span className="px-3 py-1 bg-royalBlue/10 text-royalBlue rounded-lg text-xs font-bold">{log.user}</span>
-                                    </td>
-                                    <td className="px-8 py-5 text-sm text-slate-400">{log.time}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+    </main>
+
+    <!-- ================= INTERACTIVE CONTACT MODAL (Liquid Glass) ================= -->
+    <div id="contactModal" class="fixed inset-0 z-50 flex items-center justify-center px-4 opacity-0 pointer-events-none transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <!-- Backdrop Blur Overlay -->
+        <div id="modalBackdrop" class="absolute inset-0 bg-black/75 backdrop-blur-xl"></div>
+
+        <!-- Modal Dialog Box -->
+        <div class="relative glass-panel rounded-3xl max-w-lg w-full p-8 border border-white/15 shadow-2xl transform scale-95 transition-all duration-300 z-10">
+            <!-- Modal Close Button -->
+            <button id="closeContactBtn" type="button" class="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer" aria-label="Жабу / Close">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="mb-6">
+                <span class="text-xs font-mono uppercase tracking-widest text-cyan-400 block mb-2" data-i18n="modal.pre">Ынтымақтастық / Collaboration</span>
+                <h3 id="modalTitle" class="text-2xl font-display font-bold text-white tracking-tight" data-i18n="modal.title">
+                    Жаңа деңгейдегі жобаны бірге бастайық
+                </h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed" data-i18n="modal.subtitle">
+                    Форманы толтырыңыз немесе жеке поштаға жазыңыз: <a href="mailto:alua.marat@example.com" class="text-cyan-400 hover:underline">alua.marat@example.com</a>
+                </p>
             </div>
-        );
 
-        const Sidebar = ({ currentTab, setTab, t, role }) => {
-            const items = [
-                { id: 'monitoring', icon: 'activity', label: t.monitoring },
-                { id: 'calculator', icon: 'calculator', label: t.calculator },
-                { id: 'orderForm', icon: 'mail', label: t.orderForm },
-                { id: 'downloadHub', icon: 'download', label: t.downloadHub },
-                { id: 'prices', icon: 'tags', label: t.prices },
-                { id: 'analytics', icon: 'bar-chart-2', label: t.analytics, adminOnly: true },
-                { id: 'admin', icon: 'shield-check', label: t.admin, adminOnly: true },
-                { id: 'requests', icon: 'user-plus', label: t.requests, adminOnly: true },
-                { id: 'audit', icon: 'clipboard-list', label: t.audit },
-            ];
-
-            return (
-                <div className="fixed left-0 top-0 h-full w-20 lg:w-64 glass z-50 flex flex-col">
-                    <div className="p-6 flex items-center gap-3">
-                        <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center text-cosmicDeep shadow-lg shadow-amber-400/20">
-                            <LucideIcon name="zap" className="w-6 h-6 text-cosmicDeep fill-current" />
-                        </div>
-                        <span className="hidden lg:block font-display font-black text-lg uppercase tracking-tighter italic">Smart Mercury</span>
-                    </div>
-
-                    <nav className="flex-1 mt-10 px-4 space-y-2 overflow-y-auto pr-1">
-                        {items.filter(i => !i.adminOnly || role === 'admin').map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => setTab(item.id)}
-                                className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 ${
-                                    currentTab === item.id
-                                    ? "bg-royalBlue text-white shadow-xl shadow-blue-600/30"
-                                    : "text-slate-400 hover:bg-white/5"
-                                }`}
-                            >
-                                <LucideIcon name={item.icon} />
-                                <span className="hidden lg:block font-bold text-sm tracking-tight">{item.label}</span>
-                            </button>
-                        ))}
-                    </nav>
-
-                    <div className="p-6 border-t border-white/5 space-y-4">
-                        <div className="hidden lg:block">
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">{t.systemStatus}</p>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                                <span className="text-xs font-bold text-emerald-400 uppercase tracking-tight">{t.active}</span>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Form -->
+            <form id="contactForm" class="space-y-4">
+                <div>
+                    <label for="contactName" class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1" data-i18n="modal.labelName">Атыңыз / Your Name</label>
+                    <input type="text" id="contactName" required placeholder="Ерлан Қасымов" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-colors">
                 </div>
-            );
+
+                <div>
+                    <label for="contactEmail" class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1" data-i18n="modal.labelEmail">Электронды пошта / Email</label>
+                    <input type="email" id="contactEmail" required placeholder="name@company.com" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-colors">
+                </div>
+
+                <div>
+                    <label for="contactProject" class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1" data-i18n="modal.labelType">Жоба түрі / Project Type</label>
+                    <select id="contactProject" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-colors">
+                        <option value="3d-portfolio" data-i18n="modal.opt1">3D Interactive Web Experience (Apple Style)</option>
+                        <option value="spatial" data-i18n="modal.opt2">Spatial Computing / WebGL Presentation</option>
+                        <option value="luxury-brand" data-i18n="modal.opt3">Ultra-Luxury Brand Redesign</option>
+                        <option value="other" data-i18n="modal.opt4">Жеке тапсырыс / Custom Commission</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="contactMessage" class="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1" data-i18n="modal.labelMessage">Хабарлама / Message</label>
+                    <textarea id="contactMessage" rows="3" required placeholder="Жобаңыздың мақсаты мен мерзімі туралы қысқаша айтып беріңіз..." class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-colors"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 text-white font-semibold text-sm hover:opacity-95 transition-opacity shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 cursor-pointer">
+                    <span data-i18n="modal.btnSend">Хабарлама жіберу</span>
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast Element -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 max-w-sm glass-panel p-4 rounded-2xl border border-cyan-500/30 shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="w-9 h-9 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+            <i data-lucide="check-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+            <h5 id="toastTitle" class="text-sm font-semibold text-white">Жіберілді!</h5>
+            <p id="toastBody" class="text-xs text-slate-300">Хабарламаңыз сәтті жеткізілді. Жақын арада жауап беремін.</p>
+        </div>
+    </div>
+
+    <!-- Application Script: Localization, 3D Tilt Physics, Ambient Glow & Interactions -->
+    <script>
+        // Centralized Localization Dictionary (Qazaq Latin and English)
+        const i18n = {
+            kk: {
+                "nav.role": "Креативті Инженер",
+                "nav.about": "Тұлға",
+                "nav.projects": "Жобалар",
+                "nav.craft": "Шеберлік",
+                "nav.awards": "Марапаттар",
+                "nav.contact": "Байланысу",
+                "hero.badge": "2025 Visionary Portfolio • Awwwards Recognized",
+                "hero.headlinePre": "Визуалдан да терең.",
+                "hero.headlineAccent": "Нақты 3D Кеңістік.",
+                "hero.description": "Жоғары технологиялар, тегіс 3D анимациялар және Apple деңгейіндегі өнім философиясының тоғысы. Цифрлық тәжірибені жаңа биікке көтеретін интерактивті кеңістік.",
+                "hero.status": "ЖАҢА ЖОБАЛАРҒА АШЫҚ",
+                "hero.cardRole": "Lead Creative Technologist & 3D Web Architect",
+                "hero.cardBio": "Ғаламдық брендтер мен стартаптар үшін кинематографиялық 3D веб-тәжірибелерді өмірге әкелуші.",
+                "hero.statExp": "Жыл Тәжірибе",
+                "hero.statAwards": "Awwwards & FWA",
+                "hero.statQuality": "Кемелдік",
+                "hero.tiltHint": "Курсорды қимылдатып, 3D визитканы бақылаңыз",
+                "hero.btnExplore": "Жобаларды көру",
+                "hero.btnContact": "Ынтымақтастық орнату",
+                "about.pre": "Философия & Көзқарас",
+                "about.title": "Әрбір пикселдегі кемелдік.",
+                "about.subtitle": "Біз қарапайым веб-сайттар емес, пайдаланушы сезіміне тікелей әсер ететін цифрлық өнер туындыларын жасаймыз.",
+                "about.bento1.title": "Сұйық Шыны (Liquid Glass)",
+                "about.bento1.desc": "Көпқабатты тереңдік (Backdrop blur 24px) және жарықтың нақты физикасына негізделген оптикалық эффектілер.",
+                "about.bento2.title": "3D Кеңістік & Физика",
+                "about.bento2.desc": "Курсор бағытына сезімтал инерциялық қозғалыс, гироскопиялық тепе-теңдік және нақты 3D проекция.",
+                "about.bento3.title": "120 FPS Өнімділік",
+                "about.bento3.desc": "Hardware-accelerated CSS трансформациялары мен GSAP ядросы арқылы тегіс скролл және кинематографиялық ашылу.",
+                "projects.pre": "Таңдаулы Портфолио",
+                "projects.title": "Интерактивті Жобалар",
+                "projects.desc": "Карточкаға жақындағанда артынан жұмсақ неон сәулесі шығып, жобаның интерактивті мәнін ашады.",
+                "projects.p1.title": "Aetheria | Кеңістіктік 3D Тәжірибесі",
+                "projects.p1.desc": "VisionOS интерфейсіне арналған ультра-премиум веб-визуализация. Жеңіл инерция және сұйық шыны әсерлері бар нақты уақыттағы 3D орта.",
+                "projects.client1": "Тапсырыс беруші: Apple Ecosystem Labs",
+                "projects.p2.title": "Chrono Haute | Швейцариялық Сағат Инженериясы",
+                "projects.p2.desc": "Жоғары сән сағаттарын интерактивті бөлшектеу және 360° оптикалық жарық шағылысымен көрсетуге арналған премиум презентация.",
+                "projects.client2": "Тапсырыс беруші: Geneve Horlogerie",
+                "projects.p3.title": "Hyperion GT | Аэродинамикалық Телеметрия",
+                "projects.p3.desc": "Жел туннеліндегі ауа ағынын интерактивті бөлшектер арқылы визуализациялайтын электрлік суперкар таныстырылымы.",
+                "projects.client3": "Тапсырыс беруші: Apex Automotive Munich",
+                "projects.p4.title": "Novus Capital | Институционалды Қаржы Платформасы",
+                "projects.p4.desc": "Жасанды интеллект негізіндегі транзакциялар ағынын микро-секундтық жылдамдықпен көрсететін криптографиялық басқару орталығы.",
+                "projects.client4": "Тапсырыс беруші: Novus Global London",
+                "projects.view": "Жобаны зерттеу",
+                "craft.pre": "Apple Деңгейіндегі Стандарттар",
+                "craft.title": "Инженерлік Дәлдік. Көркем Әсемдік.",
+                "craft.metric1.title": "60fps Кадр Тұрақтылығы",
+                "craft.metric1.desc": "Микро-кешігусіз тегіс өтулер",
+                "craft.metric2.title": "Lighthouse Performance",
+                "craft.metric2.desc": "Оңтайландырылған код базасы",
+                "craft.metric3.title": "Инерциялық Физика",
+                "craft.metric3.desc": "Сенсорлық шынайы реакция",
+                "craft.metric4.title": "Qazaq & English",
+                "craft.metric4.desc": "Толық қос тілді қолдау",
+                "awards.pre": "Халықаралық Тану",
+                "awards.title": "Марапаттар & Бағалау",
+                "modal.pre": "Ынтымақтастық",
+                "modal.title": "Жаңа деңгейдегі жобаны бірге бастайық",
+                "modal.subtitle": "Форманы толтырыңыз немесе жеке поштаға жазыңыз:",
+                "modal.labelName": "Атыңыз",
+                "modal.labelEmail": "Электронды пошта",
+                "modal.labelType": "Жоба түрі",
+                "modal.labelMessage": "Хабарлама",
+                "modal.btnSend": "Хабарлама жіберу",
+                "modal.opt1": "3D Interactive Web Experience (Apple Style)",
+                "modal.opt2": "Spatial Computing / WebGL Presentation",
+                "modal.opt3": "Ultra-Luxury Brand Redesign",
+                "modal.opt4": "Жеке тапсырыс / Custom Commission",
+                "toast.successTitle": "Сәтті жіберілді!",
+                "toast.successBody": "Хабарламаңыз жеткізілді. 24 сағат ішінде жауап беремін."
+            },
+            en: {
+                "nav.role": "Creative Technologist",
+                "nav.about": "About",
+                "nav.projects": "Works",
+                "nav.craft": "Craft",
+                "nav.awards": "Honors",
+                "nav.contact": "Contact",
+                "hero.badge": "2025 Visionary Portfolio • Awwwards Recognized",
+                "hero.headlinePre": "Beyond Visuals.",
+                "hero.headlineAccent": "Pure Tactile Dimension.",
+                "hero.description": "The intersection of cutting-edge technology, fluid 3D physics, and Apple-grade product craftsmanship. Elevating digital storytelling into spatial luxury.",
+                "hero.status": "AVAILABLE FOR BESPOKE COMMISSIONS",
+                "hero.cardRole": "Lead Creative Technologist & 3D Web Architect",
+                "hero.cardBio": "Architecting cinematic, high-performance 3D spatial web experiences for world-class innovators.",
+                "hero.statExp": "Years Craft",
+                "hero.statAwards": "Awwwards & FWA",
+                "hero.statQuality": "Precision",
+                "hero.tiltHint": "Move cursor to tilt and observe 3D card physics",
+                "hero.btnExplore": "Explore Selected Works",
+                "hero.btnContact": "Initiate Collaboration",
+                "about.pre": "Philosophy & Vision",
+                "about.title": "Perfection in every millimeter.",
+                "about.subtitle": "We don't merely assemble websites; we choreograph sensory digital experiences that resonate and captivate.",
+                "about.bento1.title": "Liquid Glassmorphism",
+                "about.bento1.desc": "Multi-layered depth with 24px backdrop blur, specular refraction, and optical light physics.",
+                "about.bento2.title": "Spatial 3D Kinetics",
+                "about.bento2.desc": "Curved perspective transformations, gyroscopic equilibrium, and zero-latency cursor tracking.",
+                "about.bento3.title": "120 FPS Fluidity",
+                "about.bento3.desc": "GPU-accelerated transformations and GSAP ScrollTrigger pipelines delivering cinematic poise.",
+                "projects.pre": "Curated Portfolio",
+                "projects.title": "Interactive Selected Works",
+                "projects.desc": "Hover over cards to activate the responsive ambient neon backlight illuminating the project essence.",
+                "projects.p1.title": "Aetheria | Spatial 3D Odyssey",
+                "projects.p1.desc": "An ultra-premium web visualization tailored for VisionOS. Real-time 3D lighting, fluid inertia, and liquid glass reflections.",
+                "projects.client1": "Client: Apple Ecosystem Labs",
+                "projects.p2.title": "Chrono Haute | Swiss Horology Engineering",
+                "projects.p2.desc": "Interactive mechanical horology dissection featuring 360° dynamic specular reflections and high-precision CAD modeling.",
+                "projects.client2": "Client: Geneve Horlogerie",
+                "projects.p3.title": "Hyperion GT | Aerodynamic Telemetry",
+                "projects.p3.desc": "Live electric hypercar launch experience showcasing real-time wind tunnel particle dynamics and telemetry data.",
+                "projects.client3": "Client: Apex Automotive Munich",
+                "projects.p4.title": "Novus Capital | Institutional Financial Core",
+                "projects.p4.desc": "Next-generation cryptographic terminal visualizing sub-millisecond AI liquidity corridors with military-grade precision.",
+                "projects.client4": "Client: Novus Global London",
+                "projects.view": "Explore Case Study",
+                "craft.pre": "Apple Keynote Standards",
+                "craft.title": "Engineering Precision. Artful Soul.",
+                "craft.metric1.title": "60fps Render Locked",
+                "craft.metric1.desc": "Stutter-free transitions",
+                "craft.metric2.title": "Lighthouse Performance",
+                "craft.metric2.desc": "Engineered for speed",
+                "craft.metric3.title": "Kinetic 3D Tilt",
+                "craft.metric3.desc": "Tactile cursor responsiveness",
+                "craft.metric4.title": "Bilingual Engine",
+                "craft.metric4.desc": "Native Qazaq & English",
+                "awards.pre": "Global Recognition",
+                "awards.title": "Honors & Accolades",
+                "modal.pre": "Collaboration",
+                "modal.title": "Let's craft something transcendent together",
+                "modal.subtitle": "Fill out the project details or reach out directly:",
+                "modal.labelName": "Your Name",
+                "modal.labelEmail": "Email Address",
+                "modal.labelType": "Project Focus",
+                "modal.labelMessage": "Brief & Vision",
+                "modal.btnSend": "Transmit Message",
+                "modal.opt1": "3D Interactive Web Experience (Apple Style)",
+                "modal.opt2": "Spatial Computing / WebGL Presentation",
+                "modal.opt3": "Ultra-Luxury Brand Redesign",
+                "modal.opt4": "Custom Bespoke Commission",
+                "toast.successTitle": "Message Transmitted!",
+                "toast.successBody": "Your inquiry has been logged. Expect a response within 24 hours."
+            }
         };
 
-        // --- Main App Component ---
-        const App = () => {
-            const [lang, setLang] = useState('kk');
-            const t = useMemo(() => translations[lang] || translations.kk, [lang]);
+        let currentLang = 'kk';
 
-            const [user, setUser] = useState(null); // { name, role }
-            const [authMode, setAuthMode] = useState('login'); // 'login' | 'register'
-            const [currentTab, setCurrentTab] = useState('monitoring');
-            const [notifications, setNotifications] = useState([]);
-            const [calcPrefill, setCalcPrefill] = useState(null);
+        // Function to update texts based on current language
+        function updateLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
 
-            // Core States with LocalStorage
-            const [depotTanks, setDepotState] = useState(() => {
-                const saved = localStorage.getItem('sme_depot');
-                return saved ? JSON.parse(saved) : initialDepotState;
-            });
-            const [stations, setStations] = useState(() => {
-                const saved = localStorage.getItem('sme_stations');
-                return saved ? JSON.parse(saved) : initialStations;
-            });
-            const [prices, setPrices] = useState(() => {
-                const saved = localStorage.getItem('sme_prices');
-                return saved ? JSON.parse(saved) : initialPrices;
-            });
-            const [logs, setLogs] = useState(() => {
-                const saved = localStorage.getItem('sme_audit');
-                return saved ? JSON.parse(saved) : [{ id: 1, action: 'Система инициализирована', time: new Date().toLocaleString(), user: 'System' }];
-            });
-            const [userRequests, setUserRequests] = useState(() => {
-                const saved = localStorage.getItem('sme_requests');
-                return saved ? JSON.parse(saved) : [
-                    { id: 101, name: 'OilTrans LLP', email: 'manager@oiltrans.kz', date: '16.06.2026', bin: '123456789012' },
-                    { id: 102, name: 'Aviation Group', email: 'ops@avg.com', date: '17.06.2026', bin: '987654321098' }
-                ];
-            });
-            const [registeredUsers, setRegisteredUsers] = useState(() => {
-                const saved = localStorage.getItem('sme_users');
-                return saved ? JSON.parse(saved) : [
-                    { id: 1, name: 'Admin Hub', role: 'admin', email: 'admin@sme.kz' },
-                    { id: 2, name: 'Operator_Almaty', role: 'operator', email: 'alm@sme.kz' }
-                ];
-            });
-
-            // NEW STATE: Documents, B2B Orders & Analytics
-            const [documents, setDocuments] = useState(() => {
-                const saved = localStorage.getItem('sme_docs');
-                return saved ? JSON.parse(saved) : initialDocuments;
-            });
-            const [b2bOrders, setB2bOrders] = useState(() => {
-                const saved = localStorage.getItem('sme_orders');
-                return saved ? JSON.parse(saved) : initialB2bOrders;
-            });
-            const [analyticsLogs, setAnalyticsLogs] = useState(() => {
-                const saved = localStorage.getItem('sme_analytics');
-                return saved ? JSON.parse(saved) : initialAnalyticsLogs;
-            });
-
-            // Synchronize with localStorage
-            useEffect(() => {
-                localStorage.setItem('sme_depot', JSON.stringify(depotTanks));
-            }, [depotTanks]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_stations', JSON.stringify(stations));
-            }, [stations]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_prices', JSON.stringify(prices));
-            }, [prices]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_requests', JSON.stringify(userRequests));
-            }, [userRequests]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_users', JSON.stringify(registeredUsers));
-            }, [registeredUsers]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_docs', JSON.stringify(documents));
-            }, [documents]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_orders', JSON.stringify(b2bOrders));
-            }, [b2bOrders]);
-
-            useEffect(() => {
-                localStorage.setItem('sme_analytics', JSON.stringify(analyticsLogs));
-            }, [analyticsLogs]);
-
-            const logAction = useCallback((action, userName = "Admin") => {
-                const newLog = {
-                    id: Date.now(),
-                    action,
-                    time: new Date().toLocaleString(),
-                    user: userName
-                };
-                setLogs(prev => {
-                    const updated = [newLog, ...prev].slice(0, 50);
-                    localStorage.setItem('sme_audit', JSON.stringify(updated));
-                    return updated;
-                });
-            }, []);
-
-            const trackVisit = useCallback((pageName, actionDescription) => {
-                const newVisit = {
-                    id: 'an-' + Date.now(),
-                    page: pageName,
-                    referral: 'Жүйелік сілтеме',
-                    action: actionDescription,
-                    timestamp: new Date().toTimeString().split(' ')[0]
-                };
-                setAnalyticsLogs(prev => [newVisit, ...prev].slice(0, 100));
-            }, []);
-
-            const addNotification = useCallback((message, type = 'info') => {
-                const newNotif = { id: Date.now(), message, type, time: new Date().toLocaleTimeString() };
-                setNotifications(prev => [newNotif, ...prev].slice(0, 5));
-            }, []);
-
-            // Simulation of live data changes and alerts
-            useEffect(() => {
-                const interval = setInterval(() => {
-                    setDepotState(prev => prev.map(tank => {
-                        const change = (Math.random() - 0.5) * 20;
-                        const newCurrent = Math.max(0, Math.min(tank.capacity, tank.current + change));
-
-                        // Alert Logic
-                        if (newCurrent < tank.capacity * 0.1 && tank.current >= tank.capacity * 0.1) {
-                            addNotification(`Критикалық деңгей: ${tank.name} отыны таусылуда!`, 'error');
-                        }
-
-                        return { ...tank, current: Math.round(newCurrent) };
-                    }));
-                }, 5000);
-                return () => clearInterval(interval);
-            }, [addNotification]);
-
-            const handleLogin = (e) => {
-                e.preventDefault();
-                if (authMode === 'register') {
-                    const name = e.target.companyName.value;
-                    const email = e.target.email.value;
-                    const bin = e.target.bin.value;
-                    const newRequest = { id: Date.now(), name, email, bin, date: new Date().toLocaleDateString() };
-                    setUserRequests(prev => [newRequest, ...prev]);
-                    logAction(`Тіркелуге жаңа өтінім жіберілді: ${name}`, 'Қонақ');
-                    trackVisit('Авторизация', 'Жаңа тіркелу өтінімін қалдырды');
-                    showToast('Өтінім жіберілді. Менеджер жауабын күтіңіз.', 'success');
-                    setAuthMode('login');
-                    return;
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) {
+                    el.textContent = i18n[lang][key];
                 }
-                const email = e.target.email.value;
-                if (email === 'admin@sme.kz') {
-                    setUser({ name: 'Super Admin', role: 'admin' });
-                    logAction('Жүйеге кіру (Админ)', 'Super Admin');
-                    trackVisit('Басқару панелі', 'Жүйеге кірді (Админ)');
-                } else {
-                    const clientName = email.split('@')[0];
-                    setUser({ name: clientName, role: 'client' });
-                    logAction('Жүйеге кіру (Клиент)', clientName);
-                    trackVisit('Клиент хабы', 'Жүйеге кірді (Клиент)');
-                }
-            };
+            });
 
-            const handleLogout = () => {
-                logAction('Жүйеден шығу', user?.name || 'Қолданушы');
-                trackVisit('Шығу', 'Жүйеден шықты');
-                setUser(null);
-                setCurrentTab('monitoring');
-            };
+            const langLabel = document.getElementById('currentLangLabel');
+            if (langLabel) {
+                langLabel.textContent = lang === 'kk' ? 'KZ (LAT)' : 'EN (US)';
+            }
+        }
 
-            const handleRefreshData = () => {
-                setDepotState(prev => prev.map(tank => ({
-                    ...tank,
-                    current: Math.round(Math.random() * (tank.capacity - 200) + 200)
-                })));
-                showToast('Мәліметтер жаңартылды', 'success');
-                trackVisit('Мониторинг', '3D отын деңгейінің мәліметтерін қолмен жаңартты');
-            };
+        // Initialize icons
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial call to set correct localized text
+            updateLanguage('kk');
 
-            const handleNewB2bOrder = (order) => {
-                setB2bOrders(prev => [order, ...prev]);
-                logAction(`Жаңа көтерме отын тапсырысы қосылды: ${order.company}`, order.company);
-                trackVisit('Тапсырыстар', `${order.company} БИН ${order.bin} үшін отын тапсырысын жіберді`);
-            };
-
-            const handleUpdateOrderStatus = (orderId, status) => {
-                setB2bOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o));
-                logAction(`Тапсырыс күйі жаңартылды: #${orderId.slice(-4)} -> ${status}`, user.name);
-                trackVisit('Әкімшілік', `Тапсырыс статусын ${status} күйіне ауыстырды`);
-            };
-
-            const handleDocumentDownload = (doc) => {
-                setDocuments(prev => prev.map(d => d.id === doc.id ? { ...d, downloads: d.downloads + 1 } : d));
-                trackVisit('Жүктеу орталығы', `Құжат жүктелді: ${doc.title}`);
-            };
-
-            const handlePrefillApply = (values) => {
-                setCalcPrefill(values);
-                setCurrentTab('orderForm');
-                showToast('Калькулятор мәліметтері тапсырыс формасына енгізілді', 'info');
-                trackVisit('Калькулятор', 'Есептеу нәтижесін тапсырыс формасына өткізді');
-            };
-
-            // Track page view logs on menu clicks
-            useEffect(() => {
-                if (user) {
-                    trackVisit(t[currentTab] || currentTab, `Бетті қарады: ${t[currentTab] || currentTab}`);
-                }
-            }, [currentTab, user]);
-
-            if (!user) {
-                return (
-                    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
-                        <div className="absolute inset-0 z-0">
-                            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-royalBlue/20 rounded-full blur-[120px]"></div>
-                            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-mercuryGold/10 rounded-full blur-[120px]"></div>
-                        </div>
-
-                        <div className="w-full max-w-md glass p-10 rounded-[40px] shadow-2xl relative z-10 animate-fade-in">
-                            <div className="flex flex-col items-center mb-10">
-                                <div className="w-16 h-16 bg-mercuryGold rounded-2xl flex items-center justify-center text-cosmicDeep shadow-2xl shadow-amber-400/20 mb-6">
-                                    <LucideIcon name="zap" className="w-10 h-10 fill-current text-cosmicDeep" />
-                                </div>
-                                <h1 className="text-2xl font-display font-black uppercase tracking-tighter italic">Smart Mercury Energy</h1>
-                                <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-2">Enterprise Solutions v3.5</p>
-                            </div>
-
-                            <div className="flex bg-white/5 p-1 rounded-2xl mb-8">
-                                <button
-                                    type="button"
-                                    onClick={() => setAuthMode('login')}
-                                    className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'login' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
-                                >
-                                    Кіру
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setAuthMode('register')}
-                                    className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${authMode === 'register' ? 'bg-mercuryGold text-cosmicDeep' : 'text-slate-400'}`}
-                                >
-                                    Тіркелу
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleLogin} className="space-y-6">
-                                {authMode === 'register' && (
-                                    <div className="space-y-4 animate-fade-in">
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Компания атауы</label>
-                                            <input name="companyName" type="text" required className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">БИН</label>
-                                            <input name="bin" type="text" required maxLength="12" placeholder="123456789012" className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white" />
-                                        </div>
-                                    </div>
-                                )}
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Email</label>
-                                    <input
-                                        name="email"
-                                        type="email"
-                                        required
-                                        placeholder={authMode === 'login' ? "admin@sme.kz" : "info@company.kz"}
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Құпиясөз</label>
-                                    <input
-                                        name="password"
-                                        type="password"
-                                        required
-                                        placeholder="••••••••"
-                                        className="w-full bg-cosmicDeep border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:border-mercuryGold transition-all outline-none text-white"
-                                    />
-                                </div>
-                                <button className="w-full bg-mercuryGold text-cosmicDeep py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-400/10 hover:bg-white transition-all transform active:scale-95">
-                                    {authMode === 'login' ? 'Жүйеге кіру' : 'Өтінім жіберу'}
-                                </button>
-                            </form>
-
-                            <div className="mt-8 text-center">
-                                <a href="#" className="text-[10px] font-bold text-slate-600 uppercase tracking-widest hover:text-white transition-colors">Құпиясөзді ұмыттыңыз ба?</a>
-                            </div>
-                        </div>
-                    </div>
-                );
+            if (window.lucide) {
+                lucide.createIcons();
             }
 
-            return (
-                <div className="min-h-screen">
-                    <Sidebar currentTab={currentTab} setTab={setCurrentTab} t={t} role={user.role} />
+            // Language switcher event
+            const langBtn = document.getElementById('langToggleBtn');
+            if (langBtn) {
+                langBtn.addEventListener('click', () => {
+                    const nextLang = currentLang === 'kk' ? 'en' : 'kk';
+                    updateLanguage(nextLang);
+                });
+            }
 
-                    {/* Floating Notifications */}
-                    <div className="fixed bottom-10 right-10 z-[100] w-80">
-                        {notifications.map(n => (
-                            <NotificationToast key={n.id} notif={n} onClose={() => setNotifications(prev => prev.filter(x => x.id !== n.id))} />
-                        ))}
-                    </div>
+            // ================= 3D TILT EFFECT LOGIC =================
+            const tiltCard = document.getElementById('interactiveTiltCard');
+            if (tiltCard) {
+                let cardRect = tiltCard.getBoundingClientRect();
 
-                    <main className="pl-20 lg:ml-64 transition-all duration-300">
-                        {/* Header */}
-                        <header className="h-24 px-8 flex items-center justify-between sticky top-0 bg-cosmicDeep/80 backdrop-blur-xl z-40 border-b border-white/5">
-                            <div className="flex items-center gap-4">
-                                <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 text-xs font-bold text-slate-400">
-                                    <LucideIcon name="clock" className="w-4 h-4" />
-                                    <span>{new Date().toLocaleDateString()}</span>
-                                </div>
-                            </div>
+                window.addEventListener('resize', () => {
+                    cardRect = tiltCard.getBoundingClientRect();
+                });
 
-                            <div className="flex items-center gap-6">
-                                {/* Language Switcher */}
-                                <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10">
-                                    {['kk', 'ru', 'en'].map(l => (
-                                        <button
-                                            key={l}
-                                            onClick={() => setLang(l)}
-                                            className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all ${lang === l ? "bg-mercuryGold text-cosmicDeep shadow-lg shadow-amber-400/20" : "text-slate-400 hover:text-white"}`}
-                                        >
-                                            {l}
-                                        </button>
-                                    ))}
-                                </div>
+                function handleTilt(e) {
+                    cardRect = tiltCard.getBoundingClientRect();
+                    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
 
-                                <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-white relative hover:scale-105 transition-transform cursor-pointer">
-                                    <LucideIcon name="bell" />
-                                    <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-royalBlue rounded-full border-2 border-cosmicDeep"></span>
-                                </div>
+                    if (!clientX || !clientY) return;
 
-                                <div className="flex items-center gap-4 pl-6 border-l border-white/10">
-                                    <div className="text-right hidden sm:block">
-                                        <p className="text-sm font-black text-white italic tracking-tight">{user.name}</p>
-                                        <p className="text-[10px] font-bold text-mercuryGold uppercase tracking-widest opacity-70">{user.role === 'admin' ? 'Chief Hub Controller' : 'Client Access'}</p>
-                                    </div>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="w-12 h-12 bg-mercuryGold rounded-2xl shadow-xl shadow-amber-400/10 flex items-center justify-center font-black text-cosmicDeep italic hover:bg-white transition-all"
-                                    >
-                                        <LucideIcon name="log-out" className="w-5 h-5 text-cosmicDeep" />
-                                    </button>
-                                </div>
-                            </div>
-                        </header>
+                    const x = clientX - cardRect.left;
+                    const y = clientY - cardRect.top;
 
-                        {/* Page Content */}
-                        <div className="p-8 max-w-7xl mx-auto">
-                            {currentTab === 'monitoring' && (
-                                <MonitoringHub
-                                    t={t}
-                                    depotTanks={depotTanks}
-                                    stations={stations}
-                                    onRefresh={handleRefreshData}
-                                />
-                            )}
-                            {currentTab === 'calculator' && (
-                                <FuelCalculator
-                                    t={t}
-                                    prices={prices}
-                                    lang={lang}
-                                    onApplyToForm={handlePrefillApply}
-                                />
-                            )}
-                            {currentTab === 'orderForm' && (
-                                <B2bOrderForm
-                                    t={t}
-                                    initialValues={calcPrefill}
-                                    onSubmitOrder={handleNewB2bOrder}
-                                    userRole={user.role}
-                                    b2bOrders={b2bOrders}
-                                    onUpdateStatus={handleUpdateOrderStatus}
-                                />
-                            )}
-                            {currentTab === 'downloadHub' && (
-                                <DownloadHub
-                                    t={t}
-                                    documents={documents}
-                                    onDownload={handleDocumentDownload}
-                                />
-                            )}
-                            {currentTab === 'prices' && (
-                                <PriceManagement
-                                    t={t}
-                                    prices={prices}
-                                    setPrices={setPrices}
-                                    onSave={() => {
-                                        logAction('Жанармай бағалары өзгертілді', user.name);
-                                        showToast('Бағалар сәтті сақталды', 'success');
-                                    }}
-                                    lang={lang}
-                                />
-                            )}
-                            {currentTab === 'analytics' && (
-                                <VisitorAnalytics
-                                    t={t}
-                                    analyticsLogs={analyticsLogs}
-                                    b2bOrders={b2bOrders}
-                                />
-                            )}
-                            {currentTab === 'admin' && (
-                                <AdminPanel
-                                    t={t}
-                                    stations={stations}
-                                    setStations={setStations}
-                                    logAction={(msg) => logAction(msg, user.name)}
-                                />
-                            )}
-                            {currentTab === 'requests' && (
-                                <UserRequests
-                                    t={t}
-                                    userRequests={userRequests}
-                                    setUserRequests={setUserRequests}
-                                    registeredUsers={registeredUsers}
-                                    setRegisteredUsers={setRegisteredUsers}
-                                    logAction={(msg) => logAction(msg, user.name)}
-                                />
-                            )}
-                            {currentTab === 'audit' && (
-                                <AuditLogs
-                                    t={t}
-                                    logs={logs}
-                                />
-                            )}
-                        </div>
-                    </main>
+                    const centerX = cardRect.width / 2;
+                    const centerY = cardRect.height / 2;
 
-                    {/* Footer Background Effect */}
-                    <div className="fixed bottom-0 right-0 w-[500px] h-[500px] bg-royalBlue/5 blur-[150px] -z-10 rounded-full"></div>
-                </div>
-            );
-        };
+                    // Calculate rotation angles (max 18deg)
+                    const rotateX = ((y - centerY) / centerY) * -16;
+                    const rotateY = ((x - centerX) / centerX) * 16;
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+                    // Specular glare coords
+                    const glareX = (x / cardRect.width) * 100;
+                    const glareY = (y / cardRect.height) * 100;
+
+                    tiltCard.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+                    tiltCard.style.setProperty('--glare-x', `${glareX}%`);
+                    tiltCard.style.setProperty('--glare-y', `${glareY}%`);
+                    tiltCard.style.setProperty('--glare-opacity', '1');
+                }
+
+                function resetTilt() {
+                    tiltCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                    tiltCard.style.setProperty('--glare-opacity', '0');
+                }
+
+                tiltCard.addEventListener('mousemove', handleTilt);
+                tiltCard.addEventListener('mouseleave', resetTilt);
+                tiltCard.addEventListener('touchmove', handleTilt, { passive: true });
+                tiltCard.addEventListener('touchend', resetTilt);
+            }
+
+            // ================= INTERACTIVE AMBIENT NEON GLOW ON CARDS =================
+            const ambientCards = document.querySelectorAll('.ambient-card');
+            ambientCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+
+            // ================= MODAL LOGIC =================
+            const contactModal = document.getElementById('contactModal');
+            const openModalBtn = document.getElementById('openContactBtn');
+            const closeModalBtn = document.getElementById('closeContactBtn');
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            const contactForm = document.getElementById('contactForm');
+
+            function openModal() {
+                contactModal.classList.remove('opacity-0', 'pointer-events-none');
+                contactModal.classList.add('opacity-100');
+                const modalDialog = contactModal.querySelector('.glass-panel');
+                if (modalDialog) {
+                    modalDialog.classList.remove('scale-95');
+                    modalDialog.classList.add('scale-100');
+                }
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                contactModal.classList.add('opacity-0', 'pointer-events-none');
+                contactModal.classList.remove('opacity-100');
+                const modalDialog = contactModal.querySelector('.glass-panel');
+                if (modalDialog) {
+                    modalDialog.classList.remove('scale-100');
+                    modalDialog.classList.add('scale-95');
+                }
+                document.body.style.overflow = '';
+            }
+
+            if (openModalBtn) openModalBtn.addEventListener('click', openModal);
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+            if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !contactModal.classList.contains('pointer-events-none')) {
+                    closeModal();
+                }
+            });
+
+            // ================= FORM SUBMISSION & TOAST NOTIFICATION =================
+            const toastNotification = document.getElementById('toastNotification');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastBody = document.getElementById('toastBody');
+
+            function showToast(title, body) {
+                toastTitle.textContent = title;
+                toastBody.textContent = body;
+                toastNotification.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+                toastNotification.classList.add('opacity-100', 'translate-y-0');
+
+                setTimeout(() => {
+                    toastNotification.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+                    toastNotification.classList.remove('opacity-100', 'translate-y-0');
+                }, 4000);
+            }
+
+            if (contactForm) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    closeModal();
+                    contactForm.reset();
+                    const title = i18n[currentLang]["toast.successTitle"];
+                    const body = i18n[currentLang]["toast.successBody"];
+                    showToast(title, body);
+                });
+            }
+
+            // ================= GSAP CINEMATIC SCROLL REVEALS =================
+            if (window.gsap && window.ScrollTrigger) {
+                gsap.registerPlugin(ScrollTrigger);
+
+                // Reveal Hero Elements
+                gsap.from("#hero h1 span", {
+                    y: 60,
+                    opacity: 0,
+                    duration: 1.2,
+                    stagger: 0.2,
+                    ease: "power4.out"
+                });
+
+                gsap.from("#tiltCardWrapper", {
+                    y: 50,
+                    opacity: 0,
+                    duration: 1.2,
+                    delay: 0.2,
+                    ease: "power3.out"
+                });
+
+                // ScrollTrigger reveals for sections
+                gsap.utils.toArray("#about, #projects, #craftsmanship, #awards").forEach(section => {
+                    gsap.from(section, {
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 80%",
+                            toggleActions: "play none none none"
+                        },
+                        y: 50,
+                        opacity: 0,
+                        duration: 1,
+                        ease: "power3.out"
+                    });
+                });
+            }
+        });
     </script>
 </body>
 </html>
